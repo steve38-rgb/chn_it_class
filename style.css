@@ -379,34 +379,68 @@ body {
 
 /* 過往活動 */
 .past-list {
-    background: white;
-    border-radius: 12px;
-    padding: 10px;
-    border: 1px solid #f1f5f9;
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
 }
 
 .past-item {
+    background: white;
+    padding: 20px 25px;
+    border-radius: 12px;
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: 15px 20px;
-    border-bottom: 1px solid #f1f5f9;
+    border: 1px solid #f1f5f9;
+    transition: var(--transition);
 }
 
-.past-item:last-child {
-    border-bottom: none;
+.past-item:hover {
+    border-color: var(--primary-color);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
 }
 
-.past-item a {
-    color: var(--primary-color);
-    font-size: 0.9rem;
+.past-info h4 {
+    color: var(--text-main);
+    margin-bottom: 5px;
+}
+
+.past-info p {
+    font-size: 0.85rem;
+    color: var(--text-muted);
+}
+
+.btn-visit {
+    padding: 8px 16px;
+    background: #f1f5f9;
+    color: var(--text-main);
     text-decoration: none;
+    border-radius: 6px;
+    font-size: 0.9rem;
     font-weight: 500;
+    transition: var(--transition);
 }
 
-.past-item a.disabled {
-    color: #cbd5e1;
-    pointer-events: none;
+.btn-visit:hover {
+    background: var(--primary-color);
+    color: white;
+}
+
+/* 網頁加載動畫 */
+.fade-in {
+    animation: fadeInContent 0.5s ease forwards;
+}
+
+@keyframes fadeInContent {
+    from {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
 }
 
 /* Footer */

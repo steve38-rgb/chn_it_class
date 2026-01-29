@@ -21,27 +21,90 @@ if (mobileMenu) {
     });
 }
 
-// 點擊導覽連結後自動關閉手機選單
-document.querySelectorAll('.nav-links a').forEach(link => {
-    link.addEventListener('click', () => {
+// 動態頁面加載邏輯 (SPA-like)
+const pageWrapper = document.getElementById('page-wrapper');
+
+async function loadPage(url) {
+    try {
+        // 如果是錨點連結，則由原有的平滑捲動處理
+        if (url.startsWith('#')) return;
+
+        console.log(`Loading page: ${url}`);
+        const response = await fetch(url);
+        const html = await response.text();
+
+        // 解析獲取的 HTML
+        const parser = new DOMParser();
+        const doc = parser.parseFromString(html, 'text/html');
+
+        // 獲取新頁面的 #page-wrapper 內容
+        const newContent = doc.querySelector('#page-wrapper');
+
+        if (newContent && pageWrapper) {
+            // 添加淡出效果 (可選)
+            pageWrapper.classList.add('fade-out');
+
+            setTimeout(() => {
+                pageWrapper.innerHTML = newContent.innerHTML;
+                pageWrapper.classList.remove('fade-out');
+                pageWrapper.classList.add('fade-in');
+
+                // 捲回頂部
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+
+                // 重新綁定新內容中的點擊事件 (如有需要)
+                rebindEvents();
+            }, 300);
+
+            // 更新瀏覽器網址 (不重新整理)
+            window.history.pushState({ path: url }, '', url);
+        } else {
+            // 如果頁面沒有 #page-wrapper，則直接跳轉
+            window.location.href = url;
+        }
+    } catch (error) {
+        console.error('Failed to load page:', error);
+        window.location.href = url; // 發生錯誤時回歸傳統跳轉
+    }
+}
+
+function rebindEvents() {
+    // 處理頁面內部的連結
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+        anchor.addEventListener('click', function (e) {
+            e.preventDefault();
+            const targetId = this.getAttribute('href');
+            const target = document.querySelector(targetId);
+            if (target) {
+                window.scrollTo({
+                    top: target.offsetTop - 80,
+                    behavior: 'smooth'
+                });
+            }
+        });
+    });
+}
+
+// 監聽導覽列點擊
+document.addEventListener('click', (e) => {
+    const navLink = e.target.closest('.nav-btn, .logo');
+    if (navLink && navLink.getAttribute('href') && !navLink.getAttribute('href').startsWith('#') && !navLink.getAttribute('target')) {
+        e.preventDefault();
+        const url = navLink.getAttribute('href');
+        loadPage(url);
+
+        // 如果在手機模式，點擊後關閉選單
         if (navLinks.classList.contains('active')) {
             mobileMenu.classList.remove('active');
             navLinks.classList.remove('active');
         }
-    });
+    }
 });
 
-// 平滑捲動補充 (如果瀏覽器不支援 CSS scroll-behavior)
-document.querySelectorAll('a[href^="#"]').forEach(anchor => {
-    anchor.addEventListener('click', function (e) {
-        e.preventDefault();
-
-        const target = document.querySelector(this.getAttribute('href'));
-        if (target) {
-            window.scrollTo({
-                top: target.offsetTop - 80, // 考慮到固定導覽列的高度
-                behavior: 'smooth'
-            });
-        }
-    });
+// 處理瀏覽器前進後退
+window.addEventListener('popstate', () => {
+    window.location.reload(); // 簡單處理回退：直接重整
 });
+
+// 初始化
+rebindEvents();
