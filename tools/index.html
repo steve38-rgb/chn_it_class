@@ -107,8 +107,14 @@
                 }
             } catch (error) {
                 console.error('Fetch error:', error);
-                // 即使雲端抓取失敗，依然顯示本地工具
+                // 即使雲端抓取失敗，依然顯示本地工具，並附帶錯誤訊息
                 renderTools(localTools);
+                var errNote = document.createElement('p');
+                errNote.style.textAlign = 'center';
+                errNote.style.color = '#ef4444';
+                errNote.style.fontSize = '0.8rem';
+                errNote.innerHTML = '雲端同步失敗（' + error.message + '），僅顯示本地工具。';
+                container.appendChild(errNote);
             }
         }
 

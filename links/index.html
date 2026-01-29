@@ -97,7 +97,7 @@
                 }
             } catch (error) {
                 console.error('Fetch error:', error);
-                container.innerHTML = '<p style="text-align:center; color:#ef4444;">連接失敗，請檢查網路或 GAS 設定。</p>';
+                container.innerHTML = '<p style="text-align:center; color:#ef4444;">連接失敗：' + error.message + '<br>請檢查網路、GAS 部署設定（需設定為「任何人」皆可存取）以及瀏覽器是否阻擋了腳本。</p>';
             }
         }
 
