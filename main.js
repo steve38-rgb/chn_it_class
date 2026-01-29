@@ -10,14 +10,26 @@ window.addEventListener('scroll', () => {
     }
 });
 
-// 手機版菜單 切換邏輯 (預留)
+// 手機版菜單 切換邏輯
 const mobileMenu = document.getElementById('mobile-menu');
+const navLinks = document.querySelector('.nav-links');
+
 if (mobileMenu) {
     mobileMenu.addEventListener('click', () => {
-        // 這裡可以加入手機版選單展開的邏輯
-        console.log('Mobile menu clicked');
+        mobileMenu.classList.toggle('active');
+        navLinks.classList.toggle('active');
     });
 }
+
+// 點擊導覽連結後自動關閉手機選單
+document.querySelectorAll('.nav-links a').forEach(link => {
+    link.addEventListener('click', () => {
+        if (navLinks.classList.contains('active')) {
+            mobileMenu.classList.remove('active');
+            navLinks.classList.remove('active');
+        }
+    });
+});
 
 // 平滑捲動補充 (如果瀏覽器不支援 CSS scroll-behavior)
 document.querySelectorAll('a[href^="#"]').forEach(anchor => {
