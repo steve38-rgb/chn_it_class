@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>二次函數練習</title>
+    <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <style>
+        body { font-family: Arial, sans-serif; text-align: center; margin: 20px; }
+        form { margin: 20px; }
+        .question, .feedback { margin: 20px; }
+    </style>
+</head>
+<body>
+    <h1>二次函數練習</h1>
+    <div class="question">
+        <p>題目：<span id="question"></span></p>
+    </div>
+    <form id="quiz-form">
+        <label>1. 開口方向：</label>
+        <select id="direction">
+            <option value="up">向上</option>
+            <option value="down">向下</option>
+        </select><br><br>
+
+        <label>2. 頂點座標：</label>
+        <input type="text" id="vertex" placeholder="例如：(3, -4)"><br><br>
+
+        <label>3. 頂點特性：</label>
+        <select id="extremum">
+            <option value="minimum">最低點</option>
+            <option value="maximum">最高點</option>
+        </select><br><br>
+
+        <label>4. 平移關係：</label><br>
+        <label>水平：</label>
+        <select id="horizontal-direction">
+            <option value="right">右</option>
+            <option value="left">左</option>
+        </select>
+        <input type="number" id="horizontal-distance" placeholder="單位數字" min="0"><br><br>
+        <label>垂直：</label>
+        <select id="vertical-direction">
+            <option value="up">上</option>
+            <option value="down">下</option>
+        </select>
+        <input type="number" id="vertical-distance" placeholder="單位數字" min="0"><br><br>
+
+        <button type="button" onclick="checkAnswers()">提交答案</button>
+    </form>
+    <div class="feedback" id="feedback"></div>
+
+    <script>
+        // 隨機生成題目
+        let a, h, k;
+        function generateQuestion() {
+            a = (Math.random() < 0.5 ? -1 : 1) * (Math.floor(Math.random() * 3) + 1); // a = ±1, ±2, ±3
+            h = Math.floor(Math.random() * 11) - 5; // h = -5 至 5
+            k = Math.floor(Math.random() * 11) - 5; // k = -5 至 5
+
+            // 更新題目內容
+            const question = `y = ${a}(x ${h >= 0 ? '-' : '+'} ${Math.abs(h)})^2 ${k >= 0 ? '+' : ''} ${k}`;
+            document.getElementById('question').textContent = question;
+
+            // 重新渲染數學式
+            MathJax.typeset();
+        }
+
+        // 驗證答案
+        function checkAnswers() {
+            const direction = document.getElementById('direction').value;
+            const vertex = document.getElementById('vertex').value.trim();
+            const extremum = document.getElementById('extremum').value;
+            const horizontalDirection = document.getElementById('horizontal-direction').value;
+            const horizontalDistance = parseInt(document.getElementById('horizontal-distance').value, 10);
+            const verticalDirection = document.getElementById('vertical-direction').value;
+            const verticalDistance = parseInt(document.getElementById('vertical-distance').value, 10);
+
+            let feedback = '';
+
+            // 正確答案
+            const correctDirection = a > 0 ? 'up' : 'down';
+            const correctVertex = `(${h}, ${k})`;
+            const correctExtremum = a > 0 ? 'minimum' : 'maximum';
+            const correctHorizontalDirection = h >= 0 ? 'right' : 'left';
+            const correctHorizontalDistance = Math.abs(h);
+            const correctVerticalDirection = k >= 0 ? 'up' : 'down';
+            const correctVerticalDistance = Math.abs(k);
+
+            // 驗證每個答案
+            if (direction === correctDirection) feedback += '✅ 開口方向正確！<br>';
+            else feedback += '❌ 開口方向錯誤，應為 ' + (a > 0 ? '向上' : '向下') + '。<br>';
+
+            if (vertex === correctVertex) feedback += '✅ 頂點座標正確！<br>';
+            else feedback += `❌ 頂點座標錯誤，應為 ${correctVertex}。<br>`;
+
+            if (extremum === correctExtremum) feedback += '✅ 頂點特性正確！<br>';
+            else feedback += `❌ 頂點特性錯誤，應為 ${a > 0 ? '最低點' : '最高點'}。<br>`;
+
+            if (
+                horizontalDirection === correctHorizontalDirection &&
+                horizontalDistance === correctHorizontalDistance
+            ) feedback += '✅ 水平平移關係正確！<br>';
+            else feedback += `❌ 水平平移關係錯誤，應為 ${correctHorizontalDirection}${correctHorizontalDistance}單位。<br>`;
+
+            if (
+                verticalDirection === correctVerticalDirection &&
+                verticalDistance === correctVerticalDistance
+            ) feedback += '✅ 垂直平移關係正確！<br>';
+            else feedback += `❌ 垂直平移關係錯誤，應為 ${correctVerticalDirection}${correctVerticalDistance}單位。<br>`;
+
+            document.getElementById('feedback').innerHTML = feedback;
+        }
+
+        // 初始化
+        generateQuestion();
+    </script>
+</body>
+</html>

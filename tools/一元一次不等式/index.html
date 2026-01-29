@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>一元一次不等式練習</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f0f8ff;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+        }
+        .container {
+            text-align: center;
+            background-color: #ffffff;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+        input[type="text"] {
+            padding: 10px;
+            font-size: 16px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            width: 200px;
+            margin-bottom: 10px;
+        }
+        button {
+            padding: 10px 20px;
+            font-size: 16px;
+            border: none;
+            border-radius: 5px;
+            background-color: #007bff;
+            color: white;
+            cursor: pointer;
+            margin-right: 10px;
+        }
+        button:hover {
+            background-color: #0056b3;
+        }
+        .result {
+            margin-top: 10px;
+            font-size: 18px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>一元一次不等式練習</h1>
+        <p>請解答以下不等式：</p>
+        <p id="inequality"></p>
+        <input type="text" id="answer" placeholder="請輸入答案">
+        <br>
+        <button onclick="checkAnswer()">提交答案</button>
+        <button onclick="generateInequality()">重新生成題目</button>
+        <p class="result" id="result"></p>
+    </div>
+    <script>
+        let correctAnswer;
+
+        function generateInequality() {
+            let a = 0;
+            while (a === 0) {
+                a = Math.floor(Math.random() * 21) - 10; // a 可以是 -10 到 10 的隨機整數
+            }
+            let b = Math.floor(Math.random() * 21) - 10; // b 可以是 -10 到 10 的隨機整數
+            const c = Math.floor(Math.random() * 21) - 10; // c 可以是 -10 到 10 的隨機整數
+
+            // 確保 a 不為 0，並且如果 a 為 -1，將其省略顯示
+            let aDisplay = '';
+            if (a !== 0) {
+                aDisplay = a === -1 ? '-x' : (a === 1 ? 'x' : `${a}x`);
+            }
+
+            // 如果 b 為 0，則不顯示 b 的值和 sign1
+            let sign1 = '';
+            if (b !== 0) {
+                sign1 = Math.random() < 0.5 ? '+' : '-';
+                // 如果 b 為負數，則反轉 sign1 的符號
+                if (b < 0) {
+                    sign1 = sign1 === '+' ? '-' : '+';
+                    b = Math.abs(b); // 將 b 轉為正數顯示
+                }
+            }
+
+            // 隨機生成 "<" 或 ">" 符號
+            const sign2 = Math.random() < 0.5 ? '<' : '>';
+
+            // 計算不等式的右側值
+            const inequalityElement = document.getElementById('inequality');
+            const inequalityText = `${aDisplay} ${b !== 0 ? sign1 : ''} ${b !== 0 ? b : ''} ${sign2} ${c}`;
+            inequalityElement.textContent = inequalityText.trim().replace(/\s+/g, ' ');
+
+            // 計算正確答案
+            let solution = (c - (sign1 === '+' ? b : -b)) / a;
+            if (a < 0) {
+                correctAnswer = sign2 === '<' ? `x>${solution}` : `x<${solution}`;
+            } else {
+                correctAnswer = sign2 === '<' ? `x<${solution}` : `x>${solution}`;
+            }
+
+            // 清空結果和輸入框
+            document.getElementById('answer').value = '';
+            document.getElementById('result').textContent = '';
+        }
+
+        function checkAnswer() {
+            let answer = document.getElementById('answer').value.trim();
+            const resultElement = document.getElementById('result');
+
+            // 去除答案中的所有空格
+            answer = answer.replace(/\s+/g, '');
+
+            // 判斷答案中的 ">" 或 "<" 符號
+            let inequalitySign = answer.includes('>') ? '>' : '<';
+
+            // 根據不等號符號分割答案
+            const parts = answer.split(inequalitySign);
+
+            if (parts.length !== 2) {
+                resultElement.textContent = '答案格式不正確，請重新輸入。';
+                resultElement.style.color = 'red';
+                return;
+            }
+
+            // 第一部分是 ">" 或 "<" 符號前面的部分
+            const firstPart = parts[0].trim();
+
+            // 第二部分是 "/" 符號前面的部分
+            const fractionParts = parts[1].split('/');
+            let decimalValue;
+            if (fractionParts.length === 2) {
+                // 如果是分數形式
+                const numerator = parseFloat(fractionParts[0].trim());
+                const denominator = parseFloat(fractionParts[1].trim());
+                decimalValue = numerator / denominator;
+            } else {
+                // 如果是小數形式
+                decimalValue = parseFloat(parts[1].trim());
+            }
+
+            // 組合成正確的答案
+            const formattedAnswer = `${firstPart}${inequalitySign}${decimalValue}`;
+
+            if (formattedAnswer === correctAnswer) {
+                resultElement.textContent = '正確！';
+                resultElement.style.color = 'green';
+            } else {
+                resultElement.textContent = `錯誤，請再試一次。正確答案是：${correctAnswer}`;
+                resultElement.style.color = 'red';
+            }
+        }
+
+        // 頁面加載時生成一道不等式
+        window.onload = generateInequality;
+    </script>
+</body>
+</html>

@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>小工具 - 資科補充 HUB</title>
+    <title>好用連結 - 資科補充 HUB</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link
@@ -30,8 +30,8 @@
                 <li><a href="../grade1/index.html" class="nav-btn">一年級</a></li>
                 <li><a href="../grade2/index.html" class="nav-btn">二年級</a></li>
                 <li><a href="../grade3/index.html" class="nav-btn">三年級</a></li>
-                <li><a href="index.html" class="nav-btn active">小工具</a></li>
-                <li><a href="../links/index.html" class="nav-btn">好用連結</a></li>
+                <li><a href="../tools/index.html" class="nav-btn">小工具</a></li>
+                <li><a href="index.html" class="nav-btn active">好用連結</a></li>
                 <li><a href="#" class="nav-btn">特別課程</a></li>
             </ul>
             <div class="menu-toggle" id="mobile-menu">
@@ -45,8 +45,8 @@
     <div id="page-wrapper">
         <header class="hero">
             <div class="hero-content">
-                <h1>實用<span>小工具</span></h1>
-                <p>工欲善其事，必先利其器。這裡提供各種提升效率的數位工具。</p>
+                <h1>網路<span>好用連結</span></h1>
+                <p>精選優質網路資源，協助你探索更廣闊的資訊國度。</p>
             </div>
         </header>
 
@@ -59,10 +59,10 @@
         </nav>
 
         <main class="container">
-            <div id="tools-container" class="fade-in">
+            <div id="links-container" class="fade-in">
                 <!-- 這裡將由 JavaScript 從 Google Sheet 動態載入 -->
                 <div class="loading-state" style="text-align: center; padding: 50px;">
-                    <p>正在同步工具資源...</p>
+                    <p>正在從雲端同步資源連結...</p>
                 </div>
             </div>
         </main>
@@ -78,42 +78,31 @@
         // 設定區
         var CONFIG = {
             GAS_API: 'https://script.google.com/macros/s/AKfycbwrNC6_JNh706qZrd0C4tBDYPJMQSVthgs_RsN6oMoAxT1DkkCLBN1Q7bZ4wNcfRTPYKw/exec',
-            SHEET_NAME: '小工具'
+            SHEET_NAME: '好用連結'
         };
 
-        async function fetchTools() {
-            var container = document.getElementById('tools-container');
+        async function fetchLinks() {
+            var container = document.getElementById('links-container');
             if (!container) return;
-
-            // 定義本地自製工具
-            var localTools = [
-                { '大標題': '自製小工具', '連結名稱': '一元一次不等式', '連結url': '一元一次不等式/index.html' },
-                { '大標題': '自製小工具', '連結名稱': '二次函數平移', '連結url': '二次函數平移/index.html' },
-                { '大標題': '自製小工具', '連結名稱': '指數律', '連結url': '指數律/index.html' }
-            ];
 
             try {
                 var url = CONFIG.GAS_API + '?sheet=' + CONFIG.SHEET_NAME;
                 var response = await fetch(url);
                 var data = await response.json();
 
-                // 合併雲端與本地資料
-                var combinedData = localTools.concat(data || []);
-
-                if (combinedData.length > 0) {
-                    renderTools(combinedData);
+                if (data && data.length > 0) {
+                    renderLinks(data);
                 } else {
-                    container.innerHTML = '<p style="text-align:center;">目前尚無工具資料。</p>';
+                    container.innerHTML = '<p style="text-align:center;">目前尚無連結資料。</p>';
                 }
             } catch (error) {
                 console.error('Fetch error:', error);
-                // 即使雲端抓取失敗，依然顯示本地工具
-                renderTools(localTools);
+                container.innerHTML = '<p style="text-align:center; color:#ef4444;">連接失敗，請檢查網路或 GAS 設定。</p>';
             }
         }
 
-        function renderTools(data) {
-            var container = document.getElementById('tools-container');
+        function renderLinks(data) {
+            var container = document.getElementById('links-container');
             var quickNav = document.getElementById('quick-nav-bar');
             var quickNavContainer = document.getElementById('quick-nav-container');
 
@@ -124,7 +113,7 @@
             var groups = {};
             var titles = [];
             data.forEach(function (item) {
-                var title = item['大標題'] || '一般工具';
+                var title = item['大標題'] || '其他資源';
                 if (!groups[title]) {
                     groups[title] = [];
                     titles.push(title);
@@ -136,7 +125,7 @@
             if (titles.length > 1) {
                 quickNav.style.display = 'block';
                 titles.forEach(function (title, index) {
-                    var anchorId = 'tool-group-' + index;
+                    var anchorId = 'group-' + index;
                     var navBtn = document.createElement('a');
                     navBtn.className = 'quick-nav-item';
                     navBtn.href = '#' + anchorId;
@@ -149,17 +138,17 @@
 
             // 渲染各組
             titles.forEach(function (title, index) {
-                var tools = groups[title];
+                var links = groups[title];
                 var section = document.createElement('section');
-                var anchorId = 'tool-group-' + index;
-                section.className = 'section tool-group-section';
+                var anchorId = 'group-' + index;
+                section.className = 'section link-group-section';
                 section.id = anchorId;
 
                 var gridHtml = '<div class="link-grid">';
-                tools.forEach(function (tool) {
+                links.forEach(function (link) {
                     gridHtml +=
-                        '<a href="' + tool['連結url'] + '" target="_blank" class="link-card">' +
-                        '<h4>' + tool['連結名稱'] + '</h4>' +
+                        '<a href="' + link['連結url'] + '" target="_blank" class="link-card">' +
+                        '<h4>' + link['連結名稱'] + '</h4>' +
                         '</a>';
                 });
                 gridHtml += '</div>';
@@ -171,17 +160,17 @@
                 container.appendChild(section);
             });
 
-            // 重新綁定捲動事件
+            // 如果有導覽按鈕，重新綁定平滑捲動事件
             if (typeof rebindEvents === 'function') {
                 rebindEvents();
             }
         }
 
         // 初始載入
-        fetchTools();
+        fetchLinks();
 
         // 監聽 SPA 跳轉事件
-        document.addEventListener('page-switched', fetchTools);
+        document.addEventListener('page-switched', fetchLinks);
     </script>
 </body>
 

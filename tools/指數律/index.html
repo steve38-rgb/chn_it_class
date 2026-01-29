@@ -1,0 +1,295 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>指數律自學練習</title>
+    <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f4f4;
+        }
+        .container {
+            width: 80%;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #fff;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+        h1, h2 {
+            color: #333;
+        }
+        p {
+            line-height: 1.6;
+        }
+        .grid-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 10px;
+        }
+        .grid-item {
+            background: #e2e2e2;
+            padding: 10px;
+            border-radius: 5px;
+            box-sizing: border-box;
+        }
+        .exercise-container {
+            margin-top: 20px;
+            padding: 20px;
+            background-color: #e2e2e2;
+            border-radius: 5px;
+        }
+        .questions-container {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 20px;
+        }
+        .question {
+            margin-bottom: 10px;
+            padding: 10px;
+            background-color: #fff;
+            border-radius: 5px;
+            box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
+        }
+        .options {
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+        }
+        .options label {
+            margin-right: 10px;
+        }
+        .result {
+            margin-top: 10px;
+            font-weight: bold;
+        }
+        .incorrect {
+            background-color: #f8d7da;
+        }
+        button {
+            margin-right: 10px;
+            padding: 10px 20px;
+            font-size: 16px;
+        }
+        #result {
+            font-size: 18px;
+            font-weight: bold;
+            color: #333;
+        }
+        #score-records {
+            margin-top: 20px;
+            padding: 10px;
+            background-color: #e2e2e2;
+            border-radius: 5px;
+        }
+        .record {
+            font-size: 14px;
+            color: #555;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>指數律自學練習</h1>
+        <h2>介紹何謂指數</h2>
+        <p>指數是一種數學運算，表示一個數字（底數）被乘以自身若干次。例如，$3^4$ 表示 3 乘以自身 4 次，即 $3 \times 3 \times 3 \times 3 = 81$。</p>
+        
+        <h2>指數律</h2>
+        <div class="grid-container">
+            <div class="grid-item">
+                <strong>乘法法則：</strong><br> $a^m \times a^n = a^{m+n}$<br>
+                <span id="example1"></span>
+            </div>
+            <div class="grid-item">
+                <strong>除法法則：</strong><br> $\frac{a^m}{a^n} = a^{m-n}$<br>
+                <span id="example2"></span>
+            </div>
+            <div class="grid-item">
+                <strong>冪的冪法則：</strong><br> $(a^m)^n = a^{m \cdot n}$<br>
+                <span id="example3"></span>
+            </div>
+            <div class="grid-item">
+                <strong>乘積的冪法則：</strong><br> $(a \times b)^n = a^n \times b^n$<br>
+                <span id="example4"></span>
+            </div>
+            <div class="grid-item">
+                <strong>商的冪法則：</strong><br> $\left(\frac{a}{b}\right)^n = \frac{a^n}{b^n}$<br>
+                <span id="example5"></span>
+            </div>
+            <div class="grid-item">
+                <strong>零指數法則：</strong><br> $a^0 = 1 \quad (a \neq 0)$<br>
+                <span id="example6"></span>
+            </div>
+            <div class="grid-item">
+                <strong>負指數法則：</strong><br> $a^{-n} = \frac{1}{a^n} \quad (a \neq 0)$<br>
+                <span id="example7"></span>
+            </div>
+        </div>
+
+        <div class="exercise-container">
+            <h2>練習區</h2>
+            <div id="questions" class="questions-container"></div>
+            <button id="submit-btn" onclick="showAnswers()">送出</button>
+            <button id="retry-btn" onclick="retry()" style="display: none;">重新出題</button>
+            <p class="result" id="result"></p>
+        </div>
+
+        <div id="score-records">
+            <h2>成績紀錄</h2>
+            <div id="records"></div>
+        </div>
+    </div>
+
+    <script>
+        window.MathJax = {
+            tex: {
+                inlineMath: [['$', '$'], ['\$', '\$']]
+            },
+            svg: {
+                fontCache: 'global'
+            }
+        };
+
+        function getRandomInt(min, max, exclude = []) {
+            let num;
+            do {
+                num = Math.floor(Math.random() * (max - min + 1)) + min;
+            } while (exclude.includes(num));
+            return num;
+        }
+
+        function generateExamples() {
+            const examples = [
+                { id: 'example1', formula: (a, m, n) => `${a}^${m} \\times ${a}^${n} = ${a}^{${m + n}}` },
+                { id: 'example2', formula: (a, m, n) => `\\frac{${a}^${m}}{${a}^${n}} = ${a}^{${m - n}}` },
+                { id: 'example3', formula: (a, m, n) => `(${a}^${m})^${n} = ${a}^{${m * n}}` },
+                { id: 'example4', formula: (a, b, n) => `(${a} \\times ${b})^${n} = ${a}^${n} \\times ${b}^${n}` },
+                { id: 'example5', formula: (a, b, n) => `\\left(\\frac{${a}}{${b}}\\right)^${n} = \\frac{${a}^${n}}{${b}^${n}}` },
+                { id: 'example6', formula: (a) => `${a}^0 = 1` },
+                { id: 'example7', formula: (a, n) => `${a}^{-${n}} = \\frac{1}{${a}^${n}}` }
+            ];
+
+            examples.forEach(example => {
+                const a = getRandomInt(2, 10, [1, 0]);
+                const b = getRandomInt(2, 10, [1, 0, a]);
+                const m = getRandomInt(2, 5, [1, 0]);
+                const n = getRandomInt(2, 5, [1, 0, m]);
+                document.getElementById(example.id).innerHTML = `例子：\$${example.formula(a, m, n, b)}\$`;
+            });
+
+            MathJax.typeset();
+        }
+
+        function generateExercise() {
+            const questionsContainer = document.getElementById('questions');
+            questionsContainer.innerHTML = '';
+
+            const laws = [
+                { name: '乘法法則', formula: (a, m, n) => `${a}^${m} \\times ${a}^${n}`, result: (a, m, n) => `${a}^{${m + n}}` },
+                { name: '除法法則', formula: (a, m, n) => `\\frac{${a}^${m}}{${a}^${n}}`, result: (a, m, n) => `${a}^{${m - n}}` },
+                { name: '冪的冪法則', formula: (a, m, n) => `(${a}^${m})^${n}`, result: (a, m, n) => `${a}^{${m * n}}` },
+                { name: '乘積的冪法則', formula: (a, b, n) => `(${a} \\times ${b})^${n}`, result: (a, b, n) => `${a}^${n} \\times ${b}^${n}` },
+                { name: '商的冪法則', formula: (a, b, n) => `\\left(\\frac{${a}}{${b}}\\right)^${n}`, result: (a, b, n) => `\\frac{${a}^${n}}{${b}^${n}}` },
+                { name: '零指數法則', formula: (a) => `${a}^0`, result: () => `1` },
+                { name: '負指數法則', formula: (a, n) => `${a}^{-${n}}`, result: (a, n) => `\\frac{1}{${a}^${n}}` }
+            ];
+
+            for (let i = 0; i < 20; i++) {
+                const law = laws[getRandomInt(0, laws.length - 1)];
+                const a = getRandomInt(2, 10, [1, 0]);
+                const b = getRandomInt(2, 10, [1, 0, a]);
+                const m = getRandomInt(2, 5, [1, 0]);
+                const n = getRandomInt(2, 5, [1, 0, m]);
+                const exercise = law.formula(a, b, m, n);
+                const correctAnswer = law.result(a, b, m, n);
+
+                const options = [correctAnswer];
+                while (options.length < 4) {
+                    const option = laws[getRandomInt(0, laws.length - 1)].result(a, b, m, n);
+                    if (!options.includes(option)) {
+                        options.push(option);
+                    }
+                }
+                options.sort(() => Math.random() - 0.5);
+
+                const optionsHTML = options.map((option, index) => `
+                    <label>
+                        <input type="radio" name="question${i}" value="${option}" data-correct="${option === correctAnswer}" />
+                        ${String.fromCharCode(65 + index)}. \$${option}\$
+                    </label>
+                `).join('');
+
+                const questionHTML = `
+                    <div class="question">
+                        <p>請計算：\$${exercise}\$ = ?</p>
+                        <div class="options">
+                            ${optionsHTML}
+                        </div>
+                        <p class="result" style="display: none;">正確答案：\$${correctAnswer}\$</p>
+                    </div>
+                `;
+                questionsContainer.innerHTML += questionHTML;
+            }
+            MathJax.typeset();
+        }
+
+        function showAnswers() {
+            const questionsContainer = document.getElementById('questions');
+            const questions = questionsContainer.querySelectorAll('.question');
+            let correctCount = 0;
+            questions.forEach((question) => {
+                const correctAnswerElement = question.querySelector('.result');
+                const options = question.querySelectorAll('input[type="radio"]');
+                let isCorrect = false;
+
+                options.forEach((option) => {
+                    option.disabled = true; // 禁用選項，防止再次選擇
+                    if (option.getAttribute('data-correct') === 'true' && option.checked) {
+                        isCorrect = true;
+                        correctCount++;
+                    }
+                });
+
+                if (!isCorrect) {
+                    question.classList.add('incorrect'); // 錯誤的題目區塊變成紅色背景
+                }
+            });
+
+            const totalScore = correctCount * 5;
+            const resultElement = document.getElementById('result');
+            resultElement.textContent = `你答對了 ${correctCount} 題，共 20 題，總分為 ${totalScore} 分`;
+
+            recordScore(totalScore);
+
+            document.getElementById('submit-btn').style.display = 'none'; // 隱藏提交按鈕
+            document.getElementById('retry-btn').style.display = 'inline'; // 顯示重新出題按鈕
+        }
+
+        function retry() {
+            generateExercise();
+            document.getElementById('submit-btn').style.display = 'inline'; // 顯示提交按鈕
+            document.getElementById('retry-btn').style.display = 'none'; // 隱藏重新出題按鈕
+            document.getElementById('result').textContent = ''; // 清除上次的結果
+	    // 滾動到練習區最上方
+            const exerciseContainer = document.querySelector('.exercise-container');
+            exerciseContainer.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }
+
+        function recordScore(score) {
+            const recordsContainer = document.getElementById('records');
+            const currentDateTime = new Date().toLocaleString();
+            const recordHTML = `<div class="record">${currentDateTime} - 分數: ${score}</div>`;
+            recordsContainer.innerHTML = recordHTML + recordsContainer.innerHTML;
+        }
+
+        window.onload = function() {
+            generateExamples();
+            generateExercise();
+        };
+    </script>
+</body>
+</html>
