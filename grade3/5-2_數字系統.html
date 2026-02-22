@@ -1,0 +1,1033 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>5-2 數字系統｜資訊科技第五課</title>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;700;900&family=JetBrains+Mono:wght@400;700&display=swap"
+        rel="stylesheet">
+    <style>
+        *,
+        *::before,
+        *::after {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0
+        }
+
+        :root {
+            --ac: #f7c948;
+            --ac2: #43e8b0;
+            --dark: #0d1117;
+            --card: #161b22;
+            --text: #e8e8f0;
+            --sub: #8b949e;
+            --act: #58a6ff
+        }
+
+        body {
+            font-family: 'Noto Sans TC', sans-serif;
+            background: var(--dark);
+            color: var(--text);
+            height: 100vh;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column
+        }
+
+        .topbar {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 10px 32px;
+            background: rgba(247, 201, 72, .05);
+            border-bottom: 1px solid rgba(247, 201, 72, .12);
+            flex-shrink: 0
+        }
+
+        .ti {
+            font-size: 15px;
+            font-weight: 700;
+            color: var(--ac)
+        }
+
+        .sc {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 13px;
+            color: var(--sub)
+        }
+
+        .sw {
+            flex: 1;
+            overflow: hidden;
+            position: relative
+        }
+
+        .slide {
+            position: absolute;
+            inset: 0;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            align-items: center;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity .45s, transform .45s;
+            transform: translateX(50px)
+        }
+
+        .slide.active {
+            opacity: 1;
+            transform: translateX(0);
+            pointer-events: auto
+        }
+
+        .content {
+            padding: 40px 48px;
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+            height: 100%;
+            justify-content: center
+        }
+
+        .visual {
+            background: rgba(247, 201, 72, .02);
+            border-left: 1px solid rgba(247, 201, 72, .08);
+            height: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px
+        }
+
+        .visual svg {
+            max-width: 100%;
+            max-height: calc(100vh - 90px)
+        }
+
+        .sh {
+            font-size: clamp(22px, 3vw, 38px);
+            font-weight: 900;
+            line-height: 1.25;
+            background: linear-gradient(135deg, #fff 20%, var(--ac));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text
+        }
+
+        .sh.b {
+            background: linear-gradient(135deg, #fff 20%, var(--act));
+            -webkit-background-clip: text;
+            background-clip: text
+        }
+
+        .sb {
+            font-size: 15px;
+            line-height: 1.85;
+            color: #b0b8c8
+        }
+
+        .hg {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
+            gap: 10px
+        }
+
+        .hb {
+            background: var(--card);
+            border: 1px solid rgba(255, 255, 255, .07);
+            border-radius: 11px;
+            padding: 14px
+        }
+
+        .hb .e {
+            font-size: 20px;
+            margin-bottom: 5px
+        }
+
+        .hb .l {
+            font-size: 11px;
+            color: var(--sub);
+            margin-bottom: 2px
+        }
+
+        .hb .v {
+            font-size: 13px;
+            font-weight: 700
+        }
+
+        table.ct {
+            width: 100%;
+            border-collapse: collapse;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 13px
+        }
+
+        table.ct th {
+            background: rgba(247, 201, 72, .12);
+            color: var(--ac);
+            padding: 8px 4px;
+            text-align: center;
+            border-bottom: 2px solid rgba(247, 201, 72, .25)
+        }
+
+        table.ct td {
+            padding: 7px 4px;
+            text-align: center;
+            border-bottom: 1px solid rgba(255, 255, 255, .04);
+            color: #ccc
+        }
+
+        .ds {
+            display: flex;
+            flex-direction: column;
+            gap: 6px
+        }
+
+        .dr {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+            padding: 8px 14px;
+            background: var(--card);
+            border-radius: 8px;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 13px
+        }
+
+        .dn {
+            color: #ccc;
+            min-width: 60px
+        }
+
+        .do {
+            color: var(--sub)
+        }
+
+        .rem {
+            font-weight: 700
+        }
+
+        .r1 {
+            color: var(--act)
+        }
+
+        .r0 {
+            color: var(--sub)
+        }
+
+        .da {
+            color: var(--ac);
+            font-size: 10px;
+            margin-left: 4px
+        }
+
+        .pl {
+            display: flex;
+            flex-direction: column;
+            gap: 8px
+        }
+
+        .pt {
+            display: flex;
+            align-items: flex-start;
+            gap: 10px;
+            font-size: 14px;
+            line-height: 1.7;
+            color: #a0b0c0
+        }
+
+        .pt::before {
+            content: "▸";
+            color: var(--ac);
+            flex-shrink: 0;
+            margin-top: 1px
+        }
+
+        /* magic cards */
+        .mc-wrap {
+            display: grid;
+            grid-template-columns: repeat(5, 1fr);
+            gap: 8px
+        }
+
+        .mc {
+            background: var(--card);
+            border: 2px solid rgba(88, 166, 255, .2);
+            border-radius: 10px;
+            padding: 8px 4px;
+            cursor: pointer;
+            transition: all .2s;
+            user-select: none
+        }
+
+        .mc.sel {
+            border-color: var(--act);
+            background: rgba(88, 166, 255, .1)
+        }
+
+        .mc .mh {
+            font-size: 18px;
+            font-weight: 900;
+            font-family: 'JetBrains Mono', monospace;
+            color: var(--act);
+            text-align: center;
+            margin-bottom: 3px
+        }
+
+        .mc .mn {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 1px
+        }
+
+        .mc .mn span {
+            font-size: 8px;
+            font-family: 'JetBrains Mono', monospace;
+            text-align: center;
+            color: #444
+        }
+
+        .mc .mn span.hi {
+            color: var(--act);
+            font-weight: 700
+        }
+
+        .mr {
+            text-align: center;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 30px;
+            font-weight: 900;
+            color: var(--ac);
+            padding: 10px;
+            background: var(--card);
+            border-radius: 10px;
+            border: 1px solid rgba(247, 201, 72, .2)
+        }
+
+        .me {
+            font-size: 12px;
+            color: var(--sub);
+            text-align: center;
+            margin-top: 4px
+        }
+
+        .nav {
+            flex-shrink: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 14px;
+            padding: 12px 32px;
+            background: rgba(255, 255, 255, .02);
+            border-top: 1px solid rgba(255, 255, 255, .06)
+        }
+
+        .nb {
+            background: none;
+            border: 1px solid rgba(255, 255, 255, .14);
+            color: var(--text);
+            border-radius: 50px;
+            padding: 8px 22px;
+            font-size: 14px;
+            cursor: pointer;
+            transition: background .2s
+        }
+
+        .nb:hover {
+            background: rgba(255, 255, 255, .07)
+        }
+
+        .nb:disabled {
+            opacity: .3;
+            cursor: default
+        }
+
+        .dr-row {
+            display: flex;
+            gap: 6px
+        }
+
+        .dot {
+            width: 7px;
+            height: 7px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, .18);
+            cursor: pointer;
+            transition: all .3s
+        }
+
+        .dot.on {
+            background: var(--ac);
+            width: 22px;
+            border-radius: 4px
+        }
+    </style>
+</head>
+
+<body>
+    <div class="topbar">
+        <div class="ti">5-2 數字系統 — 資訊科技第五課</div>
+        <div class="sc"><span id="cur">1</span> / 8</div>
+    </div>
+    <div class="sw">
+
+        <!-- P1 -->
+        <div class="slide active" id="s1">
+            <div class="content">
+                <div class="sh">數字的秘密語言</div>
+                <div class="sb">人類從嬰兒時期就學習用 0 到 9 計數，這是根植於文化的習慣。但電腦的電路世界，只有「通電」與「斷電」兩種狀態——因此電腦天生說的是<strong
+                        style="color:#fff">二進位</strong>語言。</div>
+                <div class="hg">
+                    <div class="hb">
+                        <div class="e">🔟</div>
+                        <div class="l">十進位 Decimal</div>
+                        <div class="v">基數 10，逢十進位</div>
+                    </div>
+                    <div class="hb">
+                        <div class="e">💻</div>
+                        <div class="l">二進位 Binary</div>
+                        <div class="v">基數 2，逢二進位</div>
+                    </div>
+                    <div class="hb">
+                        <div class="e">🔄</div>
+                        <div class="l">互相轉換</div>
+                        <div class="v">人↔電腦溝通橋梁</div>
+                    </div>
+                </div>
+                <div class="pl">
+                    <div class="pt">日常購物用十進位計算金額</div>
+                    <div class="pt">電腦內部所有運算都以二進位進行</div>
+                    <div class="pt">程式語言幫我們在兩者之間「翻譯」</div>
+                </div>
+            </div>
+            <div class="visual">
+                <svg viewBox="0 0 320 280" xmlns="http://www.w3.org/2000/svg">
+                    <defs>
+                        <filter id="glow2">
+                            <feGaussianBlur stdDeviation="2.5" result="b" />
+                            <feMerge>
+                                <feMergeNode in="b" />
+                                <feMergeNode in="SourceGraphic" />
+                            </feMerge>
+                        </filter>
+                    </defs>
+                    <!-- Matrix rain -->
+                    <rect width="320" height="280" fill="#0d1117" />
+                    <g font-family="monospace" font-size="13" fill="#f7c948">
+                        <text x="12" y="28" opacity=".9">1</text><text x="12" y="48" opacity=".6">0</text><text x="12"
+                            y="68" opacity=".8">1</text><text x="12" y="88" opacity=".4">1</text>
+                        <text x="12" y="108" opacity=".9">0</text><text x="12" y="128" opacity=".7">1</text><text x="12"
+                            y="148" opacity=".5">0</text><text x="12" y="168" opacity=".9">1</text>
+                        <text x="12" y="188" opacity=".3">0</text><text x="12" y="208" opacity=".8">1</text><text x="12"
+                            y="228" opacity=".6">1</text><text x="12" y="248" opacity=".4">0</text>
+                        <text x="36" y="18" opacity=".5">0</text><text x="36" y="38" opacity=".9">1</text><text x="36"
+                            y="58" opacity=".7">0</text><text x="36" y="78" opacity=".8">1</text>
+                        <text x="36" y="98" opacity=".4">1</text><text x="36" y="118" opacity=".9">0</text><text x="36"
+                            y="138" opacity=".6">1</text><text x="36" y="158" opacity=".8">0</text>
+                        <text x="36" y="178" opacity=".5">1</text><text x="36" y="198" opacity=".9">0</text><text x="36"
+                            y="218" opacity=".3">1</text>
+                        <text x="60" y="28" opacity=".8">1</text><text x="60" y="48" opacity=".5">1</text><text x="60"
+                            y="68" opacity=".9">0</text><text x="60" y="88" opacity=".7">1</text>
+                        <text x="60" y="108" opacity=".6">1</text><text x="60" y="128" opacity=".4">0</text><text x="60"
+                            y="148" opacity=".9">0</text><text x="60" y="168" opacity=".8">1</text>
+                        <text x="60" y="188" opacity=".5">0</text><text x="60" y="208" opacity=".9">1</text><text x="60"
+                            y="228" opacity=".7">0</text>
+                    </g>
+                    <!-- center highlight -->
+                    <rect x="90" y="90" width="140" height="100" rx="14" fill="#0d1117" stroke="#f7c948"
+                        stroke-width="2" filter="url(#glow2)" />
+                    <text x="160" y="132" text-anchor="middle" fill="#f7c948" font-size="42" font-weight="900"
+                        font-family="monospace">0 1</text>
+                    <text x="160" y="158" text-anchor="middle" fill="#f7c948" font-size="11" opacity=".7">電腦的基本語言</text>
+                    <!-- right binary column -->
+                    <g font-family="monospace" font-size="13" fill="#43e8b0">
+                        <text x="248" y="28" opacity=".7">0</text><text x="248" y="48" opacity=".9">1</text><text
+                            x="248" y="68" opacity=".5">1</text><text x="248" y="88" opacity=".8">0</text>
+                        <text x="248" y="108" opacity=".9">1</text><text x="248" y="128" opacity=".4">0</text><text
+                            x="248" y="148" opacity=".9">1</text><text x="248" y="168" opacity=".6">1</text>
+                        <text x="248" y="188" opacity=".8">0</text><text x="248" y="208" opacity=".5">0</text><text
+                            x="248" y="228" opacity=".9">1</text><text x="248" y="248" opacity=".7">0</text>
+                        <text x="272" y="18" opacity=".6">1</text><text x="272" y="38" opacity=".8">0</text><text
+                            x="272" y="58" opacity=".9">1</text><text x="272" y="78" opacity=".4">1</text>
+                        <text x="272" y="98" opacity=".7">0</text><text x="272" y="118" opacity=".9">1</text><text
+                            x="272" y="138" opacity=".5">0</text><text x="272" y="158" opacity=".8">1</text>
+                        <text x="272" y="178" opacity=".9">0</text><text x="272" y="198" opacity=".6">1</text><text
+                            x="272" y="218" opacity=".4">1</text><text x="272" y="238" opacity=".9">0</text>
+                        <text x="296" y="28" opacity=".8">0</text><text x="296" y="48" opacity=".5">1</text><text
+                            x="296" y="68" opacity=".9">0</text><text x="296" y="88" opacity=".7">0</text>
+                        <text x="296" y="108" opacity=".4">1</text><text x="296" y="128" opacity=".9">0</text><text
+                            x="296" y="148" opacity=".6">1</text><text x="296" y="168" opacity=".8">1</text>
+                        <text x="296" y="188" opacity=".5">0</text><text x="296" y="208" opacity=".9">0</text><text
+                            x="296" y="228" opacity=".7">1</text>
+                    </g>
+                </svg>
+            </div>
+        </div>
+
+        <!-- P2 -->
+        <div class="slide" id="s2">
+            <div class="content">
+                <div class="sh">我們熟悉的「十進位」</div>
+                <div class="sb">十進位的精髓在於<strong style="color:var(--ac)">位置（Place Value）</strong>：每個數字依照它所在的位置，乘上 10
+                    的對應次方。</div>
+                <div class="pl">
+                    <div class="pt">3 在個位 → 3 × 10⁰ = 3</div>
+                    <div class="pt">1 在十位 → 1 × 10¹ = 10</div>
+                    <div class="pt">2 在百位 → 2 × 10² = 200</div>
+                    <div class="pt">全部相加 → <strong style="color:var(--ac)">3 + 10 + 200 = 213</strong></div>
+                </div>
+                <div class="sb" style="font-size:13px;color:var(--sub)">📌 理解「權值」的概念，是理解二進位的基礎。二進位只是把「10 的次方」換成「2
+                    的次方」而已。</div>
+                <div class="hg">
+                    <div class="hb">
+                        <div class="e">🔢</div>
+                        <div class="l">個位 10⁰</div>
+                        <div class="v" style="color:var(--ac);font-size:22px">3</div>
+                    </div>
+                    <div class="hb">
+                        <div class="e">📏</div>
+                        <div class="l">十位 10¹</div>
+                        <div class="v" style="color:var(--ac);font-size:22px">1</div>
+                    </div>
+                    <div class="hb">
+                        <div class="e">📐</div>
+                        <div class="l">百位 10²</div>
+                        <div class="v" style="color:var(--ac);font-size:22px">2</div>
+                    </div>
+                </div>
+            </div>
+            <div class="visual">
+                <svg viewBox="0 0 300 260" xmlns="http://www.w3.org/2000/svg">
+                    <!-- 213 decomposition -->
+                    <text x="150" y="40" text-anchor="middle" fill="#fff" font-size="32" font-weight="900"
+                        font-family="monospace">213</text>
+                    <text x="150" y="58" text-anchor="middle" fill="#888" font-size="11">十進位</text>
+                    <!-- breakdown -->
+                    <rect x="20" y="80" width="75" height="60" rx="10" fill="#1a1828" stroke="#f7c948"
+                        stroke-width="2" />
+                    <text x="57" y="107" text-anchor="middle" fill="#f7c948" font-size="26" font-weight="900">2</text>
+                    <text x="57" y="128" text-anchor="middle" fill="#f7c948" font-size="10">× 10² = 200</text>
+
+                    <text x="114" y="115" text-anchor="middle" fill="#555" font-size="20">+</text>
+
+                    <rect x="128" y="80" width="75" height="60" rx="10" fill="#181828" stroke="#f7c948" stroke-width="2"
+                        opacity=".8" />
+                    <text x="165" y="107" text-anchor="middle" fill="#f7c948" font-size="26" font-weight="900">1</text>
+                    <text x="165" y="128" text-anchor="middle" fill="#f7c948" font-size="10">× 10¹ = 10</text>
+
+                    <text x="222" y="115" text-anchor="middle" fill="#555" font-size="20">+</text>
+
+                    <rect x="236" y="80" width="54" height="60" rx="10" fill="#181820" stroke="#f7c948" stroke-width="2"
+                        opacity=".6" />
+                    <text x="263" y="107" text-anchor="middle" fill="#f7c948" font-size="26" font-weight="900">3</text>
+                    <text x="263" y="128" text-anchor="middle" fill="#f7c948" font-size="10">× 10⁰ = 3</text>
+
+                    <!-- = 213 -->
+                    <line x1="20" y1="170" x2="280" y2="170" stroke="#444" stroke-width="1" />
+                    <text x="150" y="200" text-anchor="middle" fill="#f7c948" font-size="14">200 + 10 + 3 = 213</text>
+                    <!-- abacus visual -->
+                    <rect x="40" y="220" width="10" height="20" rx="3" fill="#f7c948" opacity=".3" />
+                    <rect x="56" y="220" width="10" height="20" rx="3" fill="#f7c948" opacity=".5" />
+                    <rect x="72" y="220" width="10" height="20" rx="3" fill="#f7c948" opacity=".7" />
+                    <rect x="88" y="220" width="10" height="20" rx="3" fill="#f7c948" opacity=".9" />
+                    <text x="150" y="256" text-anchor="middle" fill="#555" font-size="10">權值概念：數字的位置決定它的大小</text>
+                </svg>
+            </div>
+        </div>
+
+        <!-- P3 -->
+        <div class="slide" id="s3">
+            <div class="content">
+                <div class="sh">二進位：電腦的計數器</div>
+                <div class="sb">二進位的邏輯和十進位完全相同，只是把基數從 10 換成 2。逢 <strong style="color:var(--ac2)">2</strong> 進位——只有 0 和 1
+                    兩個符號。</div>
+                <div style="overflow-x:auto">
+                    <table class="ct">
+                        <tr>
+                            <th>十進位</th>
+                            <th>0</th>
+                            <th>1</th>
+                            <th>2</th>
+                            <th>3</th>
+                            <th>4</th>
+                            <th>5</th>
+                            <th>6</th>
+                            <th>7</th>
+                        </tr>
+                        <tr>
+                            <td>二進位</td>
+                            <td>0</td>
+                            <td>1</td>
+                            <td>10</td>
+                            <td>11</td>
+                            <td>100</td>
+                            <td>101</td>
+                            <td>110</td>
+                            <td>111</td>
+                        </tr>
+                        <tr>
+                            <th>十進位</th>
+                            <th>8</th>
+                            <th>9</th>
+                            <th>10</th>
+                            <th>11</th>
+                            <th>12</th>
+                            <th>13</th>
+                            <th>14</th>
+                            <th>15</th>
+                        </tr>
+                        <tr>
+                            <td>二進位</td>
+                            <td>1000</td>
+                            <td>1001</td>
+                            <td>1010</td>
+                            <td>1011</td>
+                            <td>1100</td>
+                            <td>1101</td>
+                            <td>1110</td>
+                            <td>1111</td>
+                        </tr>
+                    </table>
+                </div>
+                <div class="pl">
+                    <div class="pt">1 位元（bit）：2¹ = 2 種狀態</div>
+                    <div class="pt">4 位元（nibble）：2⁴ = 16 種狀態</div>
+                    <div class="pt">8 位元（1 Byte）：2⁸ = 256 種狀態</div>
+                </div>
+            </div>
+            <div class="visual">
+                <svg viewBox="0 0 300 260" xmlns="http://www.w3.org/2000/svg">
+                    <!-- 4-bit counter visual -->
+                    <text x="150" y="22" text-anchor="middle" fill="#888" font-size="11">4 位元進位示意</text>
+                    <!-- boxes -->
+                    <g font-family="monospace">
+                        <!-- row labels -->
+                        <text x="18" y="52" fill="#555" font-size="10">2³</text>
+                        <text x="18" y="88" fill="#555" font-size="10">2²</text>
+                        <text x="18" y="124" fill="#555" font-size="10">2¹</text>
+                        <text x="18" y="160" fill="#555" font-size="10">2⁰</text>
+                        <!-- bit boxes col1: 5=0101 -->
+                        <text x="90" y="36" text-anchor="middle" fill="#f7c948" font-size="10" font-weight="bold">5
+                            (十進位)</text>
+                        <rect x="68" y="42" width="44" height="24" rx="5" fill="#151515" stroke="#333" />
+                        <rect x="68" y="78" width="44" height="24" rx="5" fill="#1a1828" stroke="#43e8b0" />
+                        <rect x="68" y="114" width="44" height="24" rx="5" fill="#151515" stroke="#333" />
+                        <rect x="68" y="150" width="44" height="24" rx="5" fill="#1a1828" stroke="#43e8b0" />
+                        <text x="90" y="58" text-anchor="middle" fill="#444" font-size="16" font-weight="900">0</text>
+                        <text x="90" y="94" text-anchor="middle" fill="#43e8b0" font-size="16"
+                            font-weight="900">1</text>
+                        <text x="90" y="130" text-anchor="middle" fill="#444" font-size="16" font-weight="900">0</text>
+                        <text x="90" y="166" text-anchor="middle" fill="#43e8b0" font-size="16"
+                            font-weight="900">1</text>
+                        <text x="90" y="192" text-anchor="middle" fill="#888" font-size="10">= 4+1 = 5</text>
+                        <!-- col2: 13=1101 -->
+                        <text x="210" y="36" text-anchor="middle" fill="#f7c948" font-size="10" font-weight="bold">13
+                            (十進位)</text>
+                        <rect x="188" y="42" width="44" height="24" rx="5" fill="#1a1828" stroke="#f7c948" />
+                        <rect x="188" y="78" width="44" height="24" rx="5" fill="#1a1828" stroke="#f7c948" />
+                        <rect x="188" y="114" width="44" height="24" rx="5" fill="#151515" stroke="#333" />
+                        <rect x="188" y="150" width="44" height="24" rx="5" fill="#1a1828" stroke="#f7c948" />
+                        <text x="210" y="58" text-anchor="middle" fill="#f7c948" font-size="16"
+                            font-weight="900">1</text>
+                        <text x="210" y="94" text-anchor="middle" fill="#f7c948" font-size="16"
+                            font-weight="900">1</text>
+                        <text x="210" y="130" text-anchor="middle" fill="#444" font-size="16" font-weight="900">0</text>
+                        <text x="210" y="166" text-anchor="middle" fill="#f7c948" font-size="16"
+                            font-weight="900">1</text>
+                        <text x="210" y="192" text-anchor="middle" fill="#888" font-size="10">= 8+4+1 = 13</text>
+                        <!-- right label vals -->
+                        <text x="270" y="58" fill="#555" font-size="10">=8</text>
+                        <text x="270" y="94" fill="#555" font-size="10">=4</text>
+                        <text x="270" y="130" fill="#555" font-size="10">=2</text>
+                        <text x="270" y="166" fill="#555" font-size="10">=1</text>
+                    </g>
+                    <text x="150" y="240" text-anchor="middle" fill="#555" font-size="10">亮框 = 1（有效位元），暗框 = 0</text>
+                </svg>
+            </div>
+        </div>
+
+        <!-- P4 -->
+        <div class="slide" id="s4">
+            <div class="content">
+                <div class="sh">技巧 A：二進位→十進位</div>
+                <div class="sb">方法：寫出每個位置的 <strong style="color:var(--ac)">2 的次方</strong>（由右而左：2⁰, 2¹, 2²,
+                    2³…），把有「1」的位置對應的值加起來。</div>
+                <div class="pl">
+                    <div class="pt">1 0 1 1 → 從右：位置 0, 1, 2, 3</div>
+                    <div class="pt">位置 3（最左，值=1）: 1 × 2³ = <strong style="color:var(--ac)">8</strong></div>
+                    <div class="pt">位置 2（值=0）: 0 × 2² = 0（略過）</div>
+                    <div class="pt">位置 1（值=1）: 1 × 2¹ = <strong style="color:var(--ac)">2</strong></div>
+                    <div class="pt">位置 0（值=1）: 1 × 2⁰ = <strong style="color:var(--ac)">1</strong></div>
+                    <div class="pt">總和：8 + 2 + 1 = <strong style="color:#fff">11</strong>（十進位）</div>
+                </div>
+            </div>
+            <div class="visual">
+                <svg viewBox="0 0 300 240" xmlns="http://www.w3.org/2000/svg">
+                    <!-- 1011 display -->
+                    <text x="150" y="24" text-anchor="middle" fill="#888" font-size="11">1011₂ → ? (十進位)</text>
+                    <!-- 4 bit boxes -->
+                    <g font-family="monospace">
+                        <!-- bit 3 -->
+                        <rect x="28" y="40" width="56" height="50" rx="10" fill="#1a1828" stroke="#f7c948"
+                            stroke-width="2.5" />
+                        <text x="56" y="70" text-anchor="middle" fill="#f7c948" font-size="28"
+                            font-weight="900">1</text>
+                        <text x="56" y="105" text-anchor="middle" fill="#f7c948" font-size="10">2³=8</text>
+                        <!-- bit 2 -->
+                        <rect x="96" y="40" width="56" height="50" rx="10" fill="#121212" stroke="#333"
+                            stroke-width="1.5" />
+                        <text x="124" y="70" text-anchor="middle" fill="#333" font-size="28" font-weight="900">0</text>
+                        <text x="124" y="105" text-anchor="middle" fill="#333" font-size="10">2²=4</text>
+                        <!-- bit 1 -->
+                        <rect x="164" y="40" width="56" height="50" rx="10" fill="#1a1828" stroke="#f7c948"
+                            stroke-width="2.5" />
+                        <text x="192" y="70" text-anchor="middle" fill="#f7c948" font-size="28"
+                            font-weight="900">1</text>
+                        <text x="192" y="105" text-anchor="middle" fill="#f7c948" font-size="10">2¹=2</text>
+                        <!-- bit 0 -->
+                        <rect x="232" y="40" width="56" height="50" rx="10" fill="#1a1828" stroke="#f7c948"
+                            stroke-width="2.5" />
+                        <text x="260" y="70" text-anchor="middle" fill="#f7c948" font-size="28"
+                            font-weight="900">1</text>
+                        <text x="260" y="105" text-anchor="middle" fill="#f7c948" font-size="10">2⁰=1</text>
+                    </g>
+                    <!-- arrows down -->
+                    <line x1="56" y1="112" x2="56" y2="148" stroke="#f7c948" stroke-width="1.5"
+                        stroke-dasharray="3,2" />
+                    <line x1="192" y1="112" x2="192" y2="148" stroke="#f7c948" stroke-width="1.5"
+                        stroke-dasharray="3,2" />
+                    <line x1="260" y1="112" x2="260" y2="148" stroke="#f7c948" stroke-width="1.5"
+                        stroke-dasharray="3,2" />
+                    <!-- values -->
+                    <text x="56" y="168" text-anchor="middle" fill="#f7c948" font-size="18" font-weight="900">8</text>
+                    <text x="124" y="168" text-anchor="middle" fill="#333" font-size="16">0</text>
+                    <text x="192" y="168" text-anchor="middle" fill="#f7c948" font-size="18" font-weight="900">2</text>
+                    <text x="260" y="168" text-anchor="middle" fill="#f7c948" font-size="18" font-weight="900">1</text>
+                    <!-- sum bar -->
+                    <line x1="28" y1="185" x2="280" y2="185" stroke="#555" stroke-width="1" />
+                    <text x="150" y="210" text-anchor="middle" fill="#fff" font-size="18" font-weight="900">8 + 2 + 1 =
+                        11</text>
+                </svg>
+            </div>
+        </div>
+
+        <!-- P5 -->
+        <div class="slide" id="s5">
+            <div class="content">
+                <div class="sh">技巧 B：十進位→二進位</div>
+                <div class="sb"><strong style="color:var(--act)">連除法</strong>：把十進位數字不斷除以 2，記下每次的餘數，最後把餘數由<strong
+                        style="color:var(--act)">下往上</strong>讀，即得二進位。</div>
+                <div class="ds">
+                    <div class="dr"><span class="dn">20 ÷ 2</span><span class="do">=</span><span
+                            class="dn">10</span><span class="do">餘</span><span class="rem r0">0</span><span class="da">←
+                            第 1 位（最低位）</span></div>
+                    <div class="dr"><span class="dn">10 ÷ 2</span><span class="do">=</span><span class="dn">
+                            5</span><span class="do">餘</span><span class="rem r0">0</span><span class="da">← 第 2
+                            位</span></div>
+                    <div class="dr"><span class="dn"> 5 ÷ 2</span><span class="do">=</span><span class="dn">
+                            2</span><span class="do">餘</span><span class="rem r1">1</span><span class="da">← 第 3
+                            位</span></div>
+                    <div class="dr"><span class="dn"> 2 ÷ 2</span><span class="do">=</span><span class="dn">
+                            1</span><span class="do">餘</span><span class="rem r0">0</span><span class="da">← 第 4
+                            位</span></div>
+                    <div class="dr"><span class="dn"> 1 ÷ 2</span><span class="do">=</span><span class="dn">
+                            0</span><span class="do">餘</span><span class="rem r1">1</span><span class="da">← 第 5
+                            位（最高位）</span></div>
+                </div>
+                <div class="sb">由下往上讀餘數：<strong style="color:var(--act)">1, 0, 1, 0, 0</strong> → 20₁₀ = <strong
+                        style="color:var(--act)">10100</strong>₂</div>
+                <div class="sb" style="font-size:13px;color:var(--sub)">驗算：1×16 + 0×8 + 1×4 + 0×2 + 0×1 = 16+4 = 20 ✓
+                </div>
+            </div>
+            <div class="visual">
+                <svg viewBox="0 0 280 240" xmlns="http://www.w3.org/2000/svg">
+                    <!-- division tree -->
+                    <text x="140" y="22" text-anchor="middle" fill="#888" font-size="11">20 → 二進位轉換流程</text>
+                    <!-- boxes -->
+                    <rect x="60" y="35" width="50" height="30" rx="6" fill="#161b22" stroke="#58a6ff"
+                        stroke-width="1.5" />
+                    <text x="85" y="54" text-anchor="middle" fill="#fff" font-size="14" font-weight="700"
+                        font-family="monospace">20</text>
+                    <!-- divide -->
+                    <line x1="85" y1="65" x2="85" y2="82" stroke="#555" stroke-width="1.5" />
+                    <rect x="60" y="82" width="50" height="30" rx="6" fill="#161b22" stroke="#58a6ff"
+                        stroke-width="1.5" />
+                    <text x="85" y="101" text-anchor="middle" fill="#fff" font-size="14" font-weight="700"
+                        font-family="monospace">10</text>
+                    <text x="130" y="101" fill="#8b949e" font-size="11" font-family="monospace">餘 <tspan fill="#8b949e">
+                            0</tspan></text>
+                    <line x1="85" y1="112" x2="85" y2="129" stroke="#555" stroke-width="1.5" />
+                    <rect x="60" y="129" width="50" height="30" rx="6" fill="#161b22" stroke="#58a6ff"
+                        stroke-width="1.5" />
+                    <text x="85" y="148" text-anchor="middle" fill="#fff" font-size="14" font-weight="700"
+                        font-family="monospace">5</text>
+                    <text x="130" y="148" fill="#8b949e" font-size="11" font-family="monospace">餘 <tspan fill="#8b949e">
+                            0</tspan></text>
+                    <line x1="85" y1="159" x2="85" y2="176" stroke="#555" stroke-width="1.5" />
+                    <rect x="60" y="176" width="50" height="30" rx="6" fill="#161b22" stroke="#58a6ff"
+                        stroke-width="1.5" />
+                    <text x="85" y="195" text-anchor="middle" fill="#fff" font-size="14" font-weight="700"
+                        font-family="monospace">2</text>
+                    <text x="130" y="195" fill="#58a6ff" font-size="11" font-family="monospace" font-weight="bold">餘
+                        <tspan fill="#58a6ff">1</tspan>
+                    </text>
+                    <!-- remainders arrow -->
+                    <path d="M200,195 Q230,155 230,115 Q230,75 215,54" stroke="#58a6ff" stroke-width="2" fill="none"
+                        stroke-dasharray="4,3" marker-end="url(#arrB)" />
+                    <defs>
+                        <marker id="arrB" markerWidth="7" markerHeight="7" refX="5" refY="2.5" orient="auto">
+                            <path d="M0,0 L0,5 L7,2.5 z" fill="#58a6ff" />
+                        </marker>
+                    </defs>
+                    <text x="210" y="130" fill="#58a6ff" font-size="10" text-anchor="middle">由下</text>
+                    <text x="210" y="142" fill="#58a6ff" font-size="10" text-anchor="middle">往上讀</text>
+                    <!-- result -->
+                    <text x="140" y="228" text-anchor="middle" fill="#f7c948" font-size="15" font-weight="900"
+                        font-family="monospace">10100₂</text>
+                </svg>
+            </div>
+        </div>
+
+        <!-- P6 Preview -->
+        <div class="slide" id="s6">
+            <div class="content">
+                <div class="sh b">讀心術老師 🎩</div>
+                <div class="sb">老師手持 5 張特製數字卡片，每張卡片的編排都藏有二進位的秘密。<br>學生只要告訴老師「哪幾張卡片有你心中的數字」，老師就能<strong
+                        style="color:var(--act)">立刻猜出</strong>你的數字！</div>
+                <div class="pl">
+                    <div class="pt">每張卡片對應一個二進位的位元（2⁰ 到 2⁴）</div>
+                    <div class="pt">卡片 1：包含所有二進位第 0 位為 1 的數（1, 3, 5, 7, 9...）</div>
+                    <div class="pt">卡片 2：包含所有二進位第 1 位為 1 的數（2, 3, 6, 7, 10...）</div>
+                    <div class="pt">老師把你選的卡片「頂端數字」加起來，就是你的心中數字！</div>
+                </div>
+            </div>
+            <div class="visual">
+                <svg viewBox="0 0 300 280" xmlns="http://www.w3.org/2000/svg">
+                    <!-- 5 cards -->
+                    <rect x="12" y="60" width="50" height="80" rx="8" fill="#161b22" stroke="#58a6ff"
+                        stroke-width="2" />
+                    <text x="37" y="85" text-anchor="middle" fill="#58a6ff" font-size="18" font-weight="900">1</text>
+                    <text x="37" y="105" text-anchor="middle" fill="#555" font-size="8">3 5 7</text>
+                    <text x="37" y="117" text-anchor="middle" fill="#555" font-size="8">9 11 13</text>
+                    <text x="37" y="129" text-anchor="middle" fill="#555" font-size="8">15 17...</text>
+
+                    <rect x="70" y="45" width="50" height="80" rx="8" fill="#161b22" stroke="#58a6ff"
+                        stroke-width="2" />
+                    <text x="95" y="70" text-anchor="middle" fill="#58a6ff" font-size="18" font-weight="900">2</text>
+                    <text x="95" y="90" text-anchor="middle" fill="#555" font-size="8">3 6 7</text>
+                    <text x="95" y="102" text-anchor="middle" fill="#555" font-size="8">10 11 14</text>
+                    <text x="95" y="114" text-anchor="middle" fill="#555" font-size="8">15 18...</text>
+
+                    <rect x="128" y="30" width="50" height="80" rx="8" fill="#161b22" stroke="#f7c948"
+                        stroke-width="2.5" />
+                    <text x="153" y="55" text-anchor="middle" fill="#f7c948" font-size="18" font-weight="900">4</text>
+                    <text x="153" y="75" text-anchor="middle" fill="#555" font-size="8">5 6 7</text>
+                    <text x="153" y="87" text-anchor="middle" fill="#555" font-size="8">12 13 14</text>
+                    <text x="153" y="99" text-anchor="middle" fill="#555" font-size="8">15 20...</text>
+
+                    <rect x="186" y="45" width="50" height="80" rx="8" fill="#161b22" stroke="#58a6ff"
+                        stroke-width="2" />
+                    <text x="211" y="70" text-anchor="middle" fill="#58a6ff" font-size="18" font-weight="900">8</text>
+                    <text x="211" y="90" text-anchor="middle" fill="#555" font-size="8">9 10 11</text>
+                    <text x="211" y="102" text-anchor="middle" fill="#555" font-size="8">12 13 14</text>
+                    <text x="211" y="114" text-anchor="middle" fill="#555" font-size="8">15 24...</text>
+
+                    <rect x="244" y="60" width="50" height="80" rx="8" fill="#161b22" stroke="#58a6ff"
+                        stroke-width="2" />
+                    <text x="269" y="85" text-anchor="middle" fill="#58a6ff" font-size="18" font-weight="900">16</text>
+                    <text x="269" y="103" text-anchor="middle" fill="#555" font-size="8">17 18 19</text>
+                    <text x="269" y="115" text-anchor="middle" fill="#555" font-size="8">20 21 22</text>
+                    <text x="269" y="127" text-anchor="middle" fill="#555" font-size="8">23 24...</text>
+
+                    <!-- magician hat -->
+                    <ellipse cx="153" cy="210" rx="50" ry="15" fill="#1a1a1a" stroke="#f7c948" stroke-width="1.5" />
+                    <rect x="118" y="165" width="70" height="47" rx="4" fill="#111" stroke="#f7c948"
+                        stroke-width="1.5" />
+                    <ellipse cx="153" cy="165" rx="35" ry="10" fill="#111" stroke="#f7c948" stroke-width="1" />
+                    <text x="153" y="250" text-anchor="middle" fill="#f7c948" font-size="11">🎩 魔術師帽</text>
+                    <text x="153" y="268" text-anchor="middle" fill="#555" font-size="10">哪幾張有你的數字？</text>
+                </svg>
+            </div>
+        </div>
+
+        <!-- P7 Magic -->
+        <div class="slide" id="s7">
+            <div class="content">
+                <div class="sh b">二進位魔術！</div>
+                <div class="sb" style="font-size:14px">點選包含你心中數字（1~31）所在的卡片，電腦立刻猜出！</div>
+                <div class="mc-wrap" id="magicCards"></div>
+                <div class="mr" id="magicResult">？</div>
+                <div class="me" id="magicExplain">請點選你心中數字出現的卡片</div>
+            </div>
+            <div class="visual">
+                <svg viewBox="0 0 280 260" xmlns="http://www.w3.org/2000/svg">
+                    <!-- reveal diagram -->
+                    <text x="140" y="22" text-anchor="middle" fill="#888" font-size="11">魔術原理：二進位加權加總</text>
+                    <!-- 5 power boxes -->
+                    <rect x="20" y="40" width="44" height="44" rx="8" fill="#1a1828" stroke="#f7c948"
+                        stroke-width="2" />
+                    <text x="42" y="60" text-anchor="middle" fill="#f7c948" font-size="11">2⁴</text>
+                    <text x="42" y="74" text-anchor="middle" fill="#f7c948" font-size="13" font-weight="900">=16</text>
+                    <rect x="72" y="40" width="44" height="44" rx="8" fill="#1a1828" stroke="#f7c948"
+                        stroke-width="2" />
+                    <text x="94" y="60" text-anchor="middle" fill="#f7c948" font-size="11">2³</text>
+                    <text x="94" y="74" text-anchor="middle" fill="#f7c948" font-size="13" font-weight="900">=8</text>
+                    <rect x="124" y="40" width="44" height="44" rx="8" fill="#161b22" stroke="#333"
+                        stroke-width="1.5" />
+                    <text x="146" y="60" text-anchor="middle" fill="#444" font-size="11">2²</text>
+                    <text x="146" y="74" text-anchor="middle" fill="#444" font-size="13">4</text>
+                    <rect x="176" y="40" width="44" height="44" rx="8" fill="#161b22" stroke="#333"
+                        stroke-width="1.5" />
+                    <text x="198" y="60" text-anchor="middle" fill="#444" font-size="11">2¹</text>
+                    <text x="198" y="74" text-anchor="middle" fill="#444" font-size="13">2</text>
+                    <rect x="228" y="40" width="44" height="44" rx="8" fill="#1a1828" stroke="#f7c948"
+                        stroke-width="2" />
+                    <text x="250" y="60" text-anchor="middle" fill="#f7c948" font-size="11">2⁰</text>
+                    <text x="250" y="74" text-anchor="middle" fill="#f7c948" font-size="13" font-weight="900">=1</text>
+                    <!-- bit values -->
+                    <text x="42" y="100" text-anchor="middle" fill="#f7c948" font-size="18" font-weight="900">1</text>
+                    <text x="94" y="100" text-anchor="middle" fill="#f7c948" font-size="18" font-weight="900">1</text>
+                    <text x="146" y="100" text-anchor="middle" fill="#444" font-size="18">0</text>
+                    <text x="198" y="100" text-anchor="middle" fill="#444" font-size="18">0</text>
+                    <text x="250" y="100" text-anchor="middle" fill="#f7c948" font-size="18" font-weight="900">1</text>
+                    <!-- binary string -->
+                    <text x="140" y="130" text-anchor="middle" fill="#58a6ff" font-size="16" font-family="monospace">1 1
+                        0 0 1</text>
+                    <!-- addition -->
+                    <line x1="20" y1="148" x2="260" y2="148" stroke="#444" />
+                    <text x="140" y="172" text-anchor="middle" fill="#888" font-size="13">16 + 8 + 0 + 0 + 1</text>
+                    <text x="140" y="200" text-anchor="middle" fill="#f7c948" font-size="26" font-weight="900">=
+                        25</text>
+                    <text x="140" y="230" text-anchor="middle" fill="#555" font-size="10">選亮色卡的「最頂端數字」加總 = 心中數字</text>
+                </svg>
+            </div>
+        </div>
+
+        <!-- P8 Reveal -->
+        <div class="slide" id="s8">
+            <div class="content">
+                <div class="sh b">魔術大揭秘！🎉</div>
+                <div class="sb">魔術背後的秘密：每張卡片的頂端數字恰好是 <strong style="color:var(--ac)">2 的次方</strong>（1、2、4、8、16）。</div>
+                <div class="pl">
+                    <div class="pt">你選了某張卡 = 那個位元值為 <strong style="color:var(--act)">1</strong></div>
+                    <div class="pt">沒選的卡 = 那個位元值為 <strong style="color:#555">0</strong></div>
+                    <div class="pt">把所有選中的卡頂端數字加總 = 你的二進位轉十進位結果</div>
+                    <div class="pt">這就是二進位「各位元加權加總」的本質！</div>
+                    <div class="pt">電腦內部每秒做幾十億次這樣的運算</div>
+                </div>
+                <div class="hg">
+                    <div class="hb">
+                        <div class="e">🃏</div>
+                        <div class="l">卡片 1（2⁰）</div>
+                        <div class="v" style="color:var(--act)">+1</div>
+                    </div>
+                    <div class="hb">
+                        <div class="e">🃏</div>
+                        <div class="l">卡片 2（2¹）</div>
+                        <div class="v" style="color:var(--act)">+2</div>
+                    </div>
+                    <div class="hb">
+                        <div class="e">🃏</div>
+                        <div class="l">卡片 3（2²）</div>
+                        <div class="v" style="color:var(--act)">+4</div>
+                    </div>
+                    <div class="hb">
+                        <div class="e">🃏</div>
+                        <div class="l">卡片 4（2³）</div>
+                        <div class="v" style="color:var(--act)">+8</div>
+                    </div>
+                    <div class="hb">
+                        <div class="e">🃏</div>
+                        <div class="l">卡片 5（2⁴）</div>
+                        <div class="v" style="color:var(--act)">+16</div>
+                    </div>
+                </div>
+            </div>
+            <div class="visual">
+                <svg viewBox="0 0 280 260" xmlns="http://www.w3.org/2000/svg">
+                    <!-- star burst -->
+                    <defs>
+                        <radialGradient id="rg" cx="50%" cy="50%" r="50%">
+                            <stop offset="0%" stop-color="#f7c948" stop-opacity=".35" />
+                            <stop offset="100%" stop-color="#f7c948" stop-opacity="0" />
+                        </radialGradient>
+                    </defs>
+                    <circle cx="140" cy="130" r="110" fill="url(#rg)" />
+                    <!-- center number -->
+                    <circle cx="140" cy="130" r="55" fill="#161b22" stroke="#f7c948" stroke-width="2.5" />
+                    <text x="140" y="118" text-anchor="middle" fill="#888" font-size="12">心中數字</text>
+                    <text x="140" y="150" text-anchor="middle" fill="#f7c948" font-size="36" font-weight="900">25</text>
+                    <!-- binary -->
+                    <text x="140" y="175" text-anchor="middle" fill="#58a6ff" font-size="14"
+                        font-family="monospace">11001₂</text>
+                    <!-- spokes -->
+                    <g stroke="#f7c948" stroke-width="1.5" stroke-dasharray="4,3" opacity=".5">
+                        <line x1="140" y1="75" x2="140" y2="30" />
+                        <line x1="180" y1="90" x2="215" y2="55" />
+                        <line x1="195" y1="130" x2="245" y2="130" />
+                        <line x1="100" y1="90" x2="65" y2="55" />
+                        <line x1="85" y1="130" x2="35" y2="130" />
+                    </g>
+                    <!-- 5 card labels -->
+                    <text x="140" y="22" text-anchor="middle" fill="#f7c948" font-size="11" font-weight="bold">16
+                        ✓</text>
+                    <text x="228" y="46" text-anchor="middle" fill="#f7c948" font-size="11" font-weight="bold">8
+                        ✓</text>
+                    <text x="256" y="133" text-anchor="middle" fill="#444" font-size="11">4 ✗</text>
+                    <text x="52" y="133" text-anchor="middle" fill="#444" font-size="11">2 ✗</text>
+                    <text x="52" y="46" text-anchor="middle" fill="#f7c948" font-size="11" font-weight="bold">1 ✓</text>
+                    <!-- bottom -->
+                    <text x="140" y="235" text-anchor="middle" fill="#555" font-size="10">16 + 8 + 1 = 25</text>
+                </svg>
+            </div>
+        </div>
+
+    </div>
+    <div class="nav">
+        <button class="nb" id="prevBtn" onclick="go(-1)" disabled>← 上一頁</button>
+        <div class="dr-row" id="dots"></div>
+        <button class="nb" id="nextBtn" onclick="go(1)">下一頁 →</button>
+    </div>
+    <script>
+        const total = 8; let cur = 1;
+        const dotsEl = document.getElementById('dots');
+        for (let i = 1; i <= total; i++) { const d = document.createElement('div'); d.className = 'dot' + (i === 1 ? ' on' : ''); d.onclick = () => gt(i); dotsEl.appendChild(d); }
+        function gt(n) {
+            const old = document.getElementById('s' + cur);
+            old.style.cssText = 'transition:none;opacity:0;pointer-events:none';
+            old.classList.remove('active');
+            cur = n;
+            const el = document.getElementById('s' + cur);
+            el.style.cssText = 'transform:translateX(60px);opacity:0;transition:none;z-index:1;pointer-events:none';
+            el.classList.add('active');
+            requestAnimationFrame(() => requestAnimationFrame(() => {
+                el.style.cssText = 'transition:opacity .45s,transform .45s;transform:translateX(0);opacity:1;z-index:1;pointer-events:auto';
+            }));
+            document.getElementById('cur').textContent = cur;
+            document.querySelectorAll('.dot').forEach((d, i) => d.classList.toggle('on', i === cur - 1));
+            document.getElementById('prevBtn').disabled = cur === 1;
+            document.getElementById('nextBtn').disabled = cur === total;
+        }
+        function go(d) { const n = cur + d; if (n < 1 || n > total) return; gt(n); }
+        document.addEventListener('keydown', e => { if (e.key === 'ArrowRight' || e.key === 'ArrowDown') go(1); if (e.key === 'ArrowLeft' || e.key === 'ArrowUp') go(-1); });
+        // Magic cards
+        const sel = new Set();
+        [1, 2, 4, 8, 16].forEach(p => {
+            const mc = document.createElement('div'); mc.className = 'mc';
+            const nums = []; for (let i = 1; i <= 31; i++)if (i & p) nums.push(i);
+            mc.innerHTML = `<div class="mh">${p}</div><div class="mn">${nums.map(n => `<span class="${n === p ? 'hi' : ''}">${n}</span>`).join('')}</div>`;
+            mc.onclick = () => {
+                sel.has(p) ? sel.delete(p) : sel.add(p); mc.classList.toggle('sel');
+                const s = [...sel].reduce((a, b) => a + b, 0);
+                document.getElementById('magicResult').textContent = sel.size ? s : '？';
+                document.getElementById('magicExplain').textContent = sel.size ? `二進位：${s.toString(2).padStart(5, '0')}₂ = ${s}₁₀` : '請點選你心中數字出現的卡片';
+            };
+            document.getElementById('magicCards').appendChild(mc);
+        });
+    </script>
+</body>
+
+</html>

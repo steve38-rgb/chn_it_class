@@ -1,0 +1,1035 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>5-4 & 5-5 影音數位化與AI應用｜資訊科技第五課</title>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;700;900&family=JetBrains+Mono:wght@400;700&display=swap"
+        rel="stylesheet">
+    <style>
+        *,
+        *::before,
+        *::after {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0
+        }
+
+        :root {
+            --ac: #06b6d4;
+            --ac2: #a78bfa;
+            --dark: #040d14;
+            --card: #0c1b27;
+            --text: #e8f0f8;
+            --sub: #6080a0;
+            --rd: #f43f5e;
+            --gd: #fbbf24
+        }
+
+        body {
+            font-family: 'Noto Sans TC', sans-serif;
+            background: var(--dark);
+            color: var(--text);
+            height: 100vh;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column
+        }
+
+        .topbar {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 10px 32px;
+            background: rgba(6, 182, 212, .05);
+            border-bottom: 1px solid rgba(6, 182, 212, .12);
+            flex-shrink: 0
+        }
+
+        .ti {
+            font-size: 14px;
+            font-weight: 700;
+            color: var(--ac)
+        }
+
+        .sc {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 13px;
+            color: var(--sub)
+        }
+
+        .sw {
+            flex: 1;
+            overflow: hidden;
+            position: relative
+        }
+
+        .slide {
+            position: absolute;
+            inset: 0;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            align-items: center;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity .45s, transform .45s;
+            transform: translateX(50px)
+        }
+
+        .slide.active {
+            opacity: 1;
+            transform: translateX(0);
+            pointer-events: auto
+        }
+
+        .content {
+            padding: 38px 46px;
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            height: 100%;
+            justify-content: center
+        }
+
+        .visual {
+            background: rgba(6, 182, 212, .02);
+            border-left: 1px solid rgba(6, 182, 212, .08);
+            height: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 18px
+        }
+
+        .visual svg {
+            max-width: 100%;
+            max-height: calc(100vh - 90px)
+        }
+
+        .sh {
+            font-size: clamp(21px, 2.8vw, 36px);
+            font-weight: 900;
+            line-height: 1.25;
+            background: linear-gradient(135deg, #fff 20%, var(--ac));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text
+        }
+
+        .sh.v {
+            background: linear-gradient(135deg, #fff 20%, var(--ac2));
+            -webkit-background-clip: text;
+            background-clip: text
+        }
+
+        .sh.r {
+            background: linear-gradient(135deg, var(--gd) 0%, var(--rd) 100%);
+            -webkit-background-clip: text;
+            background-clip: text
+        }
+
+        .sb {
+            font-size: 15px;
+            line-height: 1.85;
+            color: #90b0c8
+        }
+
+        .hg {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
+            gap: 10px
+        }
+
+        .hb {
+            background: var(--card);
+            border: 1px solid rgba(255, 255, 255, .06);
+            border-radius: 11px;
+            padding: 14px
+        }
+
+        .hb .e {
+            font-size: 20px;
+            margin-bottom: 5px
+        }
+
+        .hb .l {
+            font-size: 11px;
+            color: var(--sub);
+            margin-bottom: 2px
+        }
+
+        .hb .v {
+            font-size: 13px;
+            font-weight: 700
+        }
+
+        .pl {
+            display: flex;
+            flex-direction: column;
+            gap: 8px
+        }
+
+        .pt {
+            display: flex;
+            align-items: flex-start;
+            gap: 10px;
+            font-size: 14px;
+            line-height: 1.72;
+            color: #7090a8
+        }
+
+        .pt::before {
+            content: "▸";
+            color: var(--ac);
+            flex-shrink: 0;
+            margin-top: 1px
+        }
+
+        .cmp {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px
+        }
+
+        .cc {
+            background: var(--card);
+            border-radius: 12px;
+            padding: 16px;
+            border: 1px solid rgba(255, 255, 255, .05)
+        }
+
+        .cc .cht {
+            font-size: 13px;
+            font-weight: 700;
+            margin-bottom: 8px
+        }
+
+        .cc .cbd {
+            font-size: 13px;
+            line-height: 1.8;
+            color: #5878a8
+        }
+
+        .steps {
+            display: flex;
+            flex-direction: column;
+            gap: 7px
+        }
+
+        .step {
+            display: flex;
+            align-items: flex-start;
+            gap: 12px;
+            background: var(--card);
+            border-radius: 10px;
+            padding: 12px 16px;
+            border: 1px solid rgba(255, 255, 255, .05)
+        }
+
+        .sn {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 20px;
+            font-weight: 900;
+            color: var(--ac);
+            min-width: 28px
+        }
+
+        .st {
+            font-size: 14px;
+            line-height: 1.65;
+            color: #8090a8
+        }
+
+        .proj {
+            background: linear-gradient(135deg, rgba(244, 63, 94, .07), rgba(167, 139, 250, .07));
+            border: 1px solid rgba(244, 63, 94, .2);
+            border-radius: 14px;
+            padding: 20px
+        }
+
+        .proj h3 {
+            font-size: 17px;
+            font-weight: 900;
+            margin-bottom: 10px;
+            color: var(--rd)
+        }
+
+        .proj p {
+            font-size: 14px;
+            line-height: 1.8;
+            color: #9080b8
+        }
+
+        .fmts {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+            gap: 8px
+        }
+
+        .fm {
+            background: var(--card);
+            border-radius: 8px;
+            padding: 10px;
+            text-align: center;
+            border: 1px solid rgba(255, 255, 255, .05)
+        }
+
+        .fm .fe {
+            font-size: 11px;
+            font-weight: 700;
+            font-family: 'JetBrains Mono', monospace;
+            margin-bottom: 3px
+        }
+
+        .fm .fd {
+            font-size: 10px;
+            color: var(--sub)
+        }
+
+        .nav {
+            flex-shrink: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 14px;
+            padding: 12px 32px;
+            background: rgba(6, 182, 212, .02);
+            border-top: 1px solid rgba(6, 182, 212, .07)
+        }
+
+        .nb {
+            background: none;
+            border: 1px solid rgba(255, 255, 255, .12);
+            color: var(--text);
+            border-radius: 50px;
+            padding: 8px 22px;
+            font-size: 14px;
+            cursor: pointer;
+            transition: background .2s
+        }
+
+        .nb:hover {
+            background: rgba(6, 182, 212, .08)
+        }
+
+        .nb:disabled {
+            opacity: .3;
+            cursor: default
+        }
+
+        .dr-row {
+            display: flex;
+            gap: 6px
+        }
+
+        .dot {
+            width: 7px;
+            height: 7px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, .15);
+            cursor: pointer;
+            transition: all .3s
+        }
+
+        .dot.on {
+            background: var(--ac);
+            width: 22px;
+            border-radius: 4px
+        }
+    </style>
+</head>
+
+<body>
+    <div class="topbar">
+        <div class="ti">5-4 & 5-5 影音數位化與 AI 應用 — 資訊科技第五課</div>
+        <div class="sc"><span id="cur">1</span> / 10</div>
+    </div>
+    <div class="sw">
+
+        <!-- P1 -->
+        <div class="slide active" id="s1">
+            <div class="content">
+                <div class="sh">影音數位化與 AI 魔法</div>
+                <div class="sb">前幾節我們學習了文字的數位化。但生活中最大量的資料，是<strong style="color:#fff">聲音</strong>與<strong
+                        style="color:#fff">影像</strong>。電腦如何記錄一首歌、一張照片？本節揭開影音數位化的秘密，並探索 AI 創作新世界。</div>
+                <div class="hg">
+                    <div class="hb" style="border-color:rgba(6,182,212,.3)">
+                        <div class="e">🎵</div>
+                        <div class="l">5-4 聲音數位化</div>
+                        <div class="v">取樣、量化、編碼</div>
+                    </div>
+                    <div class="hb" style="border-color:rgba(167,139,250,.3)">
+                        <div class="e">🖼️</div>
+                        <div class="l">5-5 影像數位化</div>
+                        <div class="v">像素、色彩、格式</div>
+                    </div>
+                    <div class="hb" style="border-color:rgba(244,63,94,.3)">
+                        <div class="e">🤖</div>
+                        <div class="l">AI 創作應用</div>
+                        <div class="v">畢業歌 MV 專案</div>
+                    </div>
+                </div>
+                <div class="pl">
+                    <div class="pt">一首 3 分鐘 CD 品質音樂 ≈ 30 MB</div>
+                    <div class="pt">一張 1200 萬畫素照片（未壓縮）≈ 36 MB</div>
+                    <div class="pt">這些數字背後，都是嚴謹的數位化計算</div>
+                </div>
+            </div>
+            <div class="visual">
+                <svg viewBox="0 0 300 260" xmlns="http://www.w3.org/2000/svg">
+                    <defs>
+                        <radialGradient id="rg1" cx="50%" cy="50%" r="50%">
+                            <stop offset="0%" stop-color="#06b6d4" stop-opacity=".2" />
+                            <stop offset="100%" stop-color="#06b6d4" stop-opacity="0" />
+                        </radialGradient>
+                    </defs>
+                    <circle cx="150" cy="130" r="110" fill="url(#rg1)" />
+                    <!-- sound wave left -->
+                    <g stroke="#06b6d4" stroke-width="2" fill="none">
+                        <path d="M20,130 Q35,90 50,130 Q65,170 80,130" />
+                        <path d="M15,130 Q35,70 55,130 Q75,190 95,130" opacity=".5" />
+                    </g>
+                    <!-- camera right -->
+                    <rect x="195" y="90" width="80" height="60" rx="8" fill="#0c1b27" stroke="#a78bfa"
+                        stroke-width="2" />
+                    <circle cx="235" cy="120" r="22" fill="#040d14" stroke="#a78bfa" stroke-width="1.5" />
+                    <circle cx="235" cy="120" r="14" fill="#0c1b27" stroke="#a78bfa" stroke-width="1" />
+                    <circle cx="235" cy="120" r="6" fill="#a78bfa" opacity=".6" />
+                    <rect x="262" y="95" width="8" height="12" rx="2" fill="#a78bfa" opacity=".5" />
+                    <!-- center AI brain -->
+                    <circle cx="150" cy="130" r="40" fill="#040d14" stroke="#f43f5e" stroke-width="2" />
+                    <text x="150" y="125" text-anchor="middle" fill="#f43f5e" font-size="10">AI</text>
+                    <text x="150" y="140" text-anchor="middle" fill="#f43f5e" font-size="10">BRAIN</text>
+                    <!-- connections -->
+                    <line x1="95" y1="130" x2="110" y2="130" stroke="#06b6d4" stroke-width="1.5"
+                        stroke-dasharray="3,2" />
+                    <line x1="190" y1="120" x2="195" y2="120" stroke="#a78bfa" stroke-width="1.5"
+                        stroke-dasharray="3,2" />
+                    <!-- MV output bottom -->
+                    <rect x="95" y="205" width="110" height="40" rx="6" fill="#0c1b27" stroke="#fbbf24"
+                        stroke-width="1.5" />
+                    <text x="150" y="229" text-anchor="middle" fill="#fbbf24" font-size="12" font-weight="bold">🎬 畢業
+                        MV</text>
+                    <line x1="150" y1="170" x2="150" y2="205" stroke="#fbbf24" stroke-width="1.5"
+                        stroke-dasharray="3,2" />
+                </svg>
+            </div>
+        </div>
+
+        <!-- P2 -->
+        <div class="slide" id="s2">
+            <div class="content">
+                <div class="sh">聲音的三個物理特性</div>
+                <div class="sb">電腦數位化聲音前，必須先理解聲音的本質。聲音是空氣的<strong style="color:var(--ac)">壓力波動</strong>，由三個核心參數描述：</div>
+                <div class="hg" style="grid-template-columns:1fr 1fr 1fr">
+                    <div class="hb" style="border-top:3px solid var(--ac)">
+                        <div class="e">📢</div>
+                        <div class="l">響度 Loudness</div>
+                        <div class="v" style="font-size:12px;margin-top:4px;color:#6090a8">與振幅有關<br>振幅越大，聲音越強</div>
+                    </div>
+                    <div class="hb" style="border-top:3px solid var(--ac2)">
+                        <div class="e">🎼</div>
+                        <div class="l">音調 Pitch</div>
+                        <div class="v" style="font-size:12px;margin-top:4px;color:#6090a8">與頻率有關<br>人耳 20Hz~20kHz</div>
+                    </div>
+                    <div class="hb" style="border-top:3px solid var(--gd)">
+                        <div class="e">🎻</div>
+                        <div class="l">音色 Timbre</div>
+                        <div class="v" style="font-size:12px;margin-top:4px;color:#6090a8">與波形有關<br>辨別不同樂器</div>
+                    </div>
+                </div>
+                <div class="pl">
+                    <div class="pt">低音炮：低頻高振幅 / 笛聲：高頻低振幅</div>
+                    <div class="pt">鋼琴與吉他同樣的 La，頻率相同但音色不同</div>
+                    <div class="pt">電腦錄音就是把這些連續的物理量轉為數字</div>
+                </div>
+            </div>
+            <div class="visual">
+                <svg viewBox="0 0 300 260" xmlns="http://www.w3.org/2000/svg">
+                    <!-- 3 wave types -->
+                    <text x="150" y="18" text-anchor="middle" fill="#888" font-size="11">三種特性的波形示意</text>
+                    <!-- loud wave -->
+                    <text x="30" y="48" fill="#06b6d4" font-size="10" font-weight="bold">大振幅（大聲）</text>
+                    <path d="M10,80 Q30,35 50,80 Q70,125 90,80 Q110,35 130,80 Q150,125 170,80" stroke="#06b6d4"
+                        stroke-width="2.5" fill="none" />
+                    <!-- quiet wave -->
+                    <text x="30" y="115" fill="#3090b0" font-size="10">小振幅（小聲）</text>
+                    <path d="M10,130 Q30,115 50,130 Q70,145 90,130 Q110,115 130,130 Q150,145 170,130" stroke="#3090b0"
+                        stroke-width="2" fill="none" opacity=".7" />
+                    <!-- high freq -->
+                    <text x="30" y="168" fill="#a78bfa" font-size="10" font-weight="bold">高頻（高音）</text>
+                    <path
+                        d="M10,185 Q20,170 30,185 Q40,200 50,185 Q60,170 70,185 Q80,200 90,185 Q100,170 110,185 Q120,200 130,185 Q140,170 150,185 Q160,200 170,185"
+                        stroke="#a78bfa" stroke-width="2" fill="none" />
+                    <!-- low freq -->
+                    <text x="30" y="218" fill="#6050a0" font-size="10">低頻（低音）</text>
+                    <path d="M10,235 Q50,205 90,235 Q130,265 170,235" stroke="#6050a0" stroke-width="2" fill="none"
+                        opacity=".7" />
+                    <!-- amplitude label -->
+                    <line x1="180" y1="35" x2="180" y2="125" stroke="#06b6d4" stroke-width="1" stroke-dasharray="3" />
+                    <text x="195" y="82" fill="#06b6d4" font-size="10" dominant-baseline="middle">振幅</text>
+                </svg>
+            </div>
+        </div>
+
+        <!-- P3 -->
+        <div class="slide" id="s3">
+            <div class="content">
+                <div class="sh">聲音數位化三步驟</div>
+                <div class="sb">將連續的類比聲波轉為電腦可儲存的數位資料，需要三個關鍵步驟：</div>
+                <div class="steps">
+                    <div class="step"><span class="sn">①</span>
+                        <div class="st"><strong style="color:var(--ac)">取樣 Sampling</strong>：在固定時間間隔擷取聲波數值。CD 標準：每秒
+                            44,100 次（44.1 kHz）。取樣越密集，聲音重建越精確。</div>
+                    </div>
+                    <div class="step"><span class="sn">②</span>
+                        <div class="st"><strong style="color:var(--ac2)">量化 Quantize</strong>：將取樣值四捨五入到最近的整數刻度。CD 標準：16
+                            bit（65,536 個刻度）。位元深度越高，動態範圍越大。</div>
+                    </div>
+                    <div class="step"><span class="sn">③</span>
+                        <div class="st"><strong style="color:var(--gd)">編碼
+                                Encoding</strong>：把量化後的整數轉為二進位，依格式打包儲存。<br>常見格式：WAV（無損）/ MP3（有損壓縮）/ FLAC（無損壓縮）</div>
+                    </div>
+                </div>
+                <div class="sb" style="font-size:13px;color:var(--sub)">📐 容量計算：44,100 × 16 ÷ 8 × 2（聲道）× 180（秒）÷ 1024² ≈
+                    <strong style="color:var(--ac)">30 MB</strong>（3 分鐘 CD）
+                </div>
+            </div>
+            <div class="visual">
+                <svg viewBox="0 0 300 250" xmlns="http://www.w3.org/2000/svg">
+                    <text x="150" y="16" text-anchor="middle" fill="#888" font-size="11">聲音數位化流程示意</text>
+                    <!-- analog wave -->
+                    <path d="M10,80 Q25,45 40,80 Q55,115 70,80 Q85,45 100,80 Q115,115 130,80 Q145,45 160,80"
+                        stroke="#06b6d4" stroke-width="2.5" fill="none" />
+                    <text x="85" y="120" text-anchor="middle" fill="#06b6d4" font-size="10">① 類比聲波</text>
+                    <!-- sampling dots -->
+                    <circle cx="10" cy="80" r="3.5" fill="#fbbf24" />
+                    <circle cx="26" cy="57" r="3.5" fill="#fbbf24" />
+                    <circle cx="40" cy="80" r="3.5" fill="#fbbf24" />
+                    <circle cx="55" cy="103" r="3.5" fill="#fbbf24" />
+                    <circle cx="70" cy="80" r="3.5" fill="#fbbf24" />
+                    <circle cx="85" cy="57" r="3.5" fill="#fbbf24" />
+                    <circle cx="100" cy="80" r="3.5" fill="#fbbf24" />
+                    <circle cx="115" cy="103" r="3.5" fill="#fbbf24" />
+                    <circle cx="130" cy="80" r="3.5" fill="#fbbf24" />
+                    <text x="85" y="140" text-anchor="middle" fill="#fbbf24" font-size="10">② 取樣點</text>
+                    <!-- quantized staircase -->
+                    <polyline
+                        points="170,80 185,80 185,57 200,57 200,80 215,80 215,103 230,103 230,80 245,80 245,57 260,57 260,80"
+                        stroke="#a78bfa" stroke-width="2.5" fill="none" />
+                    <text x="215" y="125" text-anchor="middle" fill="#a78bfa" font-size="10">③ 量化階梯</text>
+                    <!-- binary output -->
+                    <rect x="85" y="160" width="130" height="40" rx="8" fill="#0c1b27" stroke="#43e8b0"
+                        stroke-width="1.5" />
+                    <text x="150" y="178" text-anchor="middle" fill="#43e8b0" font-size="10"
+                        font-family="monospace">0101 1000 1010</text>
+                    <text x="150" y="193" text-anchor="middle" fill="#43e8b0" font-size="10"
+                        font-family="monospace">0011 1111 0110</text>
+                    <text x="150" y="215" text-anchor="middle" fill="#888" font-size="10">④ 二進位儲存（WAV / MP3）</text>
+                </svg>
+            </div>
+        </div>
+
+        <!-- P4 -->
+        <div class="slide" id="s4">
+            <div class="content">
+                <div class="sh v">影像數位化：像素的秘密</div>
+                <div class="sb">數位影像是由無數個小方格組成，每個方格稱為<strong style="color:#fff">像素（Pixel = Picture
+                        Element）</strong>。每個像素記錄一個顏色值。</div>
+                <div class="pl">
+                    <div class="pt">1200 萬像素 = 4000 × 3000 個小方格排列</div>
+                    <div class="pt">每個像素用 RGB 三個顏色通道各 8 bit = 共 24 bit 表示顏色</div>
+                    <div class="pt">24 bit 全彩可表示 2²⁴ = 16,777,216 種顏色</div>
+                    <div class="pt">解析度（DPI）= 每英吋的像素數量：螢幕 72dpi，印刷 300dpi</div>
+                    <div class="pt">像素越多 + 位元深度越高 → 影像越精細，但檔案越大</div>
+                </div>
+                <div class="hg">
+                    <div class="hb">
+                        <div class="e">📐</div>
+                        <div class="l">解析度</div>
+                        <div class="v">DPI（點/吋）</div>
+                    </div>
+                    <div class="hb">
+                        <div class="e">🎨</div>
+                        <div class="l">24-bit 色彩</div>
+                        <div class="v">1677 萬色</div>
+                    </div>
+                    <div class="hb">
+                        <div class="e">📦</div>
+                        <div class="l">未壓縮大小</div>
+                        <div class="v">寬×高×3 Bytes</div>
+                    </div>
+                </div>
+            </div>
+            <div class="visual">
+                <svg viewBox="0 0 300 260" xmlns="http://www.w3.org/2000/svg">
+                    <text x="150" y="16" text-anchor="middle" fill="#888" font-size="11">像素放大示意</text>
+                    <!-- 8x8 pixel grid -->
+                    <g id="pixgrid"></g>
+                    <!-- zoomed single pixel -->
+                    <rect x="200" y="100" width="80" height="80" rx="6" fill="#ff6b9d" stroke="#a78bfa"
+                        stroke-width="2" />
+                    <text x="240" y="138" text-anchor="middle" fill="#fff" font-size="9">R: 255</text>
+                    <text x="240" y="152" text-anchor="middle" fill="#fff" font-size="9">G: 107</text>
+                    <text x="240" y="166" text-anchor="middle" fill="#fff" font-size="9">B: 157</text>
+                    <!-- zoom line -->
+                    <line x1="152" y1="100" x2="200" y2="100" stroke="#a78bfa" stroke-width="1" stroke-dasharray="3" />
+                    <line x1="152" y1="145" x2="200" y2="180" stroke="#a78bfa" stroke-width="1" stroke-dasharray="3" />
+                    <text x="240" y="196" text-anchor="middle" fill="#a78bfa" font-size="10">單一像素</text>
+                    <text x="80" y="245" text-anchor="middle" fill="#888" font-size="10">8×8 像素放大</text>
+                    <!-- bit calc -->
+                    <text x="240" y="230" text-anchor="middle" fill="#555" font-size="9">= 24 bit / pixel</text>
+                    <script>
+                    </script>
+                </svg>
+            </div>
+        </div>
+
+        <!-- P5 -->
+        <div class="slide" id="s5">
+            <div class="content">
+                <div class="sh v">點陣圖 vs. 向量圖</div>
+                <div class="sb">影像有兩種根本不同的儲存方式，各有適合的應用場景：</div>
+                <div class="cmp">
+                    <div class="cc" style="border-color:rgba(6,182,212,.2)">
+                        <div class="cht" style="color:var(--ac)">📸 點陣圖 Bitmap</div>
+                        <div class="cbd">
+                            ▸ 由像素格點組成<br>
+                            ▸ 放大後<strong style="color:#f43f5e">失真模糊</strong><br>
+                            ▸ 適合照片與寫實影像<br>
+                            ▸ JPG / PNG / GIF / BMP<br>
+                            ▸ 檔案大小與解析度正相關
+                        </div>
+                    </div>
+                    <div class="cc" style="border-color:rgba(167,139,250,.2)">
+                        <div class="cht" style="color:var(--ac2)">🎨 向量圖 Vector</div>
+                        <div class="cbd">
+                            ▸ 由數學公式（路徑）描述<br>
+                            ▸ 無限放大<strong style="color:#43e8b0">不失真</strong><br>
+                            ▸ 適合 Logo、插圖、字型<br>
+                            ▸ SVG / AI / CDR / EPS<br>
+                            ▸ 檔案小，適合網頁使用
+                        </div>
+                    </div>
+                </div>
+                <div class="fmts">
+                    <div class="fm">
+                        <div class="fe" style="color:#f472b6">JPG</div>
+                        <div class="fd">有損壓縮，照片首選</div>
+                    </div>
+                    <div class="fm">
+                        <div class="fe" style="color:var(--ac)">PNG</div>
+                        <div class="fd">無損，支援透明背景</div>
+                    </div>
+                    <div class="fm">
+                        <div class="fe" style="color:var(--ac2)">GIF</div>
+                        <div class="fd">動態圖，最多256色</div>
+                    </div>
+                    <div class="fm">
+                        <div class="fe" style="color:var(--gd)">SVG</div>
+                        <div class="fd">向量，可無限縮放</div>
+                    </div>
+                    <div class="fm">
+                        <div class="fe" style="color:#f97316">HEIC</div>
+                        <div class="fd">蘋果高效壓縮格式</div>
+                    </div>
+                </div>
+            </div>
+            <div class="visual">
+                <svg viewBox="0 0 300 260" xmlns="http://www.w3.org/2000/svg">
+                    <text x="75" y="20" text-anchor="middle" fill="#06b6d4" font-size="11"
+                        font-weight="bold">點陣圖放大</text>
+                    <text x="225" y="20" text-anchor="middle" fill="#a78bfa" font-size="11"
+                        font-weight="bold">向量圖放大</text>
+                    <!-- bitmap star (pixelated) -->
+                    <g fill="#1a3040">
+                        <rect x="10" y="30" width="130" height="100" rx="6" />
+                    </g>
+                    <!-- pixelated star shape -->
+                    <g fill="#06b6d4">
+                        <rect x="55" y="35" width="14" height="14" />
+                        <rect x="69" y="35" width="14" height="14" />
+                        <rect x="83" y="35" width="14" height="14" />
+                        <rect x="41" y="49" width="14" height="14" />
+                        <rect x="55" y="49" width="14" height="14" />
+                        <rect x="69" y="49" width="14" height="14" />
+                        <rect x="83" y="49" width="14" height="14" />
+                        <rect x="97" y="49" width="14" height="14" />
+                        <rect x="27" y="63" width="14" height="14" />
+                        <rect x="41" y="63" width="14" height="14" />
+                        <rect x="55" y="63" width="14" height="14" />
+                        <rect x="69" y="63" width="14" height="14" />
+                        <rect x="83" y="63" width="14" height="14" />
+                        <rect x="97" y="63" width="14" height="14" />
+                        <rect x="111" y="63" width="14" height="14" />
+                        <rect x="41" y="77" width="14" height="14" />
+                        <rect x="55" y="77" width="14" height="14" />
+                        <rect x="83" y="77" width="14" height="14" />
+                        <rect x="97" y="77" width="14" height="14" />
+                        <rect x="55" y="91" width="14" height="14" />
+                        <rect x="69" y="91" width="14" height="14" />
+                        <rect x="83" y="91" width="14" height="14" />
+                        <rect x="69" y="105" width="14" height="14" />
+                    </g>
+                    <text x="75" y="145" text-anchor="middle" fill="#f43f5e" font-size="10">放大後像素鋸齒化</text>
+                    <!-- vector star (smooth) -->
+                    <rect x="160" y="30" width="130" height="100" rx="6" fill="#1a1030" />
+                    <polygon points="225,38 235,65 264,65 241,82 249,109 225,93 201,109 209,82 186,65 215,65"
+                        fill="#a78bfa" opacity=".9" />
+                    <text x="225" y="145" text-anchor="middle" fill="#43e8b0" font-size="10">任意縮放邊緣清晰</text>
+                    <!-- magnifier icons -->
+                    <circle cx="95" cy="90" r="18" fill="none" stroke="#f43f5e" stroke-width="2" opacity=".6" />
+                    <line x1="108" y1="103" x2="120" y2="115" stroke="#f43f5e" stroke-width="2.5" stroke-linecap="round"
+                        opacity=".6" />
+                    <circle cx="225" cy="75" r="18" fill="none" stroke="#43e8b0" stroke-width="2" opacity=".6" />
+                    <line x1="238" y1="88" x2="250" y2="100" stroke="#43e8b0" stroke-width="2.5" stroke-linecap="round"
+                        opacity=".6" />
+                    <text x="150" y="200" text-anchor="middle" fill="#555" font-size="10">相同圖形，放大後呈現截然不同的效果</text>
+                </svg>
+            </div>
+        </div>
+
+        <!-- P6 -->
+        <div class="slide" id="s6">
+            <div class="content">
+                <div class="sh v">RGB 色彩與影像大小計算</div>
+                <div class="sb">電腦螢幕用<strong style="color:#fff">加色法</strong>顯示顏色：紅（R）+ 綠（G）+ 藍（B）三色光混合，調整三者強度（各
+                    0~255）即可呈現 1677 萬種顏色。</div>
+                <div class="pl">
+                    <div class="pt">R=255, G=0, B=0 → 純紅色；R=0, G=255, B=0 → 純綠；R=0, G=0, B=255 → 純藍</div>
+                    <div class="pt">R=255, G=255, B=255 → 白色；R=0, G=0, B=0 → 黑色</div>
+                    <div class="pt">📐 未壓縮大小 = 寬度（px）× 高度（px）× 3 Bytes</div>
+                    <div class="pt">例：1920×1080 全彩 = 1920 × 1080 × 3 ≈ <strong style="color:var(--ac2)">5.9 MB</strong>
+                    </div>
+                    <div class="pt">JPG 壓縮後通常只有 200KB~1MB，大幅節省儲存空間</div>
+                </div>
+                <div class="hg">
+                    <div class="hb">
+                        <div class="e" style="color:#ff4444">🔴</div>
+                        <div class="l">紅 R</div>
+                        <div class="v" style="font-family:monospace;color:#f88">0~255</div>
+                    </div>
+                    <div class="hb">
+                        <div class="e" style="color:#44ff44">🟢</div>
+                        <div class="l">綠 G</div>
+                        <div class="v" style="font-family:monospace;color:#8f8">0~255</div>
+                    </div>
+                    <div class="hb">
+                        <div class="e" style="color:#4444ff">🔵</div>
+                        <div class="l">藍 B</div>
+                        <div class="v" style="font-family:monospace;color:#88f">0~255</div>
+                    </div>
+                </div>
+            </div>
+            <div class="visual">
+                <svg viewBox="0 0 300 260" xmlns="http://www.w3.org/2000/svg">
+                    <defs>
+                        <radialGradient id="rr">
+                            <stop offset="0%" stop-color="#ff4444" stop-opacity="0.7" />
+                            <stop offset="100%" stop-color="#ff4444" stop-opacity="0" />
+                        </radialGradient>
+                        <radialGradient id="rg2">
+                            <stop offset="0%" stop-color="#44ff44" stop-opacity="0.7" />
+                            <stop offset="100%" stop-color="#44ff44" stop-opacity="0" />
+                        </radialGradient>
+                        <radialGradient id="rb">
+                            <stop offset="0%" stop-color="#4466ff" stop-opacity="0.7" />
+                            <stop offset="100%" stop-color="#4466ff" stop-opacity="0" />
+                        </radialGradient>
+                    </defs>
+                    <!-- RGB circles -->
+                    <circle cx="120" cy="105" r="70" fill="url(#rr)" />
+                    <circle cx="180" cy="105" r="70" fill="url(#rg2)" />
+                    <circle cx="150" cy="155" r="70" fill="url(#rb)" />
+                    <!-- labels -->
+                    <text x="92" y="88" text-anchor="middle" fill="#ff8888" font-size="14" font-weight="bold">R</text>
+                    <text x="208" y="88" text-anchor="middle" fill="#88ff88" font-size="14" font-weight="bold">G</text>
+                    <text x="150" y="210" text-anchor="middle" fill="#8888ff" font-size="14" font-weight="bold">B</text>
+                    <!-- overlap labels -->
+                    <text x="150" y="100" text-anchor="middle" fill="#ffff88" font-size="9" font-weight="bold">黃</text>
+                    <text x="118" y="148" text-anchor="middle" fill="#ff88ff" font-size="9" font-weight="bold">洋紅</text>
+                    <text x="182" y="148" text-anchor="middle" fill="#88ffff" font-size="9" font-weight="bold">青</text>
+                    <text x="150" y="130" text-anchor="middle" fill="#fff" font-size="11" font-weight="bold">白</text>
+                    <text x="150" y="240" text-anchor="middle" fill="#555" font-size="10">RGB 加色法：三色光疊加產生白光</text>
+                </svg>
+            </div>
+        </div>
+
+        <!-- P7 AI intro -->
+        <div class="slide" id="s7">
+            <div class="content">
+                <div class="sh r">當影音遇上 AI：創作新紀元</div>
+                <div class="sb">數位化讓影音可存可傳，AI 則讓任何人都能<strong style="color:#fff">創作</strong>影音。只需輸入一段文字描述（Prompt），AI
+                    就能生成歌曲、影像甚至影片。</div>
+                <div class="steps">
+                    <div class="step"><span class="sn" style="color:var(--rd)">→</span>
+                        <div class="st"><strong>文字輸入 Prompt</strong>：「生成一首 BPM 120 的青春流行歌，主題關於畢業與不捨，C 大調，中文歌詞」</div>
+                    </div>
+                    <div class="step"><span class="sn" style="color:var(--rd)">→</span>
+                        <div class="st"><strong>AI 音樂生成</strong>：Suno / Udio 輸出完整歌曲（含人聲、旋律、和弦、編曲），下載 MP3</div>
+                    </div>
+                    <div class="step"><span class="sn" style="color:var(--rd)">→</span>
+                        <div class="st"><strong>AI 影像生成</strong>：Canva AI / Imagen 3 生成配樂插圖、背景動畫、字幕效果</div>
+                    </div>
+                    <div class="step"><span class="sn" style="color:var(--gd)">★</span>
+                        <div class="st"><strong>成品輸出</strong>：在 Canva 或剪映組合音樂 + 影像，匯出 MP4，即完成 MV！</div>
+                    </div>
+                </div>
+            </div>
+            <div class="visual">
+                <svg viewBox="0 0 300 260" xmlns="http://www.w3.org/2000/svg">
+                    <!-- AI tools logos placeholder -->
+                    <rect x="10" y="20" width="130" height="50" rx="8" fill="#0c1b27" stroke="#f43f5e"
+                        stroke-width="1.5" />
+                    <text x="75" y="42" text-anchor="middle" fill="#f43f5e" font-size="11" font-weight="bold">🎵 Suno /
+                        Udio</text>
+                    <text x="75" y="60" text-anchor="middle" fill="#6090a8" font-size="9">AI 音樂生成</text>
+                    <rect x="160" y="20" width="130" height="50" rx="8" fill="#0c1b27" stroke="#a78bfa"
+                        stroke-width="1.5" />
+                    <text x="225" y="42" text-anchor="middle" fill="#a78bfa" font-size="11" font-weight="bold">🎨 Canva
+                        AI</text>
+                    <text x="225" y="60" text-anchor="middle" fill="#6090a8" font-size="9">AI 影像生成</text>
+                    <!-- arrow down -->
+                    <line x1="150" y1="72" x2="150" y2="100" stroke="#fbbf24" stroke-width="2" />
+                    <!-- combine box -->
+                    <rect x="60" y="102" width="180" height="50" rx="10" fill="#150b20" stroke="#fbbf24"
+                        stroke-width="2" />
+                    <text x="150" y="124" text-anchor="middle" fill="#fbbf24" font-size="12" font-weight="bold">剪輯軟體 /
+                        Canva</text>
+                    <text x="150" y="142" text-anchor="middle" fill="#a0808080" font-size="10">音樂 + 影像 + 字幕 合成</text>
+                    <!-- arrow down -->
+                    <line x1="150" y1="154" x2="150" y2="180" stroke="#fbbf24" stroke-width="2" />
+                    <!-- final output -->
+                    <rect x="70" y="182" width="160" height="50" rx="10" fill="#200a0a" stroke="#f43f5e"
+                        stroke-width="2" />
+                    <text x="150" y="204" text-anchor="middle" fill="#f43f5e" font-size="13" font-weight="bold">🎬 畢業
+                        MV</text>
+                    <text x="150" y="222" text-anchor="middle" fill="#7090a8" font-size="10">MP4 格式輸出</text>
+                </svg>
+            </div>
+        </div>
+
+        <!-- P8 -->
+        <div class="slide" id="s8">
+            <div class="content">
+                <div class="sh r">🎬 AI 畢業歌 MV 專案</div>
+                <div class="proj">
+                    <h3>📋 專案目標</h3>
+                    <p>結合本章聲音與影像數位化的知識，搭配 AI 工具，<br>
+                        為班級創作獨特的畢業歌 MV。<br><br>
+                        ▸ 成品需包含：AI 生成音樂 ＋ 影像畫面 ＋ 文字字幕<br>
+                        ▸ 時長：30 秒～2 分鐘<br>
+                        ▸ 輸出格式：MP4<br>
+                        ▸ 評分重點：創意、數位化概念應用、團隊合作</p>
+                </div>
+                <div class="pl" style="margin-top:6px">
+                    <div class="pt">可個人或 2~3 人小組進行</div>
+                    <div class="pt">需說明使用了哪些 AI 工具及 Prompt 內容</div>
+                    <div class="pt">完成後全班觀摩並分享製作心得</div>
+                </div>
+            </div>
+            <div class="visual">
+                <svg viewBox="0 0 300 260" xmlns="http://www.w3.org/2000/svg">
+                    <!-- clapperboard -->
+                    <rect x="40" y="60" width="220" height="160" rx="12" fill="#0c1b27" stroke="#fbbf24"
+                        stroke-width="2.5" />
+                    <rect x="40" y="60" width="220" height="40" rx="12" fill="#1a1028" stroke="#fbbf24"
+                        stroke-width="2" />
+                    <rect x="40" y="80" width="220" height="20" fill="#1a1028" />
+                    <!-- stripes on top bar -->
+                    <clipPath id="cl1">
+                        <rect x="42" y="62" width="216" height="36" rx="10" />
+                    </clipPath>
+                    <g clip-path="url(#cl1)">
+                        <rect x="40" y="62" width="22" height="36" fill="#fbbf24" />
+                        <rect x="84" y="62" width="22" height="36" fill="#fbbf24" />
+                        <rect x="128" y="62" width="22" height="36" fill="#fbbf24" />
+                        <rect x="172" y="62" width="22" height="36" fill="#fbbf24" />
+                        <rect x="216" y="62" width="22" height="36" fill="#fbbf24" />
+                    </g>
+                    <!-- content -->
+                    <text x="150" y="135" text-anchor="middle" fill="#fbbf24" font-size="11" font-weight="bold">畢業 MV
+                        企劃</text>
+                    <text x="150" y="152" text-anchor="middle" fill="#9090b0" font-size="10">Class of 2026</text>
+                    <text x="150" y="170" text-anchor="middle" fill="#9090b0" font-size="9">🎵 AI Music 🎨 AI
+                        Image</text>
+                    <text x="150" y="188" text-anchor="middle" fill="#9090b0" font-size="9">✂️ Video Edit 📤 MP4
+                        Export</text>
+                    <!-- film holes -->
+                    <circle cx="55" cy="102" r="5" fill="#040d14" />
+                    <circle cx="55" cy="130" r="5" fill="#040d14" />
+                    <circle cx="55" cy="158" r="5" fill="#040d14" />
+                    <circle cx="55" cy="186" r="5" fill="#040d14" />
+                    <circle cx="245" cy="102" r="5" fill="#040d14" />
+                    <circle cx="245" cy="130" r="5" fill="#040d14" />
+                    <circle cx="245" cy="158" r="5" fill="#040d14" />
+                    <circle cx="245" cy="186" r="5" fill="#040d14" />
+                    <text x="150" y="240" text-anchor="middle" fill="#555" font-size="10">ACTION！開始你的創作吧！</text>
+                </svg>
+            </div>
+        </div>
+
+        <!-- P9 -->
+        <div class="slide" id="s9">
+            <div class="content">
+                <div class="sh r">流程 A：AI 音樂生成</div>
+                <div class="sb" style="font-size:14px">使用 <strong style="color:var(--gd)">Suno.com</strong> 或 <strong
+                        style="color:var(--gd)">Udio.com</strong> 生成原創歌曲：</div>
+                <div class="steps">
+                    <div class="step"><span class="sn" style="color:var(--gd)">1</span>
+                        <div class="st">前往 Suno.com，以 Google 帳號登入（免費版每天有生成次數）</div>
+                    </div>
+                    <div class="step"><span class="sn" style="color:var(--gd)">2</span>
+                        <div class="st">點選「Create」，在 Style 欄輸入音樂風格：<br>例：<em style="color:#ccc">「C-pop, upbeat, piano,
+                                graduation, 120BPM」</em></div>
+                    </div>
+                    <div class="step"><span class="sn" style="color:var(--gd)">3</span>
+                        <div class="st">在 Lyrics 欄貼上 AI（ChatGPT）預先生成的中文歌詞，或讓 Suno 自動生成</div>
+                    </div>
+                    <div class="step"><span class="sn" style="color:var(--gd)">4</span>
+                        <div class="st">試聽生成的兩個版本，選擇最喜歡的，點選「下載 MP3」</div>
+                    </div>
+                </div>
+                <div class="sb" style="font-size:13px;color:var(--sub)">💡 越詳細的 Prompt 描述，生成結果越符合預期。記錄你的 Prompt 以便交報告！
+                </div>
+            </div>
+            <div class="visual">
+                <svg viewBox="0 0 300 260" xmlns="http://www.w3.org/2000/svg">
+                    <!-- Suno UI mockup -->
+                    <rect x="10" y="10" width="280" height="200" rx="10" fill="#0e0e1a" stroke="#fbbf24"
+                        stroke-width="1.5" />
+                    <rect x="10" y="10" width="280" height="28" rx="10" fill="#1a1028" />
+                    <rect x="10" y="28" width="280" height="10" fill="#1a1028" />
+                    <circle cx="26" cy="24" r="4" fill="#ff5f57" />
+                    <circle cx="42" cy="24" r="4" fill="#febc2e" />
+                    <circle cx="58" cy="24" r="4" fill="#28c840" />
+                    <text x="150" y="26" text-anchor="middle" fill="#888" font-size="8"
+                        font-family="monospace">suno.com</text>
+                    <!-- labels -->
+                    <text x="20" y="58" fill="#fbbf24" font-size="10" font-weight="bold">Style of Music</text>
+                    <rect x="18" y="63" width="264" height="22" rx="4" fill="#0a0a18" stroke="#fbbf24"
+                        stroke-width="1" />
+                    <text x="26" y="78" fill="#ccc" font-size="9">C-pop, upbeat, piano, graduation, 120BPM</text>
+                    <text x="20" y="102" fill="#fbbf24" font-size="10" font-weight="bold">Lyrics</text>
+                    <rect x="18" y="107" width="264" height="60" rx="4" fill="#0a0a18" stroke="rgba(251,191,36,.4)"
+                        stroke-width="1" />
+                    <text x="26" y="123" fill="#888" font-size="9">感謝你陪我走過那些年</text>
+                    <text x="26" y="136" fill="#888" font-size="9">青春的笑聲還迴盪在耳邊</text>
+                    <text x="26" y="149" fill="#888" font-size="9">畢業不是終點，是下一段旅程...</text>
+                    <!-- create button -->
+                    <rect x="100" y="178" width="100" height="26" rx="6" fill="#fbbf24" />
+                    <text x="150" y="196" text-anchor="middle" fill="#0a0a18" font-size="11" font-weight="bold">Create
+                        ▶</text>
+                    <text x="150" y="230" text-anchor="middle" fill="#555" font-size="10">Prompt 越詳細，結果越精準</text>
+                </svg>
+            </div>
+        </div>
+
+        <!-- P10 -->
+        <div class="slide" id="s10">
+            <div class="content">
+                <div class="sh r">流程 B：影像剪輯與成果發表</div>
+                <div class="steps">
+                    <div class="step"><span class="sn" style="color:var(--rd)">1</span>
+                        <div class="st">收集班級照片，或在 <strong style="color:#ccc">Canva</strong> 使用「AI 圖片生成」功能創作插圖（描述場景即可）
+                        </div>
+                    </div>
+                    <div class="step"><span class="sn" style="color:var(--rd)">2</span>
+                        <div class="st">建立 Canva「影片」專案（16:9），將 MP3 匯入，把照片/插圖逐張加入頁面</div>
+                    </div>
+                    <div class="step"><span class="sn" style="color:var(--rd)">3</span>
+                        <div class="st">調整每頁停留時間配合音樂節奏，加入字幕、轉場特效、動畫效果</div>
+                    </div>
+                    <div class="step"><span class="sn" style="color:var(--rd)">4</span>
+                        <div class="st">點選「下載 → MP4」，完成！</div>
+                    </div>
+                    <div class="step"><span class="sn" style="color:var(--gd)">★</span>
+                        <div class="st"><strong>成果發表</strong>：全班共同觀看 MV，分享：用了哪些 AI 工具？Prompt 怎麼寫？遇到什麼挑戰？</div>
+                    </div>
+                </div>
+                <div class="sb" style="font-size:13px;color:var(--sub)">🔁 複習：你的 MV 音樂用了哪種取樣率？影像用 JPG 還是 PNG？為什麼？</div>
+            </div>
+            <div class="visual">
+                <svg viewBox="0 0 300 260" xmlns="http://www.w3.org/2000/svg">
+                    <!-- celebration -->
+                    <defs>
+                        <radialGradient id="rc" cx="50%" cy="50%" r="50%">
+                            <stop offset="0%" stop-color="#f43f5e" stop-opacity=".25" />
+                            <stop offset="100%" stop-color="#f43f5e" stop-opacity="0" />
+                        </radialGradient>
+                    </defs>
+                    <circle cx="150" cy="120" r="100" fill="url(#rc)" />
+                    <!-- stars / confetti -->
+                    <text x="60" y="50" fill="#fbbf24" font-size="20">⭐</text>
+                    <text x="210" y="60" fill="#a78bfa" font-size="18">✨</text>
+                    <text x="35" y="130" fill="#43e8b0" font-size="14">🎊</text>
+                    <text x="245" y="110" fill="#f43f5e" font-size="16">🎉</text>
+                    <text x="80" y="195" fill="#fbbf24" font-size="14">🌟</text>
+                    <text x="195" y="200" fill="#a78bfa" font-size="14">💫</text>
+                    <!-- center big emoji + text -->
+                    <text x="150" y="115" text-anchor="middle" font-size="52">🎬</text>
+                    <text x="150" y="150" text-anchor="middle" fill="#fff" font-size="16" font-weight="900">完成！</text>
+                    <text x="150" y="170" text-anchor="middle" fill="#fbbf24" font-size="12">你的 AI 畢業 MV 誕生了</text>
+                    <text x="150" y="195" text-anchor="middle" fill="#7090a8" font-size="10">數位化知識 × AI 創作力 =
+                        無限可能</text>
+                    <text x="150" y="240" text-anchor="middle" fill="#555" font-size="10">第五課完 — 讓數位化改變你的創作方式！</text>
+                </svg>
+            </div>
+        </div>
+
+    </div>
+    <div class="nav">
+        <button class="nb" id="prevBtn" onclick="go(-1)" disabled>← 上一頁</button>
+        <div class="dr-row" id="dots"></div>
+        <button class="nb" id="nextBtn" onclick="go(1)">下一頁 →</button>
+    </div>
+    <script>
+        const total = 10; let cur = 1;
+        const dotsEl = document.getElementById('dots');
+        for (let i = 1; i <= total; i++) { const d = document.createElement('div'); d.className = 'dot' + (i === 1 ? ' on' : ''); d.onclick = () => gt(i); dotsEl.appendChild(d); }
+        function gt(n) {
+            const old = document.getElementById('s' + cur);
+            old.style.cssText = 'transition:none;opacity:0;pointer-events:none';
+            old.classList.remove('active');
+            cur = n;
+            const el = document.getElementById('s' + cur);
+            el.style.cssText = 'transform:translateX(60px);opacity:0;transition:none;z-index:1;pointer-events:none';
+            el.classList.add('active');
+            requestAnimationFrame(() => requestAnimationFrame(() => {
+                el.style.cssText = 'transition:opacity .45s,transform .45s;transform:translateX(0);opacity:1;z-index:1;pointer-events:auto';
+            }));
+            document.getElementById('cur').textContent = cur;
+            document.querySelectorAll('.dot').forEach((d, i) => d.classList.toggle('on', i === cur - 1));
+            document.getElementById('prevBtn').disabled = cur === 1;
+            document.getElementById('nextBtn').disabled = cur === total;
+        }
+        function go(d) { const n = cur + d; if (n < 1 || n > total) return; gt(n); }
+        document.addEventListener('keydown', e => { if (e.key === 'ArrowRight' || e.key === 'ArrowDown') go(1); if (e.key === 'ArrowLeft' || e.key === 'ArrowUp') go(-1); });
+        // draw pixel grid for slide 4
+        (function () {
+            const g = document.getElementById('pixgrid'); if (!g) return;
+            const pattern = [
+                0, 0, 1, 1, 1, 1, 0, 0,
+                0, 1, 0, 0, 0, 0, 1, 0,
+                1, 0, 0, 2, 0, 0, 0, 1,
+                1, 0, 2, 2, 2, 0, 0, 1,
+                1, 0, 0, 2, 0, 0, 0, 1,
+                1, 0, 0, 0, 0, 1, 0, 1,
+                0, 1, 0, 0, 0, 0, 1, 0,
+                0, 0, 1, 1, 1, 1, 0, 0
+            ];
+            const cols = ['#0c1b27', '#a78bfa', '#ff6b9d'];
+            const sz = 17, ox = 8, oy = 28;
+            pattern.forEach((v, i) => {
+                const x = ox + (i % 8) * sz, y = oy + Math.floor(i / 8) * sz;
+                const r = document.createElementNS('http://www.w3.org/2000/svg', 'rect');
+                r.setAttribute('x', x); r.setAttribute('y', y); r.setAttribute('width', sz - 1); r.setAttribute('height', sz - 1); r.setAttribute('rx', '2'); r.setAttribute('fill', cols[v]);
+                g.appendChild(r);
+            });
+        })();
+    </script>
+</body>
+
+</html>

@@ -1,0 +1,745 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>6-3 著作利用的其他建議</title>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700;900&family=JetBrains+Mono:wght@400;700&display=swap"
+        rel="stylesheet">
+    <style>
+        *,
+        *::before,
+        *::after {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0
+        }
+
+        :root {
+            --ac: #6c63ff;
+            --ac2: #43e8b0;
+            --dark: #0d0d1a;
+            --card: #1a1a2e;
+            --text: #e8e8f0;
+            --sub: #8888aa;
+            --red: #ff6b6b
+        }
+
+        body {
+            font-family: "Noto Sans TC", sans-serif;
+            background: var(--dark);
+            color: var(--text);
+            height: 100vh;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column
+        }
+
+        .topbar {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 10px 32px;
+            background: rgba(108, 99, 255, .06);
+            border-bottom: 1px solid rgba(108, 99, 255, .15);
+            flex-shrink: 0
+        }
+
+        .ti {
+            font-size: 15px;
+            font-weight: 700;
+            color: var(--ac2)
+        }
+
+        .sc {
+            font-family: "JetBrains Mono", monospace;
+            font-size: 13px;
+            color: var(--sub)
+        }
+
+        .sw {
+            flex: 1;
+            overflow: hidden;
+            position: relative
+        }
+
+        .slide {
+            position: absolute;
+            inset: 0;
+            display: flex;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity .45s, transform .45s;
+            transform: translateX(50px)
+        }
+
+        .slide.active {
+            opacity: 1;
+            transform: translateX(0);
+            pointer-events: auto
+        }
+
+        .slide-body {
+            display: flex;
+            flex-direction: row;
+            flex-wrap: wrap;
+            width: 100%;
+            height: 100%;
+        }
+
+        .slide-text {
+            flex: 1;
+            min-width: 240px;
+            padding: 36px 40px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            gap: 14px;
+            overflow-y: auto;
+        }
+
+        .slide-img {
+            flex: 0 0 340px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 24px;
+            background: rgba(255, 255, 255, .02);
+            border-left: 1px solid rgba(255, 255, 255, .06);
+        }
+
+        .slide-title {
+            font-size: clamp(20px, 2.5vw, 36px);
+            font-weight: 900;
+            line-height: 1.3;
+            background: linear-gradient(135deg, #fff 20%, var(--ac2));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .slide-subtitle {
+            font-size: 1rem;
+            font-weight: 500;
+            opacity: .85;
+            color: var(--ac2);
+        }
+
+        ul.content-list {
+            list-style: none;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        ul.content-list li {
+            display: flex;
+            align-items: flex-start;
+            gap: 10px;
+            font-size: .95rem;
+            line-height: 1.6;
+            color: #c0c0d8
+        }
+
+        ul.content-list li::before {
+            content: "▸";
+            color: var(--ac2);
+            flex-shrink: 0;
+            margin-top: 2px
+        }
+
+        .callout {
+            margin-top: 14px;
+            padding: 12px 16px;
+            border-radius: 10px;
+            font-size: .88rem;
+            line-height: 1.6;
+            background: rgba(108, 99, 255, .12);
+            border: 1.5px solid var(--ac);
+            color: #d0d0f0;
+        }
+
+        .compare-box {
+            display: flex;
+            gap: 12px;
+            margin-top: 12px;
+            flex-wrap: wrap;
+        }
+
+        .compare-col {
+            flex: 1;
+            min-width: 130px;
+            border-radius: 10px;
+            padding: 12px 14px;
+            background: rgba(255, 255, 255, .07);
+            border: 1.5px solid rgba(255, 255, 255, .15);
+        }
+
+        .compare-col h4 {
+            font-size: .82rem;
+            font-weight: 700;
+            margin-bottom: 8px;
+        }
+
+        .compare-col ul {
+            list-style: none;
+            font-size: .82rem;
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }
+
+        .compare-col ul li::before {
+            content: "• ";
+        }
+
+        .resource-list {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            margin-top: 10px;
+        }
+
+        .res-item {
+            background: rgba(255, 255, 255, .07);
+            border-radius: 8px;
+            padding: 9px 14px;
+            font-size: .88rem;
+            border: 1px solid rgba(255, 255, 255, .12);
+            color: #c0c0d8
+        }
+
+        /* slide coloring */
+        .s1 .slide-text {
+            background: linear-gradient(135deg, #1a0a00 0%, #5c3000 50%, #8a5000 100%);
+        }
+
+        .s2 .slide-text {
+            background: linear-gradient(135deg, #0a1a0a 0%, #1a4d1a 60%, #2a7a2a 100%);
+        }
+
+        .s3 .slide-text {
+            background: linear-gradient(135deg, #0a1628 0%, #1565c0 60%, #1976d2 100%);
+        }
+
+        .s4 .slide-text {
+            background: linear-gradient(135deg, #1a1400 0%, #5c4800 60%, #7a6200 100%);
+        }
+
+        .s5 .slide-text {
+            background: linear-gradient(135deg, #001a2e 0%, #003d6b 60%, #005a9e 100%);
+        }
+
+        .s6 .slide-text {
+            background: linear-gradient(135deg, #0a1a1a 0%, #00435a 60%, #006b8f 100%);
+        }
+
+        .s7 .slide-text {
+            background: linear-gradient(135deg, #1a0a2e 0%, #4a1060 60%, #6a1b9a 100%);
+        }
+
+        .s8 .slide-text {
+            background: linear-gradient(135deg, #0a1a0a 0%, #1b5e1b 60%, #2e7d2e 100%);
+        }
+
+        svg {
+            max-width: 100%;
+            height: auto;
+        }
+
+        .nav {
+            flex-shrink: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 14px;
+            padding: 12px 32px;
+            background: rgba(255, 255, 255, .02);
+            border-top: 1px solid rgba(255, 255, 255, .06)
+        }
+
+        .nb {
+            background: none;
+            border: 1px solid rgba(255, 255, 255, .15);
+            color: var(--text);
+            border-radius: 50px;
+            padding: 8px 22px;
+            font-size: 14px;
+            cursor: pointer;
+            transition: background .2s
+        }
+
+        .nb:hover {
+            background: rgba(255, 255, 255, .07)
+        }
+
+        .nb:disabled {
+            opacity: .3;
+            cursor: default
+        }
+
+        .dr {
+            display: flex;
+            gap: 6px
+        }
+
+        .dot {
+            width: 7px;
+            height: 7px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, .2);
+            cursor: pointer;
+            transition: all .3s
+        }
+
+        .dot.on {
+            background: var(--ac);
+            width: 22px;
+            border-radius: 4px
+        }
+    </style>
+    </style>
+</head>
+
+<body>
+    <div class="topbar">
+        <div class="ti">6-3 著作利用的其他建議</div>
+        <div class="sc"><span id="cur">1</span> / 8</div>
+    </div>
+    <div class="sw">
+
+        <!-- 第 1 頁：封面頁 -->
+        <div class="slide s1 active" id="s1">
+            <div class="slide-body">
+                <div class="slide-text">
+                    <div class="slide-title">資訊科技一下<br>6-3 著作利用的其他建議</div>
+                    <div class="slide-subtitle">站在巨人的肩膀上分享</div>
+                    <p style="margin-top:20px;opacity:.7;font-size:.9rem;line-height:1.7;">開啟數位寶庫的幾把鑰匙<br>授課教師：鹿寮國中
+                        資訊科技教師</p>
+                </div>
+                <div class="slide-img">
+                    <svg viewBox="0 0 260 220" xmlns="http://www.w3.org/2000/svg" width="260">
+                        <defs>
+                            <radialGradient id="g63bg" cx="50%" cy="60%" r="55%">
+                                <stop offset="0%" stop-color="#8a5000" stop-opacity=".4" />
+                                <stop offset="100%" stop-color="#1a0a00" stop-opacity="0" />
+                            </radialGradient>
+                        </defs>
+                        <rect width="260" height="220" fill="url(#g63bg)" rx="14" />
+                        <!-- treasure chest -->
+                        <rect x="70" y="110" width="120" height="80" rx="8" fill="#5c3000" stroke="#ffa726"
+                            stroke-width="2.5" />
+                        <rect x="70" y="100" width="120" height="30" rx="8" fill="#7a4400" stroke="#ffa726"
+                            stroke-width="2.5" />
+                        <rect x="110" y="115" width="40" height="22" rx="6" fill="#4a2c00" stroke="#ffa726"
+                            stroke-width="1.5" />
+                        <!-- explosion of items from chest -->
+                        <text x="80" y="95" font-size="20" font-family="sans-serif">🎵</text>
+                        <text x="128" y="80" font-size="22" font-family="sans-serif">©️</text>
+                        <text x="175" y="90" font-size="20" font-family="sans-serif">🖼️</text>
+                        <text x="60" y="62" font-size="16" font-family="sans-serif">💡</text>
+                        <text x="200" y="65" font-size="16" font-family="sans-serif">📝</text>
+                        <text x="130" y="52" font-size="16" font-family="sans-serif">🐧</text>
+                        <!-- gold sparkle from chest -->
+                        <circle cx="130" cy="110" r="20" fill="#ffa726" opacity=".2" />
+                        <text x="130" y="200" text-anchor="middle" font-size="11" fill="#ffcc80"
+                            font-family="sans-serif">開啟創用CC寶庫</text>
+                    </svg>
+                </div>
+            </div>
+        </div>
+
+        <!-- 第 2 頁：有不必問「能不能」的資源嗎？ -->
+        <div class="slide s2" id="s2">
+            <div class="slide-body">
+                <div class="slide-text">
+                    <div class="slide-title">找素材不再心驚膽跳</div>
+                    <ul class="content-list">
+                        <li>為什麼網路上有些資源，原創者主動說「<strong>歡迎使用</strong>」？</li>
+                        <li>建立<strong>分享文化</strong>，讓創作變簡單。</li>
+                        <li>認識這套世界通用的標誌 — <strong>Creative Commons</strong>。</li>
+                    </ul>
+                </div>
+                <div class="slide-img">
+                    <svg viewBox="0 0 260 220" xmlns="http://www.w3.org/2000/svg" width="260">
+                        <rect width="260" height="220" fill="rgba(26,77,26,.2)" rx="14" />
+                        <!-- desert (left) -->
+                        <rect x="20" y="120" width="90" height="80" rx="6" fill="#7a5a00" opacity=".5" />
+                        <text x="65" y="165" text-anchor="middle" font-size="24" font-family="sans-serif">🏜️</text>
+                        <text x="65" y="185" text-anchor="middle" font-size="9" fill="#ffcc80"
+                            font-family="sans-serif">找不到素材</text>
+                        <!-- arrow -->
+                        <path d="M118 145 L142 145" fill="none" stroke="#a5d6a7" stroke-width="3"
+                            marker-end="url(#arG63)" />
+                        <defs>
+                            <marker id="arG63" markerWidth="8" markerHeight="6" refX="6" refY="3" orient="auto">
+                                <polygon points="0 0,8 3,0 6" fill="#a5d6a7" />
+                            </marker>
+                        </defs>
+                        <!-- oasis (right) -->
+                        <rect x="150" y="120" width="90" height="80" rx="6" fill="#1b5e20" opacity=".7" />
+                        <text x="195" y="160" text-anchor="middle" font-size="28" font-family="sans-serif">🌴</text>
+                        <text x="195" y="185" text-anchor="middle" font-size="9" fill="#a5d6a7"
+                            font-family="sans-serif">CC 免費素材</text>
+                        <!-- student discovering -->
+                        <circle cx="130" cy="75" r="18" fill="#ffcc80" />
+                        <rect x="114" y="94" width="32" height="32" rx="7" fill="#2e7d32" />
+                        <text x="130" y="72" text-anchor="middle" font-size="20" font-family="sans-serif">😮</text>
+                        <text x="130" y="108" text-anchor="middle" font-size="14" font-family="sans-serif">💡</text>
+                    </svg>
+                </div>
+            </div>
+        </div>
+
+        <!-- 第 3 頁：CC 四元素 -->
+        <div class="slide s3" id="s3">
+            <div class="slide-body">
+                <div class="slide-text">
+                    <div class="slide-title">創用 CC 授權標誌與意義</div>
+                    <ul class="content-list">
+                        <li>👤 <strong>姓名標示（BY）：</strong>要寫是誰做的。</li>
+                        <li>💲 <strong>非商業性（NC）：</strong>不能拿來賺錢。</li>
+                        <li>〓 <strong>禁止改作（ND）：</strong>不能改顏色、改形狀。</li>
+                        <li>⟳ <strong>相同方式分享（SA）：</strong>分享時用相同規則。</li>
+                    </ul>
+                </div>
+                <div class="slide-img">
+                    <svg viewBox="0 0 260 220" xmlns="http://www.w3.org/2000/svg" width="260">
+                        <rect width="260" height="220" fill="rgba(21,101,192,.2)" rx="14" />
+                        <!-- four CC element circles -->
+                        <circle cx="65" cy="75" r="40" fill="#0d47a1" stroke="#90caf9" stroke-width="2.5" />
+                        <text x="65" y="68" text-anchor="middle" font-size="22" font-family="sans-serif">👤</text>
+                        <text x="65" y="88" text-anchor="middle" font-size="9" fill="#e3f2fd" font-family="sans-serif"
+                            font-weight="bold">BY 姓名標示</text>
+
+                        <circle cx="195" cy="75" r="40" fill="#0d47a1" stroke="#90caf9" stroke-width="2.5" />
+                        <text x="195" y="68" text-anchor="middle" font-size="22" font-family="sans-serif">🚫💰</text>
+                        <text x="195" y="88" text-anchor="middle" font-size="9" fill="#e3f2fd" font-family="sans-serif"
+                            font-weight="bold">NC 非商業</text>
+
+                        <circle cx="65" cy="165" r="40" fill="#0d47a1" stroke="#90caf9" stroke-width="2.5" />
+                        <text x="65" y="158" text-anchor="middle" font-size="22" font-family="sans-serif">🔒</text>
+                        <text x="65" y="178" text-anchor="middle" font-size="9" fill="#e3f2fd" font-family="sans-serif"
+                            font-weight="bold">ND 禁止改作</text>
+
+                        <circle cx="195" cy="165" r="40" fill="#0d47a1" stroke="#90caf9" stroke-width="2.5" />
+                        <text x="195" y="158" text-anchor="middle" font-size="22" font-family="sans-serif">♻️</text>
+                        <text x="195" y="178" text-anchor="middle" font-size="9" fill="#e3f2fd" font-family="sans-serif"
+                            font-weight="bold">SA 相同分享</text>
+                        <!-- CC centre badge -->
+                        <circle cx="130" cy="110" r="20" fill="#1565c0" stroke="#f8bbd0" stroke-width="2" />
+                        <text x="130" y="116" text-anchor="middle" font-size="14" fill="#fff" font-weight="900"
+                            font-family="sans-serif">CC</text>
+                    </svg>
+                </div>
+            </div>
+        </div>
+
+        <!-- 第 4 頁：六種套餐 -->
+        <div class="slide s4" id="s4">
+            <div class="slide-body">
+                <div class="slide-text">
+                    <div class="slide-title">授權組合大解密</div>
+                    <ul class="content-list">
+                        <li>最常見：<strong>BY-NC-SA</strong>（姓名標示、非商用、相同分享）</li>
+                        <li>最寬鬆：<strong>CC0</strong> — 完全釋出到公眾領域，無任何限制。</li>
+                        <li>六種組合依限制程度由寬到嚴排列。</li>
+                    </ul>
+                </div>
+                <div class="slide-img">
+                    <svg viewBox="0 0 260 220" xmlns="http://www.w3.org/2000/svg" width="260">
+                        <rect width="260" height="220" fill="rgba(92,72,0,.2)" rx="14" />
+                        <!-- menu card -->
+                        <rect x="30" y="20" width="200" height="185" rx="10" fill="#4a3800" stroke="#ffe082"
+                            stroke-width="2" />
+                        <rect x="38" y="28" width="184" height="170" rx="8" fill="#3a2c00" />
+                        <!-- title -->
+                        <text x="130" y="50" text-anchor="middle" font-size="13" fill="#ffe082" font-family="sans-serif"
+                            font-weight="bold">🍽️ CC 授權菜單</text>
+                        <!-- CC0 item -->
+                        <rect x="46" y="58" width="168" height="36" rx="6" fill="#5c4800" stroke="#ffd54f"
+                            stroke-width="1.5" />
+                        <text x="80" y="74" font-size="11" fill="#fff9c4" font-family="sans-serif"
+                            font-weight="bold">CC0 大放送餐</text>
+                        <text x="80" y="85" font-size="9" fill="#ffcc80" font-family="sans-serif">完全免費，零限制！</text>
+                        <text x="195" y="80" text-anchor="middle" font-size="16" font-family="sans-serif">🎁</text>
+                        <!-- divider -->
+                        <line x1="46" y1="102" x2="214" y2="102" stroke="#ffe082" stroke-width="1" opacity=".4" />
+                        <!-- combo rows -->
+                        <text x="54" y="118" font-size="9" fill="#ffe082" font-family="sans-serif"
+                            font-weight="bold">BY</text>
+                        <text x="78" y="118" font-size="9" fill="#ffcc80" font-family="sans-serif">· 姓名標示</text>
+                        <text x="54" y="132" font-size="9" fill="#ffe082" font-family="sans-serif"
+                            font-weight="bold">BY-NC</text>
+                        <text x="96" y="132" font-size="9" fill="#ffcc80" font-family="sans-serif">· + 非商業</text>
+                        <text x="54" y="146" font-size="9" fill="#ffe082" font-family="sans-serif"
+                            font-weight="bold">BY-NC-SA</text>
+                        <text x="112" y="146" font-size="9" fill="#ffcc80" font-family="sans-serif">· + 相同分享</text>
+                        <text x="54" y="160" font-size="9" fill="#ffe082" font-family="sans-serif"
+                            font-weight="bold">BY-ND</text>
+                        <text x="90" y="160" font-size="9" fill="#ffcc80" font-family="sans-serif">· + 禁止改作</text>
+                        <text x="54" y="174" font-size="9" fill="#ffe082" font-family="sans-serif"
+                            font-weight="bold">BY-NC-ND</text>
+                        <text x="116" y="174" font-size="9" fill="#ffcc80" font-family="sans-serif">· 最嚴格</text>
+                    </svg>
+                </div>
+            </div>
+        </div>
+
+        <!-- 第 5 頁：自由軟體 vs 免費軟體 -->
+        <div class="slide s5" id="s5">
+            <div class="slide-body">
+                <div class="slide-text">
+                    <div class="slide-title">自由軟體 vs. 免費軟體</div>
+                    <div class="compare-box">
+                        <div class="compare-col" style="border-color:#82b1ff;">
+                            <h4 style="color:#82b1ff;">🐧 自由軟體</h4>
+                            <ul>
+                                <li>看源碼</li>
+                                <li>自由修改</li>
+                                <li>再分發</li>
+                                <li>Scratch, LibreOffice</li>
+                            </ul>
+                            <p style="margin-top:6px;font-size:.75rem;opacity:.75;">強調「自由」</p>
+                        </div>
+                        <div class="compare-col" style="border-color:#90caf9;">
+                            <h4 style="color:#90caf9;">🆓 免費軟體</h4>
+                            <ul>
+                                <li>不收費</li>
+                                <li>不一定開源</li>
+                                <li>不保證修改權</li>
+                            </ul>
+                            <p style="margin-top:6px;font-size:.75rem;opacity:.75;">只是「不收錢」</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="slide-img">
+                    <svg viewBox="0 0 260 220" xmlns="http://www.w3.org/2000/svg" width="260">
+                        <rect width="260" height="220" fill="rgba(0,61,107,.2)" rx="14" />
+                        <!-- left: linux penguin free software -->
+                        <rect x="20" y="50" width="100" height="130" rx="8" fill="#003d6b" stroke="#82b1ff"
+                            stroke-width="1.5" />
+                        <!-- tux penguin rough -->
+                        <ellipse cx="70" cy="110" rx="28" ry="34" fill="#1a1a1a" />
+                        <ellipse cx="70" cy="118" rx="18" ry="22" fill="#f5f5f5" />
+                        <circle cx="70" cy="88" r="18" fill="#1a1a1a" />
+                        <circle cx="63" cy="84" r="5" fill="#fff" />
+                        <circle cx="77" cy="84" r="5" fill="#fff" />
+                        <circle cx="63" cy="85" r="2.5" fill="#333" />
+                        <circle cx="77" cy="85" r="2.5" fill="#333" />
+                        <ellipse cx="70" cy="93" rx="6" ry="4" fill="#ffa726" />
+                        <text x="70" y="165" text-anchor="middle" font-size="9" fill="#82b1ff" font-family="sans-serif"
+                            font-weight="bold">自由軟體</text>
+                        <!-- right: free price tag -->
+                        <rect x="140" y="50" width="100" height="130" rx="8" fill="#003d6b" stroke="#90caf9"
+                            stroke-width="1.5" />
+                        <!-- price tag -->
+                        <path d="M190 80 L215 80 L230 95 L215 110 L190 110 L175 95 Z" fill="#1565c0" stroke="#90caf9"
+                            stroke-width="1.5" />
+                        <circle cx="196" cy="90" r="4" fill="#fff" />
+                        <text x="205" y="100" text-anchor="middle" font-size="16" fill="#fff" font-weight="900"
+                            font-family="sans-serif">$0</text>
+                        <text x="205" y="116" text-anchor="middle" font-size="9" fill="#fff"
+                            font-family="sans-serif">Free</text>
+                        <text x="190" y="165" text-anchor="middle" font-size="9" fill="#90caf9" font-family="sans-serif"
+                            font-weight="bold">免費軟體</text>
+                        <!-- not equal -->
+                        <text x="130" y="120" text-anchor="middle" font-size="22" fill="#ef5350"
+                            font-family="sans-serif">≠</text>
+                    </svg>
+                </div>
+            </div>
+        </div>
+
+        <!-- 第 6 頁：數位資源藏寶圖 -->
+        <div class="slide s6" id="s6">
+            <div class="slide-body">
+                <div class="slide-text">
+                    <div class="slide-title">哪裡找合法素材？</div>
+                    <div class="resource-list">
+                        <div class="res-item">🖼️ <strong>圖片：</strong>Unsplash、Pixabay（CC0 免費）</div>
+                        <div class="res-item">🎵 <strong>音樂：</strong>NCS (NoCopyrightSounds)</div>
+                        <div class="res-item">🔍 <strong>搜尋：</strong>Creative Commons 全球搜尋站點</div>
+                        <div class="res-item">💻 <strong>程式：</strong>Scratch、LibreOffice（自由軟體）</div>
+                    </div>
+                </div>
+                <div class="slide-img">
+                    <svg viewBox="0 0 260 220" xmlns="http://www.w3.org/2000/svg" width="260">
+                        <rect width="260" height="220" fill="rgba(0,67,90,.25)" rx="14" />
+                        <!-- map parchment -->
+                        <rect x="25" y="20" width="210" height="175" rx="10" fill="#004d5a" stroke="#80deea"
+                            stroke-width="2" />
+                        <!-- grid lines -->
+                        <line x1="95" y1="20" x2="95" y2="195" stroke="#80deea" stroke-width="1" opacity=".2" />
+                        <line x1="165" y1="20" x2="165" y2="195" stroke="#80deea" stroke-width="1" opacity=".2" />
+                        <line x1="25" y1="90" x2="235" y2="90" stroke="#80deea" stroke-width="1" opacity=".2" />
+                        <line x1="25" y1="152" x2="235" y2="152" stroke="#80deea" stroke-width="1" opacity=".2" />
+                        <!-- resource pins -->
+                        <text x="60" y="65" text-anchor="middle" font-size="22" font-family="sans-serif">🖼️</text>
+                        <text x="60" y="80" text-anchor="middle" font-size="8" fill="#80deea"
+                            font-family="sans-serif">Unsplash</text>
+                        <text x="130" y="65" text-anchor="middle" font-size="22" font-family="sans-serif">🎵</text>
+                        <text x="130" y="80" text-anchor="middle" font-size="8" fill="#80deea"
+                            font-family="sans-serif">NCS</text>
+                        <text x="200" y="65" text-anchor="middle" font-size="22" font-family="sans-serif">🔍</text>
+                        <text x="200" y="80" text-anchor="middle" font-size="8" fill="#80deea"
+                            font-family="sans-serif">CC Search</text>
+                        <text x="60" y="130" text-anchor="middle" font-size="22" font-family="sans-serif">🐧</text>
+                        <text x="60" y="145" text-anchor="middle" font-size="8" fill="#80deea"
+                            font-family="sans-serif">LibreOffice</text>
+                        <text x="130" y="130" text-anchor="middle" font-size="22" font-family="sans-serif">💻</text>
+                        <text x="130" y="145" text-anchor="middle" font-size="8" fill="#80deea"
+                            font-family="sans-serif">Scratch</text>
+                        <text x="200" y="130" text-anchor="middle" font-size="22" font-family="sans-serif">🖼️</text>
+                        <text x="200" y="145" text-anchor="middle" font-size="8" fill="#80deea"
+                            font-family="sans-serif">Pixabay</text>
+                        <!-- treasure X mark -->
+                        <text x="130" y="185" text-anchor="middle" font-size="14" fill="#ffd54f"
+                            font-family="sans-serif" font-weight="bold">✕ 合法素材寶藏</text>
+                    </svg>
+                </div>
+            </div>
+        </div>
+
+        <!-- 第 7 頁：跟著我找看看 -->
+        <div class="slide s7" id="s7">
+            <div class="slide-body">
+                <div class="slide-text">
+                    <div class="slide-title">實戰挑戰：尋找 CC 圖片</div>
+                    <ul class="content-list">
+                        <li>打開搜尋引擎，限制「具有 <strong>CC 授權</strong>」標籤。</li>
+                        <li>下載一張圖片並練習寫出標示：<br><em style="font-size:.82rem;opacity:.8;">「圖片來源：XXX，依創用 CC 姓名標示方式授權」</em>
+                        </li>
+                    </ul>
+                </div>
+                <div class="slide-img">
+                    <svg viewBox="0 0 260 220" xmlns="http://www.w3.org/2000/svg" width="260">
+                        <rect width="260" height="220" fill="rgba(74,16,96,.2)" rx="14" />
+                        <!-- browser window -->
+                        <rect x="20" y="25" width="220" height="170" rx="8" fill="#1a0a2e" stroke="#ce93d8"
+                            stroke-width="2" />
+                        <!-- browser top bar -->
+                        <rect x="20" y="25" width="220" height="30" rx="8" fill="#2d1a6e" />
+                        <rect x="20" y="42" width="220" height="13" rx="0" fill="#2d1a6e" />
+                        <!-- traffic lights -->
+                        <circle cx="36" cy="40" r="5" fill="#ef5350" />
+                        <circle cx="50" cy="40" r="5" fill="#ffc107" />
+                        <circle cx="64" cy="40" r="5" fill="#66bb6a" />
+                        <!-- url bar -->
+                        <rect x="74" y="33" width="140" height="14" rx="4" fill="#1a0a2e" stroke="#ce93d8"
+                            stroke-width="1" />
+                        <text x="80" y="43" font-size="7" fill="#ce93d8"
+                            font-family="monospace">images.google.com</text>
+                        <!-- search results grid -->
+                        <rect x="30" y="62" width="55" height="40" rx="4" fill="#4a148c" />
+                        <rect x="92" y="62" width="55" height="40" rx="4" fill="#4a148c" />
+                        <rect x="154" y="62" width="55" height="40" rx="4" fill="#4a148c" />
+                        <rect x="30" y="108" width="55" height="40" rx="4" fill="#4a148c" />
+                        <rect x="92" y="108" width="55" height="40" rx="4" fill="#4a148c" />
+                        <rect x="154" y="108" width="55" height="40" rx="4" fill="#4a148c" />
+                        <!-- usage rights dropdown highlight -->
+                        <rect x="30" y="155" width="120" height="22" rx="4" fill="#6a1b9a" stroke="#f48fb1"
+                            stroke-width="1.5" />
+                        <text x="40" y="169" font-size="8" fill="#fce4ec" font-family="sans-serif">使用權限 ▼ 創用CC授權</text>
+                        <!-- big red circle on dropdown -->
+                        <circle cx="145" cy="166" r="14" fill="none" stroke="#ef5350" stroke-width="2.5" />
+                        <!-- arrow to dropdown -->
+                        <path d="M185 175 L160 170" fill="none" stroke="#ef5350" stroke-width="2"
+                            marker-end="url(#arrG63b)" />
+                        <defs>
+                            <marker id="arrG63b" markerWidth="6" markerHeight="5" refX="5" refY="2.5" orient="auto">
+                                <polygon points="0 0,6 2.5,0 5" fill="#ef5350" />
+                            </marker>
+                        </defs>
+                        <text x="202" y="173" text-anchor="middle" font-size="8" fill="#ef5350"
+                            font-family="sans-serif">點這裡！</text>
+                    </svg>
+                </div>
+            </div>
+        </div>
+
+        <!-- 第 8 頁：本章總結 -->
+        <div class="slide s8" id="s8">
+            <div class="slide-body">
+                <div class="slide-text">
+                    <div class="slide-title">成為負責任的數位公民</div>
+                    <ul class="content-list">
+                        <li>尊重版權，就是<strong>保護創意</strong>。</li>
+                        <li>善用 CC 資源，提升<strong>創作效率</strong>。</li>
+                        <li>樂於分享，共同<strong>豐富數位世界</strong>。</li>
+                    </ul>
+                </div>
+                <div class="slide-img">
+                    <svg viewBox="0 0 260 220" xmlns="http://www.w3.org/2000/svg" width="260">
+                        <defs>
+                            <radialGradient id="g8bg63" cx="50%" cy="50%" r="55%">
+                                <stop offset="0%" stop-color="#2e7d32" stop-opacity=".4" />
+                                <stop offset="100%" stop-color="#0a1a0a" stop-opacity="0" />
+                            </radialGradient>
+                        </defs>
+                        <rect width="260" height="220" fill="url(#g8bg63)" rx="14" />
+                        <!-- big glowing sprout -->
+                        <circle cx="130" cy="120" r="36" fill="rgba(46,125,50,.3)" stroke="#66bb6a" stroke-width="2" />
+                        <text x="130" y="132" text-anchor="middle" font-size="40" font-family="sans-serif">🌱</text>
+                        <!-- students holding hands around sprout -->
+                        <!-- left student -->
+                        <circle cx="55" cy="110" r="14" fill="#ffcc80" />
+                        <rect x="43" y="124" width="24" height="28" rx="6" fill="#1565c0" />
+                        <!-- right student -->
+                        <circle cx="205" cy="110" r="14" fill="#ffcc80" />
+                        <rect x="193" y="124" width="24" height="28" rx="6" fill="#c62828" />
+                        <!-- top student -->
+                        <circle cx="130" cy="52" r="14" fill="#ffcc80" />
+                        <rect x="118" y="66" width="24" height="28" rx="6" fill="#7b1fa2" />
+                        <!-- hands connecting -->
+                        <line x1="67" y1="120" x2="96" y2="130" stroke="#ffcc80" stroke-width="6"
+                            stroke-linecap="round" />
+                        <line x1="193" y1="120" x2="164" y2="130" stroke="#ffcc80" stroke-width="6"
+                            stroke-linecap="round" />
+                        <line x1="130" y1="80" x2="130" y2="90" stroke="#ffcc80" stroke-width="6"
+                            stroke-linecap="round" />
+                        <!-- sparkles -->
+                        <text x="35" y="80" font-size="14" font-family="sans-serif">✨</text>
+                        <text x="215" y="80" font-size="14" font-family="sans-serif">✨</text>
+                        <text x="130" y="200" text-anchor="middle" font-size="11" fill="#a5d6a7"
+                            font-family="sans-serif" letter-spacing="1">創意生生不息</text>
+                    </svg>
+                </div>
+            </div>
+        </div>
+
+    </div><!-- /sw -->
+    <div class="nav">
+        <button class="nb" id="prevBtn" onclick="go(-1)" disabled>&#8592; 上一頁</button>
+        <div class="dr" id="dots"></div>
+        <button class="nb" id="nextBtn" onclick="go(1)">下一頁 &#8594;</button>
+    </div>
+    <script>
+        const total = 8; let cur = 1;
+        const dotsEl = document.getElementById('dots');
+        for (let i = 1; i <= total; i++) { const d = document.createElement('div'); d.className = 'dot' + (i === 1 ? ' on' : ''); d.onclick = () => gt(i); dotsEl.appendChild(d); }
+        function gt(n) {
+            const old = document.getElementById('s' + cur);
+            old.style.cssText = 'transition:none;opacity:0;pointer-events:none';
+            old.classList.remove('active');
+            cur = n;
+            const el = document.getElementById('s' + cur);
+            el.style.cssText = 'transform:translateX(60px);opacity:0;transition:none;z-index:1;pointer-events:none';
+            el.classList.add('active');
+            requestAnimationFrame(() => requestAnimationFrame(() => {
+                el.style.cssText = 'transition:opacity .45s,transform .45s;transform:translateX(0);opacity:1;z-index:1;pointer-events:auto';
+            }));
+            document.getElementById('cur').textContent = cur;
+            document.querySelectorAll('.dot').forEach((d, i) => d.classList.toggle('on', i === cur - 1));
+            document.getElementById('prevBtn').disabled = cur === 1;
+            document.getElementById('nextBtn').disabled = cur === total;
+        }
+        function go(d) { const n = cur + d; if (n < 1 || n > total) return; gt(n); }
+        document.addEventListener('keydown', e => { if (e.key === 'ArrowRight' || e.key === 'ArrowDown') go(1); if (e.key === 'ArrowLeft' || e.key === 'ArrowUp') go(-1); });
+    </script>
+</body>
+
+</html>

@@ -1,0 +1,828 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>4-2 個人資料的保護措施</title>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700;900&family=JetBrains+Mono:wght@400;700&display=swap"
+        rel="stylesheet">
+    <style>
+        *,
+        *::before,
+        *::after {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0
+        }
+
+        :root {
+            --ac: #6c63ff;
+            --ac2: #43e8b0;
+            --dark: #0d0d1a;
+            --card: #1a1a2e;
+            --text: #e8e8f0;
+            --sub: #8888aa;
+            --red: #ff6b6b
+        }
+
+        body {
+            font-family: "Noto Sans TC", sans-serif;
+            background: var(--dark);
+            color: var(--text);
+            height: 100vh;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column
+        }
+
+        .topbar {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 10px 32px;
+            background: rgba(108, 99, 255, .06);
+            border-bottom: 1px solid rgba(108, 99, 255, .15);
+            flex-shrink: 0
+        }
+
+        .ti {
+            font-size: 15px;
+            font-weight: 700;
+            color: var(--ac2)
+        }
+
+        .sc {
+            font-family: "JetBrains Mono", monospace;
+            font-size: 13px;
+            color: var(--sub)
+        }
+
+        .sw {
+            flex: 1;
+            overflow: hidden;
+            position: relative
+        }
+
+        .slide {
+            position: absolute;
+            inset: 0;
+            display: flex;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity .45s, transform .45s;
+            transform: translateX(50px)
+        }
+
+        .slide.active {
+            opacity: 1;
+            transform: translateX(0);
+            pointer-events: auto
+        }
+
+        .slide-body {
+            display: flex;
+            flex-direction: row;
+            flex-wrap: wrap;
+            width: 100%;
+            height: 100%;
+        }
+
+        .slide-text {
+            flex: 1;
+            min-width: 240px;
+            padding: 36px 40px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            gap: 14px;
+            overflow-y: auto;
+        }
+
+        .slide-img {
+            flex: 0 0 340px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 24px;
+            background: rgba(255, 255, 255, .02);
+            border-left: 1px solid rgba(255, 255, 255, .06);
+        }
+
+        .slide-title {
+            font-size: clamp(20px, 2.5vw, 36px);
+            font-weight: 900;
+            line-height: 1.3;
+            background: linear-gradient(135deg, #fff 20%, var(--ac2));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .slide-subtitle {
+            font-size: 1rem;
+            font-weight: 500;
+            opacity: .85;
+            color: var(--ac2);
+        }
+
+        ul.content-list {
+            list-style: none;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        ul.content-list li {
+            display: flex;
+            align-items: flex-start;
+            gap: 10px;
+            font-size: .95rem;
+            line-height: 1.6;
+            color: #c0c0d8
+        }
+
+        ul.content-list li::before {
+            content: "▸";
+            color: var(--ac2);
+            flex-shrink: 0;
+            margin-top: 2px
+        }
+
+        .callout {
+            margin-top: 14px;
+            padding: 12px 16px;
+            border-radius: 10px;
+            font-size: .88rem;
+            line-height: 1.6;
+            background: rgba(108, 99, 255, .12);
+            border: 1.5px solid var(--ac);
+            color: #d0d0f0;
+        }
+
+        .compare-box {
+            display: flex;
+            gap: 12px;
+            margin-top: 10px;
+            flex-wrap: wrap;
+        }
+
+        .compare-col {
+            flex: 1;
+            min-width: 130px;
+            border-radius: 10px;
+            padding: 12px 14px;
+            background: rgba(255, 255, 255, .07);
+            border: 1.5px solid rgba(255, 255, 255, .15);
+        }
+
+        .compare-col h4 {
+            font-size: .82rem;
+            font-weight: 700;
+            margin-bottom: 8px;
+        }
+
+        .compare-col ul {
+            list-style: none;
+            font-size: .84rem;
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+            color: #c0c0d8
+        }
+
+        .compare-col ul li::before {
+            content: "• ";
+        }
+
+        .hint {
+            margin-top: 14px;
+            padding: 10px 14px;
+            border-radius: 8px;
+            font-size: .85rem;
+            line-height: 1.5;
+            font-weight: 500;
+            background: rgba(67, 232, 176, .1);
+            border: 1.5px solid var(--ac2);
+            color: #d0f0e8;
+        }
+
+        .law-note {
+            margin-top: 14px;
+            padding: 10px 14px;
+            border-radius: 8px;
+            font-size: .85rem;
+            color: #ffcdd2;
+            line-height: 1.5;
+            background: rgba(255, 107, 107, .1);
+            border: 1.5px solid var(--red);
+        }
+
+        .quiz-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+            margin-top: 10px;
+        }
+
+        .quiz-item {
+            background: rgba(255, 255, 255, .07);
+            border-radius: 10px;
+            padding: 12px 14px;
+            font-size: .9rem;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            border: 1.5px solid rgba(255, 255, 255, .12);
+            color: #c0c0d8
+        }
+
+        .quiz-label {
+            width: 26px;
+            height: 26px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 900;
+            font-size: .85rem;
+            flex-shrink: 0;
+            background: rgba(108, 99, 255, .3);
+            color: #e8e8f0;
+        }
+
+        .rights-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 8px;
+            margin-top: 12px;
+        }
+
+        .right-item {
+            background: rgba(255, 255, 255, .07);
+            border-radius: 10px;
+            padding: 10px 12px;
+            font-size: .88rem;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            border: 1.5px solid rgba(108, 99, 255, .3);
+            color: #c0c0d8
+        }
+
+        .icon-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 8px;
+            margin-top: 12px;
+        }
+
+        .icon-cell {
+            background: rgba(255, 255, 255, .07);
+            border-radius: 8px;
+            padding: 8px;
+            text-align: center;
+            font-size: .75rem;
+            border: 1px solid rgba(255, 255, 255, .12);
+            color: #c0c0d8
+        }
+
+        .icon-cell .ico {
+            font-size: 1.3rem;
+            display: block;
+            margin-bottom: 4px;
+        }
+
+        /* slide background colouring via external classes */
+        .s1 .slide-text {
+            background: linear-gradient(135deg, #0c1e3e 0%, #1a3a6e 50%, #0d5c9e 100%);
+        }
+
+        .s2 .slide-text {
+            background: linear-gradient(135deg, #2d1500 0%, #7e3505 60%, #bf6120 100%);
+        }
+
+        .s3 .slide-text {
+            background: linear-gradient(135deg, #003533 0%, #006064 60%, #00838f 100%);
+        }
+
+        .s4 .slide-text {
+            background: linear-gradient(135deg, #1a0045 0%, #4a148c 60%, #6a1b9a 100%);
+        }
+
+        .s5 .slide-text {
+            background: linear-gradient(135deg, #1b2838 0%, #2a475e 60%, #1b6ca8 100%);
+        }
+
+        .s6 .slide-text {
+            background: linear-gradient(135deg, #0a2818 0%, #1b5e20 60%, #2e7d32 100%);
+        }
+
+        .s7 .slide-text {
+            background: linear-gradient(135deg, #1c1c3a 0%, #283593 60%, #3949ab 100%);
+        }
+
+        .s8 .slide-text {
+            background: linear-gradient(135deg, #0a2015 0%, #1b4d30 60%, #2e6b48 100%);
+        }
+
+        svg {
+            max-width: 100%;
+            height: auto;
+        }
+
+        .nav {
+            flex-shrink: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 14px;
+            padding: 12px 32px;
+            background: rgba(255, 255, 255, .02);
+            border-top: 1px solid rgba(255, 255, 255, .06)
+        }
+
+        .nb {
+            background: none;
+            border: 1px solid rgba(255, 255, 255, .15);
+            color: var(--text);
+            border-radius: 50px;
+            padding: 8px 22px;
+            font-size: 14px;
+            cursor: pointer;
+            transition: background .2s
+        }
+
+        .nb:hover {
+            background: rgba(255, 255, 255, .07)
+        }
+
+        .nb:disabled {
+            opacity: .3;
+            cursor: default
+        }
+
+        .dr {
+            display: flex;
+            gap: 6px
+        }
+
+        .dot {
+            width: 7px;
+            height: 7px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, .2);
+            cursor: pointer;
+            transition: all .3s
+        }
+
+        .dot.on {
+            background: var(--ac);
+            width: 22px;
+            border-radius: 4px
+        }
+    </style>
+    </style>
+</head>
+
+<body>
+    <div class="topbar">
+        <div class="ti">4-2 個人資料的保護措施</div>
+        <div class="sc"><span id="cur">1</span> / 8</div>
+    </div>
+    <div class="sw">
+
+        <!-- 第 1 頁：封面頁 -->
+        <div class="slide s1 active" id="s1">
+            <div class="slide-body">
+                <div class="slide-text">
+                    <div class="slide-title">資訊科技一下<br>4-2 個人資料的保護措施</div>
+                    <div class="slide-subtitle">我的資料誰作主？</div>
+                    <p style="margin-top:20px;opacity:.7;font-size:.9rem;line-height:1.7;">數位時代的自我防禦術<br>授課教師：鹿寮國中
+                        資訊科技教師</p>
+                </div>
+                <div class="slide-img">
+                    <svg viewBox="0 0 260 220" xmlns="http://www.w3.org/2000/svg" width="260">
+                        <defs>
+                            <radialGradient id="c1bg" cx="50%" cy="50%" r="50%">
+                                <stop offset="0%" stop-color="#1565c0" stop-opacity=".4" />
+                                <stop offset="100%" stop-color="#0c1e3e" stop-opacity="0" />
+                            </radialGradient>
+                        </defs>
+                        <rect width="260" height="220" fill="url(#c1bg)" rx="14" />
+                        <!-- big lock -->
+                        <rect x="90" y="100" width="80" height="70" rx="12" fill="#1565c0" stroke="#42a5f5"
+                            stroke-width="2.5" />
+                        <path d="M108 100 L108 80 Q108 55 130 55 Q152 55 152 80 L152 100" fill="none" stroke="#42a5f5"
+                            stroke-width="6" stroke-linecap="round" />
+                        <circle cx="130" cy="132" r="10" fill="#90caf9" />
+                        <rect x="126" y="138" width="8" height="14" rx="4" fill="#90caf9" />
+                        <!-- connections -->
+                        <line x1="90" y1="135" x2="48" y2="100" stroke="#42a5f5" stroke-width="1.5"
+                            stroke-dasharray="4 3" opacity=".6" />
+                        <line x1="90" y1="155" x2="40" y2="175" stroke="#42a5f5" stroke-width="1.5"
+                            stroke-dasharray="4 3" opacity=".6" />
+                        <line x1="170" y1="135" x2="212" y2="100" stroke="#42a5f5" stroke-width="1.5"
+                            stroke-dasharray="4 3" opacity=".6" />
+                        <line x1="170" y1="155" x2="220" y2="175" stroke="#42a5f5" stroke-width="1.5"
+                            stroke-dasharray="4 3" opacity=".6" />
+                        <!-- icons: social, credit card, location -->
+                        <circle cx="42" cy="90" r="18" fill="#0d47a1" stroke="#42a5f5" stroke-width="1.5" />
+                        <text x="42" y="96" text-anchor="middle" font-size="16" font-family="sans-serif">💬</text>
+                        <circle cx="35" cy="178" r="18" fill="#0d47a1" stroke="#42a5f5" stroke-width="1.5" />
+                        <text x="35" y="184" text-anchor="middle" font-size="16" font-family="sans-serif">💳</text>
+                        <circle cx="218" cy="90" r="18" fill="#0d47a1" stroke="#42a5f5" stroke-width="1.5" />
+                        <text x="218" y="96" text-anchor="middle" font-size="16" font-family="sans-serif">📍</text>
+                        <circle cx="225" cy="178" r="18" fill="#0d47a1" stroke="#42a5f5" stroke-width="1.5" />
+                        <text x="225" y="184" text-anchor="middle" font-size="16" font-family="sans-serif">🏦</text>
+                    </svg>
+                </div>
+            </div>
+        </div>
+
+        <!-- 第 2 頁：我也能說「不」？ -->
+        <div class="slide s2" id="s2">
+            <div class="slide-body">
+                <div class="slide-text">
+                    <div class="slide-title">中獎了，但代價是...？</div>
+                    <ul class="content-list">
+                        <li>案例：路邊填問卷送大娃娃，但要你寫<strong>身分證和住址</strong>。</li>
+                        <li>你有權決定<strong>不提供</strong>嗎？</li>
+                        <li>法律如何賦予我們<strong>拒絕的勇氣</strong>。</li>
+                    </ul>
+                    <div class="callout">⚖️ 個資法保障你對個人資料有自主決定的權利！</div>
+                </div>
+                <div class="slide-img">
+                    <svg viewBox="0 0 260 220" xmlns="http://www.w3.org/2000/svg" width="260">
+                        <rect width="260" height="220" fill="rgba(126,53,5,.2)" rx="14" />
+                        <!-- teddy bear -->
+                        <circle cx="90" cy="70" r="35" fill="#d4a27a" stroke="#a0785a" stroke-width="2" />
+                        <circle cx="70" cy="48" r="16" fill="#c49060" />
+                        <circle cx="110" cy="48" r="16" fill="#c49060" />
+                        <circle cx="80" cy="68" r="6" fill="#5a3825" />
+                        <circle cx="100" cy="68" r="6" fill="#5a3825" />
+                        <path d="M82 82 Q90 90 98 82" fill="none" stroke="#5a3825" stroke-width="2.5"
+                            stroke-linecap="round" />
+                        <!-- bow -->
+                        <path d="M75 105 Q90 98 105 105" fill="none" stroke="#e53935" stroke-width="4"
+                            stroke-linecap="round" />
+                        <circle cx="90" cy="103" r="4" fill="#e53935" />
+                        <!-- body -->
+                        <ellipse cx="90" cy="150" rx="35" ry="42" fill="#d4a27a" />
+                        <!-- divider -->
+                        <line x1="145" y1="40" x2="145" y2="200" stroke="#ffb74d" stroke-width="1"
+                            stroke-dasharray="5 4" opacity=".4" />
+                        <!-- student figure -->
+                        <circle cx="190" cy="85" r="22" fill="#ffcc80" />
+                        <rect x="168" y="108" width="44" height="50" rx="10" fill="#5c6bc0" />
+                        <!-- uncertain expression -->
+                        <ellipse cx="182" cy="82" rx="4" ry="4.5" fill="#fff" />
+                        <ellipse cx="198" cy="82" rx="4" ry="4.5" fill="#fff" />
+                        <ellipse cx="182" cy="83" rx="2" ry="2" fill="#333" />
+                        <ellipse cx="198" cy="83" rx="2" ry="2" fill="#333" />
+                        <path d="M183 95 Q190 91 197 95" fill="none" stroke="#5a3825" stroke-width="2"
+                            stroke-linecap="round" />
+                        <!-- question marks -->
+                        <text x="215" y="75" font-size="22" fill="#ffb74d" font-weight="900"
+                            font-family="sans-serif">?</text>
+                        <text x="222" y="55" font-size="15" fill="#ffb74d" opacity=".7"
+                            font-family="sans-serif">?</text>
+                        <!-- surveyor arm + pen -->
+                        <line x1="190" y1="145" x2="230" y2="130" stroke="#ffcc80" stroke-width="8"
+                            stroke-linecap="round" />
+                        <rect x="228" y="120" width="8" height="22" rx="3" fill="#f5f5f5"
+                            transform="rotate(15,232,131)" />
+                    </svg>
+                </div>
+            </div>
+        </div>
+
+        <!-- 第 3 頁：合理利用的三部曲 -->
+        <div class="slide s3" id="s3">
+            <div class="slide-body">
+                <div class="slide-text">
+                    <div class="slide-title">公道自在個資法</div>
+                    <ul class="content-list">
+                        <li><strong>特定目的：</strong>必須清楚說明為什麼要拿資料。</li>
+                        <li><strong>告知義務：</strong>告知運用範圍、地區、對象、方式。</li>
+                        <li><strong>取得同意：</strong>「你同意」才行，缺一不可。</li>
+                    </ul>
+                </div>
+                <div class="slide-img">
+                    <svg viewBox="0 0 260 220" xmlns="http://www.w3.org/2000/svg" width="260">
+                        <rect width="260" height="220" fill="rgba(0,96,100,.15)" rx="14" />
+                        <!-- step 1: purpose -->
+                        <circle cx="50" cy="80" r="32" fill="#006064" stroke="#80deea" stroke-width="2" />
+                        <text x="50" y="74" text-anchor="middle" font-size="22" font-family="sans-serif">❓</text>
+                        <text x="50" y="98" text-anchor="middle" font-size="9" fill="#e0f7fa"
+                            font-family="sans-serif">特定目的</text>
+                        <!-- arrow 1→2 -->
+                        <path d="M84 80 L116 80" fill="none" stroke="#80deea" stroke-width="2.5"
+                            marker-end="url(#arr3)" />
+                        <!-- step 2: notify -->
+                        <circle cx="150" cy="80" r="32" fill="#006064" stroke="#80deea" stroke-width="2" />
+                        <text x="150" y="74" text-anchor="middle" font-size="22" font-family="sans-serif">📢</text>
+                        <text x="150" y="98" text-anchor="middle" font-size="9" fill="#e0f7fa"
+                            font-family="sans-serif">告知義務</text>
+                        <!-- arrow 2→3 -->
+                        <path d="M184 80 L216 80" fill="none" stroke="#80deea" stroke-width="2.5"
+                            marker-end="url(#arr3)" />
+                        <!-- step 3: agree -->
+                        <circle cx="240" cy="80" r="32" fill="#006064" stroke="#80deea" stroke-width="2"
+                            transform="translate(-90,0)" />
+                        <!-- reposition as cx=210 won't work cleanly; use group -->
+                        <defs>
+                            <marker id="arr3" markerWidth="8" markerHeight="6" refX="6" refY="3" orient="auto">
+                                <polygon points="0 0,8 3,0 6" fill="#80deea" />
+                            </marker>
+                        </defs>
+                        <circle cx="242" cy="80" r="30" fill="#00838f" stroke="#80deea" stroke-width="2" />
+                        <text x="242" y="74" text-anchor="middle" font-size="22" font-family="sans-serif">✅</text>
+                        <text x="242" y="98" text-anchor="middle" font-size="9" fill="#e0f7fa"
+                            font-family="sans-serif">取得同意</text>
+                        <!-- connecting line below -->
+                        <path d="M50 112 Q50 150 150 150 Q242 150 242 112" fill="none" stroke="#80deea"
+                            stroke-width="1.5" stroke-dasharray="5 4" opacity=".5" />
+                        <text x="146" y="175" text-anchor="middle" font-size="11" fill="#e0f7fa"
+                            font-family="sans-serif" font-weight="bold">三步驟缺一不可！</text>
+                    </svg>
+                </div>
+            </div>
+        </div>
+
+        <!-- 第 4 頁：五大權利 -->
+        <div class="slide s4" id="s4">
+            <div class="slide-body">
+                <div class="slide-text">
+                    <div class="slide-title">個資主人有權利！</div>
+                    <div class="rights-grid">
+                        <div class="right-item" style="border-color:#ce93d8;">🔍 查詢或請求閱覽</div>
+                        <div class="right-item" style="border-color:#ce93d8;">📋 請求製給複製本</div>
+                        <div class="right-item" style="border-color:#ce93d8;">✏️ 請求補充或更正</div>
+                        <div class="right-item" style="border-color:#ce93d8;">🚫 請求停止蒐集/利用</div>
+                        <div class="right-item" style="border-color:#f48fb1;grid-column:span 2;">🗑️ 請求刪除</div>
+                    </div>
+                </div>
+                <div class="slide-img">
+                    <svg viewBox="0 0 260 220" xmlns="http://www.w3.org/2000/svg" width="260">
+                        <rect width="260" height="220" fill="rgba(74,20,140,.2)" rx="14" />
+                        <!-- golden hand palm -->
+                        <path
+                            d="M90 175 Q60 165 55 130 Q52 110 65 105 Q75 102 78 115 L80 90 Q80 78 90 78 Q100 78 100 90 L100 70 Q100 58 110 58 Q120 58 120 70 L120 60 Q120 48 130 48 Q140 48 140 60 L140 70 Q140 58 150 58 Q160 58 160 70 L160 130 Q172 115 182 118 Q195 122 190 140 Q185 160 165 175 Z"
+                            fill="#ffd54f" stroke="#ffb300" stroke-width="2" />
+                        <!-- 5 bubbles -->
+                        <circle cx="85" cy="75" r="18" fill="#6a1b9a" stroke="#ce93d8" stroke-width="1.5" />
+                        <text x="85" y="71" text-anchor="middle" font-size="11" fill="#e1bee7"
+                            font-family="sans-serif">查詢</text>
+                        <text x="85" y="83" text-anchor="middle" font-size="9" fill="#e1bee7"
+                            font-family="sans-serif">閱覽</text>
+                        <circle cx="130" cy="42" r="18" fill="#6a1b9a" stroke="#ce93d8" stroke-width="1.5" />
+                        <text x="130" y="38" text-anchor="middle" font-size="11" fill="#e1bee7"
+                            font-family="sans-serif">複製</text>
+                        <text x="130" y="50" text-anchor="middle" font-size="9" fill="#e1bee7"
+                            font-family="sans-serif">本</text>
+                        <circle cx="182" cy="60" r="18" fill="#6a1b9a" stroke="#ce93d8" stroke-width="1.5" />
+                        <text x="182" y="56" text-anchor="middle" font-size="11" fill="#e1bee7"
+                            font-family="sans-serif">補充</text>
+                        <text x="182" y="68" text-anchor="middle" font-size="9" fill="#e1bee7"
+                            font-family="sans-serif">更正</text>
+                        <circle cx="210" cy="105" r="18" fill="#6a1b9a" stroke="#ce93d8" stroke-width="1.5" />
+                        <text x="210" y="101" text-anchor="middle" font-size="11" fill="#e1bee7"
+                            font-family="sans-serif">停止</text>
+                        <text x="210" y="113" text-anchor="middle" font-size="9" fill="#e1bee7"
+                            font-family="sans-serif">蒐集</text>
+                        <circle cx="200" cy="155" r="18" fill="#880e4f" stroke="#f48fb1" stroke-width="1.5" />
+                        <text x="200" y="151" text-anchor="middle" font-size="11" fill="#fce4ec"
+                            font-family="sans-serif">請求</text>
+                        <text x="200" y="163" text-anchor="middle" font-size="9" fill="#fce4ec"
+                            font-family="sans-serif">刪除</text>
+                    </svg>
+                </div>
+            </div>
+        </div>
+
+        <!-- 第 5 頁：組織的責任 -->
+        <div class="slide s5" id="s5">
+            <div class="slide-body">
+                <div class="slide-text">
+                    <div class="slide-title">拿資料的人該做什麼？</div>
+                    <ul class="content-list">
+                        <li>採行適當<strong>安全措施</strong>（軟體加密、硬體門禁）。</li>
+                        <li><strong>專人負責</strong>管理個人資料。</li>
+                        <li>違法罰則：罰款甚至是<strong>刑事責任</strong>。</li>
+                    </ul>
+                </div>
+                <div class="slide-img">
+                    <svg viewBox="0 0 260 220" xmlns="http://www.w3.org/2000/svg" width="260">
+                        <rect width="260" height="220" fill="rgba(42,71,94,.3)" rx="14" />
+                        <!-- server rack -->
+                        <rect x="60" y="30" width="140" height="160" rx="8" fill="#1b3a50" stroke="#66b2ff"
+                            stroke-width="2" />
+                        <!-- server units -->
+                        <rect x="72" y="44" width="116" height="22" rx="4" fill="#1565c0" stroke="#42a5f5"
+                            stroke-width="1" />
+                        <circle cx="178" cy="55" r="4" fill="#69f0ae" />
+                        <rect x="72" y="74" width="116" height="22" rx="4" fill="#1565c0" stroke="#42a5f5"
+                            stroke-width="1" />
+                        <circle cx="178" cy="85" r="4" fill="#69f0ae" />
+                        <rect x="72" y="104" width="116" height="22" rx="4" fill="#1565c0" stroke="#42a5f5"
+                            stroke-width="1" />
+                        <circle cx="178" cy="115" r="4" fill="#ffca28" />
+                        <rect x="72" y="134" width="116" height="22" rx="4" fill="#1565c0" stroke="#42a5f5"
+                            stroke-width="1" />
+                        <circle cx="178" cy="145" r="4" fill="#69f0ae" />
+                        <!-- door sign -->
+                        <rect x="62" y="168" width="136" height="16" rx="4" fill="#0d47a1" />
+                        <text x="130" y="179" text-anchor="middle" font-size="9" fill="#e3f2fd" font-family="sans-serif"
+                            font-weight="bold">專人授權進出</text>
+                        <!-- lock icon on door -->
+                        <rect x="76" y="50" width="10" height="8" rx="2" fill="#90caf9" />
+                        <path d="M78 50 L78 47 Q78 44 81 44 Q84 44 84 47 L84 50" fill="none" stroke="#90caf9"
+                            stroke-width="1.5" />
+                        <rect x="76" y="80" width="10" height="8" rx="2" fill="#90caf9" />
+                        <path d="M78 80 L78 77 Q78 74 81 74 Q84 74 84 77 L84 80" fill="none" stroke="#90caf9"
+                            stroke-width="1.5" />
+                    </svg>
+                </div>
+            </div>
+        </div>
+
+        <!-- 第 6 頁：個人防身術 -->
+        <div class="slide s6" id="s6">
+            <div class="slide-body">
+                <div class="slide-text">
+                    <div class="slide-title">個人護照 11 條準則</div>
+                    <ul class="content-list">
+                        <li>🔑 定期更新密碼、不與他人<strong>共用密碼</strong>。</li>
+                        <li>🚪 使用公用電腦必定<strong>登出</strong>。</li>
+                        <li>🕶️ 開啟<strong>無痕模式</strong>瀏覽。</li>
+                        <li>🚫 不點來源<strong>不明網址</strong>。</li>
+                    </ul>
+                </div>
+                <div class="slide-img">
+                    <svg viewBox="0 0 260 220" xmlns="http://www.w3.org/2000/svg" width="260">
+                        <rect width="260" height="220" fill="rgba(27,94,32,.2)" rx="14" />
+                        <!-- checklist items -->
+                        <rect x="30" y="28" width="200" height="36" rx="8" fill="#1b5e20" stroke="#a5d6a7"
+                            stroke-width="1.5" />
+                        <text x="55" y="51" font-size="13" fill="#e8f5e9" font-family="sans-serif">🔑 更換密碼</text>
+                        <rect x="220" y="34" width="16" height="16" rx="3" fill="#2e7d32" stroke="#a5d6a7"
+                            stroke-width="1.5" />
+                        <path d="M222 42 L226 46 L234 38" fill="none" stroke="#69f0ae" stroke-width="2.5"
+                            stroke-linecap="round" />
+
+                        <rect x="30" y="74" width="200" height="36" rx="8" fill="#1b5e20" stroke="#a5d6a7"
+                            stroke-width="1.5" />
+                        <text x="55" y="97" font-size="13" fill="#e8f5e9" font-family="sans-serif">🚪 公用電腦登出</text>
+                        <rect x="220" y="80" width="16" height="16" rx="3" fill="#2e7d32" stroke="#a5d6a7"
+                            stroke-width="1.5" />
+                        <path d="M222 88 L226 92 L234 84" fill="none" stroke="#69f0ae" stroke-width="2.5"
+                            stroke-linecap="round" />
+
+                        <rect x="30" y="120" width="200" height="36" rx="8" fill="#1b5e20" stroke="#a5d6a7"
+                            stroke-width="1.5" />
+                        <text x="55" y="143" font-size="13" fill="#e8f5e9" font-family="sans-serif">🕶️ 無痕模式瀏覽</text>
+                        <rect x="220" y="126" width="16" height="16" rx="3" fill="#2e7d32" stroke="#a5d6a7"
+                            stroke-width="1.5" />
+                        <path d="M222 134 L226 138 L234 130" fill="none" stroke="#69f0ae" stroke-width="2.5"
+                            stroke-linecap="round" />
+
+                        <rect x="30" y="166" width="200" height="36" rx="8" fill="#1b5e20" stroke="#a5d6a7"
+                            stroke-width="1.5" />
+                        <text x="55" y="189" font-size="13" fill="#e8f5e9" font-family="sans-serif">🚫 拒絕不明連結</text>
+                        <rect x="220" y="172" width="16" height="16" rx="3" fill="#2e7d32" stroke="#a5d6a7"
+                            stroke-width="1.5" />
+                        <path d="M222 180 L226 184 L234 176" fill="none" stroke="#69f0ae" stroke-width="2.5"
+                            stroke-linecap="round" />
+                    </svg>
+                </div>
+            </div>
+        </div>
+
+        <!-- 第 7 頁：實作：隱私大健檢 -->
+        <div class="slide s7" id="s7">
+            <div class="slide-body">
+                <div class="slide-text">
+                    <div class="slide-title">動手做，安全多</div>
+                    <ul class="content-list">
+                        <li>拿出手機，檢查常用的 <strong>App 權限</strong>。</li>
+                        <li>為什麼計算機 App 要讀取我的<strong>連絡人</strong>？</li>
+                        <li>練習將 IG/FB 改為<strong>私人帳號</strong>。</li>
+                    </ul>
+                </div>
+                <div class="slide-img">
+                    <svg viewBox="0 0 260 220" xmlns="http://www.w3.org/2000/svg" width="260">
+                        <rect width="260" height="220" fill="rgba(40,53,147,.2)" rx="14" />
+                        <!-- phone frame -->
+                        <rect x="80" y="15" width="100" height="190" rx="16" fill="#1a237e" stroke="#5c6bc0"
+                            stroke-width="2" />
+                        <rect x="88" y="30" width="84" height="155" rx="6" fill="#e8eaf6" />
+                        <!-- permission list -->
+                        <rect x="92" y="36" width="76" height="12" rx="3" fill="#3949ab" />
+                        <text x="130" y="45" text-anchor="middle" font-size="7" fill="#fff" font-family="sans-serif"
+                            font-weight="bold">App 權限設定</text>
+                        <text x="95" y="62" font-size="7" fill="#283593" font-family="sans-serif">📍 位置</text>
+                        <rect x="148" y="55" width="26" height="9" rx="4.5" fill="#ef5350" />
+                        <circle cx="171" cy="59.5" r="4" fill="#fff" />
+                        <text x="95" y="78" font-size="7" fill="#283593" font-family="sans-serif">📷 相機</text>
+                        <rect x="148" y="71" width="26" height="9" rx="4.5" fill="#ef5350" />
+                        <circle cx="171" cy="75.5" r="4" fill="#fff" />
+                        <text x="95" y="94" font-size="7" fill="#283593" font-family="sans-serif">👤 聯絡人</text>
+                        <rect x="148" y="87" width="26" height="9" rx="4.5" fill="#66bb6a" />
+                        <circle cx="168" cy="91.5" r="4" fill="#fff" />
+                        <text x="95" y="110" font-size="7" fill="#283593" font-family="sans-serif">🎙️ 麥克風</text>
+                        <rect x="148" y="103" width="26" height="9" rx="4.5" fill="#ef5350" />
+                        <circle cx="171" cy="107.5" r="4" fill="#fff" />
+                        <!-- red arrow pointing to location -->
+                        <path d="M40 59 L86 59" fill="none" stroke="#ef5350" stroke-width="3" marker-end="url(#arrd)" />
+                        <defs>
+                            <marker id="arrd" markerWidth="8" markerHeight="6" refX="6" refY="3" orient="auto">
+                                <polygon points="0 0,8 3,0 6" fill="#ef5350" />
+                            </marker>
+                        </defs>
+                        <text x="40" y="52" font-size="9" fill="#ef5350" font-family="sans-serif" font-weight="bold">⚠️
+                            為何</text>
+                        <text x="40" y="62" font-size="9" fill="#ef5350" font-family="sans-serif">需要？</text>
+                    </svg>
+                </div>
+            </div>
+        </div>
+
+        <!-- 第 8 頁：總結 -->
+        <div class="slide s8" id="s8">
+            <div class="slide-body">
+                <div class="slide-text">
+                    <div class="slide-title">保護個資，從心開始</div>
+                    <ul class="content-list">
+                        <li>未經同意不外洩。</li>
+                        <li>權利行使不缺席。</li>
+                        <li>安全防護不馬虎。</li>
+                    </ul>
+                </div>
+                <div class="slide-img">
+                    <svg viewBox="0 0 260 220" xmlns="http://www.w3.org/2000/svg" width="260">
+                        <defs>
+                            <radialGradient id="c8bg" cx="50%" cy="50%" r="50%">
+                                <stop offset="0%" stop-color="#2e7d32" stop-opacity=".4" />
+                                <stop offset="100%" stop-color="#0a2015" stop-opacity="0" />
+                            </radialGradient>
+                        </defs>
+                        <rect width="260" height="220" fill="url(#c8bg)" rx="14" />
+                        <!-- protection circle -->
+                        <circle cx="130" cy="105" r="75" fill="rgba(46,125,50,.2)" stroke="#66bb6a" stroke-width="2"
+                            opacity=".6" />
+                        <circle cx="130" cy="105" r="55" fill="rgba(46,125,50,.25)" stroke="#a5d6a7" stroke-width="1.5"
+                            opacity=".7" />
+                        <!-- people silhouettes -->
+                        <g opacity=".85">
+                            <circle cx="90" cy="95" r="12" fill="#a5d6a7" />
+                            <rect x="78" y="108" width="24" height="28" rx="8" fill="#a5d6a7" />
+                            <circle cx="130" cy="85" r="12" fill="#c8e6c9" />
+                            <rect x="118" y="98" width="24" height="28" rx="8" fill="#c8e6c9" />
+                            <circle cx="170" cy="95" r="12" fill="#a5d6a7" />
+                            <rect x="158" y="108" width="24" height="28" rx="8" fill="#a5d6a7" />
+                        </g>
+                        <!-- shield at bottom -->
+                        <path d="M130 165 L152 176 L152 195 Q152 208 130 215 Q108 208 108 195 L108 176 Z" fill="#2e7d32"
+                            stroke="#66bb6a" stroke-width="2" />
+                        <text x="130" y="196" text-anchor="middle" font-size="11" fill="#e8f5e9"
+                            font-family="sans-serif">資安</text>
+                    </svg>
+                </div>
+            </div>
+        </div>
+
+    </div><!-- /sw -->
+    <div class="nav">
+        <button class="nb" id="prevBtn" onclick="go(-1)" disabled>&#8592; 上一頁</button>
+        <div class="dr" id="dots"></div>
+        <button class="nb" id="nextBtn" onclick="go(1)">下一頁 &#8594;</button>
+    </div>
+    <script>
+        const total = 8; let cur = 1;
+        const dotsEl = document.getElementById('dots');
+        for (let i = 1; i <= total; i++) { const d = document.createElement('div'); d.className = 'dot' + (i === 1 ? ' on' : ''); d.onclick = () => gt(i); dotsEl.appendChild(d); }
+        function gt(n) {
+            const old = document.getElementById('s' + cur);
+            old.style.cssText = 'transition:none;opacity:0;pointer-events:none';
+            old.classList.remove('active');
+            cur = n;
+            const el = document.getElementById('s' + cur);
+            el.style.cssText = 'transform:translateX(60px);opacity:0;transition:none;z-index:1;pointer-events:none';
+            el.classList.add('active');
+            requestAnimationFrame(() => requestAnimationFrame(() => {
+                el.style.cssText = 'transition:opacity .45s,transform .45s;transform:translateX(0);opacity:1;z-index:1;pointer-events:auto';
+            }));
+            document.getElementById('cur').textContent = cur;
+            document.querySelectorAll('.dot').forEach((d, i) => d.classList.toggle('on', i === cur - 1));
+            document.getElementById('prevBtn').disabled = cur === 1;
+            document.getElementById('nextBtn').disabled = cur === total;
+        }
+        function go(d) { const n = cur + d; if (n < 1 || n > total) return; gt(n); }
+        document.addEventListener('keydown', e => { if (e.key === 'ArrowRight' || e.key === 'ArrowDown') go(1); if (e.key === 'ArrowLeft' || e.key === 'ArrowUp') go(-1); });
+    </script>
+</body>
+
+</html>

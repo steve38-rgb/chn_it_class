@@ -1,0 +1,865 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>5-1 數位化的概念｜資訊科技第五課</title>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700;900&family=JetBrains+Mono:wght@400;700&display=swap"
+    rel="stylesheet">
+  <style>
+    *,
+    *::before,
+    *::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0
+    }
+
+    :root {
+      --ac: #6c63ff;
+      --ac2: #43e8b0;
+      --dark: #0d0d1a;
+      --card: #1a1a2e;
+      --text: #e8e8f0;
+      --sub: #8888aa;
+      --red: #ff6b6b
+    }
+
+    body {
+      font-family: 'Noto Sans TC', sans-serif;
+      background: var(--dark);
+      color: var(--text);
+      height: 100vh;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column
+    }
+
+    .topbar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 10px 32px;
+      background: rgba(108, 99, 255, .06);
+      border-bottom: 1px solid rgba(108, 99, 255, .15);
+      flex-shrink: 0
+    }
+
+    .ti {
+      font-size: 15px;
+      font-weight: 700;
+      color: var(--ac2)
+    }
+
+    .sc {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 13px;
+      color: var(--sub)
+    }
+
+    .sw {
+      flex: 1;
+      overflow: hidden;
+      position: relative
+    }
+
+    .slide {
+      position: absolute;
+      inset: 0;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      align-items: center;
+      gap: 0;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity .45s, transform .45s;
+      transform: translateX(50px)
+    }
+
+    .slide.active {
+      opacity: 1;
+      transform: translateX(0);
+      pointer-events: auto
+    }
+
+    .slide.full {
+      grid-template-columns: 1fr
+    }
+
+    .content {
+      padding: 44px 48px;
+      display: flex;
+      flex-direction: column;
+      gap: 18px;
+      height: 100%;
+      justify-content: center
+    }
+
+    .visual {
+      background: rgba(255, 255, 255, .02);
+      border-left: 1px solid rgba(255, 255, 255, .06);
+      height: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 24px
+    }
+
+    .visual svg {
+      max-width: 100%;
+      max-height: calc(100vh - 90px - 52px)
+    }
+
+    .sh {
+      font-size: clamp(24px, 3vw, 40px);
+      font-weight: 900;
+      line-height: 1.25;
+      background: linear-gradient(135deg, #fff 20%, var(--ac2));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text
+    }
+
+    .sh.r {
+      background: linear-gradient(135deg, #fff 20%, var(--red));
+      -webkit-background-clip: text;
+      background-clip: text
+    }
+
+    .sb {
+      font-size: 15px;
+      line-height: 1.9;
+      color: #c0c0d8
+    }
+
+    .hg {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+      gap: 10px
+    }
+
+    .hb {
+      background: var(--card);
+      border: 1px solid rgba(255, 255, 255, .07);
+      border-radius: 12px;
+      padding: 14px
+    }
+
+    .hb .e {
+      font-size: 22px;
+      margin-bottom: 6px
+    }
+
+    .hb .l {
+      font-size: 11px;
+      color: var(--sub);
+      margin-bottom: 3px
+    }
+
+    .hb .v {
+      font-size: 14px;
+      font-weight: 700
+    }
+
+    .cmp {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px
+    }
+
+    .cc {
+      background: var(--card);
+      border-radius: 12px;
+      padding: 18px;
+      border: 1px solid rgba(255, 255, 255, .06)
+    }
+
+    .cc .cht {
+      font-size: 13px;
+      font-weight: 700;
+      margin-bottom: 10px
+    }
+
+    .cc .cbd {
+      font-size: 14px;
+      line-height: 1.8;
+      color: #9090b8
+    }
+
+    /* cipher */
+    .cipher-box {
+      background: var(--card);
+      border: 1px solid rgba(255, 100, 100, .25);
+      border-radius: 14px;
+      padding: 18px;
+      display: flex;
+      flex-direction: column;
+      gap: 12px
+    }
+
+    .cr {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      flex-wrap: wrap
+    }
+
+    .cl {
+      font-size: 13px;
+      color: var(--sub);
+      min-width: 60px
+    }
+
+    .ci {
+      flex: 1;
+      background: rgba(255, 255, 255, .06);
+      border: 1px solid rgba(255, 255, 255, .12);
+      border-radius: 7px;
+      padding: 9px 12px;
+      color: #fff;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 15px;
+      outline: none;
+      transition: border-color .2s
+    }
+
+    .ci:focus {
+      border-color: var(--red)
+    }
+
+    .cs {
+      width: 60px;
+      text-align: center;
+      background: rgba(255, 255, 255, .06);
+      border: 1px solid rgba(255, 255, 255, .12);
+      border-radius: 7px;
+      padding: 9px;
+      color: #fff;
+      font-size: 15px;
+      outline: none
+    }
+
+    .cb {
+      background: var(--red);
+      color: #fff;
+      border: none;
+      border-radius: 7px;
+      padding: 9px 18px;
+      font-size: 13px;
+      font-weight: 700;
+      cursor: pointer;
+      transition: opacity .2s
+    }
+
+    .cb:hover {
+      opacity: .85
+    }
+
+    .cb.b2 {
+      background: var(--ac)
+    }
+
+    .co {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 20px;
+      letter-spacing: 3px;
+      color: var(--red);
+      min-height: 28px
+    }
+
+    .challenge {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 22px;
+      letter-spacing: 4px;
+      color: var(--ac2);
+      text-align: center;
+      padding: 14px;
+      background: rgba(67, 232, 176, .06);
+      border-radius: 10px
+    }
+
+    .tag-pill {
+      display: inline-block;
+      background: rgba(108, 99, 255, .18);
+      color: var(--ac2);
+      border-radius: 20px;
+      padding: 3px 12px;
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 1px;
+      margin-bottom: 4px
+    }
+
+    .tag-pill.red {
+      background: rgba(255, 107, 107, .15);
+      color: var(--red)
+    }
+
+    .point-list {
+      display: flex;
+      flex-direction: column;
+      gap: 8px
+    }
+
+    .pt {
+      display: flex;
+      align-items: flex-start;
+      gap: 10px;
+      font-size: 14px;
+      line-height: 1.7;
+      color: #b0b0cc
+    }
+
+    .pt::before {
+      content: "▸";
+      color: var(--ac2);
+      flex-shrink: 0;
+      margin-top: 2px
+    }
+
+    .nav {
+      flex-shrink: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 14px;
+      padding: 12px 32px;
+      background: rgba(255, 255, 255, .02);
+      border-top: 1px solid rgba(255, 255, 255, .06)
+    }
+
+    .nb {
+      background: none;
+      border: 1px solid rgba(255, 255, 255, .15);
+      color: var(--text);
+      border-radius: 50px;
+      padding: 8px 22px;
+      font-size: 14px;
+      cursor: pointer;
+      transition: background .2s
+    }
+
+    .nb:hover {
+      background: rgba(255, 255, 255, .07)
+    }
+
+    .nb:disabled {
+      opacity: .3;
+      cursor: default
+    }
+
+    .dr {
+      display: flex;
+      gap: 6px
+    }
+
+    .dot {
+      width: 7px;
+      height: 7px;
+      border-radius: 50%;
+      background: rgba(255, 255, 255, .2);
+      cursor: pointer;
+      transition: all .3s
+    }
+
+    .dot.on {
+      background: var(--ac);
+      width: 22px;
+      border-radius: 4px
+    }
+  </style>
+</head>
+
+<body>
+  <div class="topbar">
+    <div class="ti">5-1 數位化的概念 — 資訊科技第五課</div>
+    <div class="sc"><span id="cur">1</span> / 7</div>
+  </div>
+  <div class="sw">
+
+    <!-- P1 -->
+    <div class="slide active" id="s1">
+      <div class="content">
+        <div class="sh">數位化的奇幻旅程</div>
+        <div class="sb">電腦無法直接理解現實世界中的聲音、影像與文字——它只懂 <strong style="color:#fff">0</strong> 與 <strong
+            style="color:#fff">1</strong>。所謂「數位化」，就是將生活中的類比資訊，轉換成電腦能讀懂的二進位格式。</div>
+        <div class="point-list">
+          <div class="pt">古早的錄音帶與唱片，以連續的磁性訊號儲存音樂（類比）</div>
+          <div class="pt">現代 MP3 與串流音樂，以數位位元方式儲存與傳遞</div>
+          <div class="pt">數位化讓資料可以 <strong style="color:var(--ac2)">完美複製、快速傳輸、永久保存</strong></div>
+        </div>
+        <div class="hg">
+          <div class="hb">
+            <div class="e">💿</div>
+            <div class="l">傳統類比時代</div>
+            <div class="v">LP 唱片 / 錄音帶</div>
+          </div>
+          <div class="hb">
+            <div class="e">📱</div>
+            <div class="l">現代數位時代</div>
+            <div class="v">串流 / 雲端儲存</div>
+          </div>
+          <div class="hb">
+            <div class="e">🔄</div>
+            <div class="l">關鍵轉換</div>
+            <div class="v">數位化 Digitalize</div>
+          </div>
+        </div>
+      </div>
+      <div class="visual">
+        <svg viewBox="0 0 380 320" xmlns="http://www.w3.org/2000/svg">
+          <!-- LP Record left -->
+          <circle cx="95" cy="160" r="80" fill="#2a2040" stroke="#6c63ff" stroke-width="2" />
+          <circle cx="95" cy="160" r="55" fill="none" stroke="#6c63ff" stroke-width="1" stroke-dasharray="4 3"
+            opacity=".5" />
+          <circle cx="95" cy="160" r="30" fill="none" stroke="#6c63ff" stroke-width="1" opacity=".4" />
+          <circle cx="95" cy="160" r="10" fill="#6c63ff" opacity=".8" />
+          <text x="95" y="255" text-anchor="middle" fill="#9090cc" font-size="11">類比訊號</text>
+          <!-- arrow -->
+          <path d="M185 160 Q 210 140 235 160" stroke="#43e8b0" stroke-width="2.5" fill="none" marker-end="url(#arr)" />
+          <text x="210" y="148" text-anchor="middle" fill="#43e8b0" font-size="10" font-weight="bold">數位化</text>
+          <defs>
+            <marker id="arr" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto">
+              <path d="M0,0 L0,6 L8,3 z" fill="#43e8b0" />
+            </marker>
+          </defs>
+          <!-- Phone right -->
+          <rect x="255" y="90" width="90" height="140" rx="12" fill="#1a1a2e" stroke="#43e8b0" stroke-width="2" />
+          <rect x="261" y="100" width="78" height="110" rx="6" fill="#0d0d20" />
+          <!-- binary rain -->
+          <text x="268" y="118" fill="#43e8b0" font-size="9" font-family="monospace" opacity=".9">1 0 1 0 1</text>
+          <text x="268" y="130" fill="#6c63ff" font-size="9" font-family="monospace" opacity=".7">0 1 1 0 0</text>
+          <text x="268" y="142" fill="#43e8b0" font-size="9" font-family="monospace" opacity=".9">1 1 0 1 0</text>
+          <text x="268" y="154" fill="#6c63ff" font-size="9" font-family="monospace" opacity=".7">0 0 1 1 1</text>
+          <text x="268" y="166" fill="#43e8b0" font-size="9" font-family="monospace">1 0 0 1 0</text>
+          <text x="268" y="178" fill="#6c63ff" font-size="9" font-family="monospace" opacity=".6">0 1 0 0 1</text>
+          <text x="268" y="190" fill="#43e8b0" font-size="9" font-family="monospace" opacity=".8">1 1 1 0 0</text>
+          <text x="268" y="202" fill="#6c63ff" font-size="9" font-family="monospace" opacity=".5">0 1 0 1 1</text>
+          <text x="300" y="255" text-anchor="middle" fill="#43e8b0" font-size="11">數位訊號</text>
+        </svg>
+      </div>
+    </div>
+
+    <!-- P2 -->
+    <div class="slide" id="s2">
+      <div class="content">
+        <div class="sh">生活中的「類比」與「數位」</div>
+        <div class="sb">自然界幾乎所有現象都是<strong style="color:#ccc">連續</strong>的類比量。數位化的目的是把它們「切片」成有限個離散數值，讓電腦能儲存與處理。</div>
+        <div class="cmp">
+          <div class="cc">
+            <div class="cht" style="color:#f7c948">📈 類比 (Analog)</div>
+            <div class="cbd">
+              值可以是<strong style="color:#f7c948">任意連續數字</strong><br><br>
+              ▸ 水銀溫度計（34.8637…度）<br>
+              ▸ 傳統時鐘指針<br>
+              ▸ 聲音、光線、電壓<br>
+              ▸ 特色：細膩精確，但難以複製
+            </div>
+          </div>
+          <div class="cc">
+            <div class="cht" style="color:var(--ac2)">🔢 數位 (Digital)</div>
+            <div class="cbd">
+              值只有<strong style="color:var(--ac2)">有限的離散狀態</strong><br><br>
+              ▸ 數位溫度計（34.8°C）<br>
+              ▸ 電子時鐘 12:34:05<br>
+              ▸ 電腦資料（0/1）<br>
+              ▸ 特色：容易複製、不易失真
+            </div>
+          </div>
+        </div>
+        <div class="sb" style="font-size:13px">💡 類比轉數位（ADC）、數位轉類比（DAC）是現代電子設備的核心技術，如麥克風、耳機、攝影機都内建這類晶片。</div>
+      </div>
+      <div class="visual">
+        <svg viewBox="0 0 360 300" xmlns="http://www.w3.org/2000/svg">
+          <text x="90" y="24" text-anchor="middle" fill="#f7c948" font-size="13" font-weight="bold">類比訊號</text>
+          <text x="270" y="24" text-anchor="middle" fill="#43e8b0" font-size="13" font-weight="bold">數位訊號</text>
+          <!-- Analog wave -->
+          <polyline points="20,160 35,100 55,200 75,80 95,190 115,110 135,170 155,90 175,160" fill="none"
+            stroke="#f7c948" stroke-width="2.5" stroke-linejoin="round" />
+          <!-- Digital staircase -->
+          <polyline points="200,80 220,80 220,130 240,130 240,80 260,80 260,160 280,160 280,100 300,100 300,160 320,160"
+            fill="none" stroke="#43e8b0" stroke-width="2.5" />
+          <!-- axes left -->
+          <line x1="18" y1="60" x2="18" y2="220" stroke="#555" stroke-width="1" />
+          <line x1="18" y1="220" x2="185" y2="220" stroke="#555" stroke-width="1" />
+          <!-- axes right -->
+          <line x1="198" y1="60" x2="198" y2="220" stroke="#555" stroke-width="1" />
+          <line x1="198" y1="220" x2="335" y2="220" stroke="#555" stroke-width="1" />
+          <text x="90" y="240" text-anchor="middle" fill="#f7c948" font-size="10" opacity=".7">任意連續值</text>
+          <text x="268" y="240" text-anchor="middle" fill="#43e8b0" font-size="10" opacity=".7">跳躍離散值</text>
+          <!-- dot indicators -->
+          <circle cx="75" cy="80" r="4" fill="#f7c948" />
+          <circle cx="220" cy="80" r="4" fill="#43e8b0" />
+          <circle cx="260" cy="80" r="4" fill="#43e8b0" />
+        </svg>
+      </div>
+    </div>
+
+    <!-- P3 -->
+    <div class="slide" id="s3">
+      <div class="content">
+        <div class="sh">電腦的語系：1 與 0</div>
+        <div class="sb">電腦的 CPU 使用電晶體構成邏輯閘，每個電晶體只有兩種狀態：<strong style="color:#fff">通電（1）</strong>或<strong
+            style="color:#fff">斷電（0）</strong>。多條電路組合，就能表示複雜的數值。</div>
+        <div class="hg" style="grid-template-columns:1fr 1fr">
+          <div class="hb" style="border-color:rgba(67,232,176,.3)">
+            <div class="e" style="font-size:32px">💡</div>
+            <div class="l">電源開 / 高電壓</div>
+            <div class="v" style="font-size:36px;color:var(--ac2);font-family:monospace">1</div>
+          </div>
+          <div class="hb" style="border-color:rgba(108,99,255,.3)">
+            <div class="e" style="font-size:32px">🌑</div>
+            <div class="l">電源關 / 低電壓</div>
+            <div class="v" style="font-size:36px;color:var(--ac);font-family:monospace">0</div>
+          </div>
+        </div>
+        <div class="point-list">
+          <div class="pt">1 條電路 → 2 種狀態（0, 1）</div>
+          <div class="pt">2 條電路 → 4 種狀態（00, 01, 10, 11）</div>
+          <div class="pt">8 條電路（1 Byte）→ <strong style="color:var(--ac2)">256</strong> 種狀態，可表示一個英文字元</div>
+          <div class="pt">CPU 每秒執行數十億次開關切換，這就是「運算」的本質</div>
+        </div>
+      </div>
+      <div class="visual">
+        <svg viewBox="0 0 340 300" xmlns="http://www.w3.org/2000/svg">
+          <!-- 8 bit strips -->
+          <defs>
+            <filter id="glow">
+              <feGaussianBlur stdDeviation="2" result="b" />
+              <feMerge>
+                <feMergeNode in="b" />
+                <feMergeNode in="SourceGraphic" />
+              </feMerge>
+            </filter>
+          </defs>
+          <!-- title -->
+          <text x="170" y="22" text-anchor="middle" fill="#888" font-size="11">8 條電路 = 1 位元組 (Byte)</text>
+          <!-- 8 wires -->
+          <g id="wires">
+            <line x1="40" y1="50" x2="300" y2="50" stroke="#333" stroke-width="8" stroke-linecap="round" />
+            <line x1="40" y1="80" x2="300" y2="80" stroke="#333" stroke-width="8" stroke-linecap="round" />
+            <line x1="40" y1="110" x2="300" y2="110" stroke="#333" stroke-width="8" stroke-linecap="round" />
+            <line x1="40" y1="140" x2="300" y2="140" stroke="#333" stroke-width="8" stroke-linecap="round" />
+            <line x1="40" y1="170" x2="300" y2="170" stroke="#333" stroke-width="8" stroke-linecap="round" />
+            <line x1="40" y1="200" x2="300" y2="200" stroke="#333" stroke-width="8" stroke-linecap="round" />
+            <line x1="40" y1="230" x2="300" y2="230" stroke="#333" stroke-width="8" stroke-linecap="round" />
+            <line x1="40" y1="260" x2="300" y2="260" stroke="#333" stroke-width="8" stroke-linecap="round" />
+          </g>
+          <!-- active bits for 'A' = 65 = 01000001 -->
+          <!-- bit 6 (64) -->
+          <line x1="40" y1="80" x2="300" y2="80" stroke="#43e8b0" stroke-width="8" stroke-linecap="round"
+            filter="url(#glow)" />
+          <!-- bit 0 (1) -->
+          <line x1="40" y1="260" x2="300" y2="260" stroke="#43e8b0" stroke-width="8" stroke-linecap="round"
+            filter="url(#glow)" />
+          <!-- bit labels -->
+          <text x="22" y="54" fill="#555" font-size="10" text-anchor="middle">0</text>
+          <text x="22" y="84" fill="#43e8b0" font-size="10" text-anchor="middle" font-weight="bold">1</text>
+          <text x="22" y="114" fill="#555" font-size="10" text-anchor="middle">0</text>
+          <text x="22" y="144" fill="#555" font-size="10" text-anchor="middle">0</text>
+          <text x="22" y="174" fill="#555" font-size="10" text-anchor="middle">0</text>
+          <text x="22" y="204" fill="#555" font-size="10" text-anchor="middle">0</text>
+          <text x="22" y="234" fill="#555" font-size="10" text-anchor="middle">0</text>
+          <text x="22" y="264" fill="#43e8b0" font-size="10" text-anchor="middle" font-weight="bold">1</text>
+          <!-- right label -->
+          <text x="316" y="170" fill="#43e8b0" font-size="28" font-weight="900" dominant-baseline="middle"
+            font-family="serif">A</text>
+          <text x="170" y="286" text-anchor="middle" fill="#555" font-size="10">01000001 = 65 = 字母 A (ASCII)</text>
+        </svg>
+      </div>
+    </div>
+
+    <!-- P4 -->
+    <div class="slide" id="s4">
+      <div class="content">
+        <div class="sh">為什麼要數位化？</div>
+        <div class="sb">數位化不只是儲存方式的改變，它從根本上改變了資訊的<strong style="color:var(--ac2)">傳播、保存與應用</strong>方式。</div>
+        <div class="hg" style="grid-template-columns:1fr 1fr">
+          <div class="hb">
+            <div class="e">☁️</div>
+            <div class="l">完美複製</div>
+            <div class="v" style="font-size:12px;margin-top:4px;color:#aaa">複製一萬次品質不變<br>類比複製每次都失真</div>
+          </div>
+          <div class="hb">
+            <div class="e">⚡</div>
+            <div class="l">高速傳輸</div>
+            <div class="v" style="font-size:12px;margin-top:4px;color:#aaa">光纖一秒傳輸數 TB<br>幾乎零時差分享</div>
+          </div>
+          <div class="hb">
+            <div class="e">🔍</div>
+            <div class="l">可搜尋分析</div>
+            <div class="v" style="font-size:12px;margin-top:4px;color:#aaa">全文搜尋、AI 分析<br>大數據與機器學習</div>
+          </div>
+          <div class="hb">
+            <div class="e">🛡️</div>
+            <div class="l">安全加密</div>
+            <div class="v" style="font-size:12px;margin-top:4px;color:#aaa">數位資料可加密保護<br>類比資料難以加密</div>
+          </div>
+        </div>
+        <div class="sb" style="font-size:13px;color:var(--sub)">📌 現實案例：若沒有數位化，Google Drive、LINE 訊息、YouTube 影片都不可能存在。
+        </div>
+      </div>
+      <div class="visual">
+        <svg viewBox="0 0 320 280" xmlns="http://www.w3.org/2000/svg">
+          <!-- Cloud center -->
+          <ellipse cx="160" cy="100" rx="55" ry="35" fill="#1a2040" stroke="#6c63ff" stroke-width="2" />
+          <ellipse cx="130" cy="115" rx="30" ry="25" fill="#1a2040" stroke="#6c63ff" stroke-width="2" />
+          <ellipse cx="190" cy="115" rx="30" ry="25" fill="#1a2040" stroke="#6c63ff" stroke-width="2" />
+          <rect x="120" y="115" width="80" height="20" fill="#1a2040" />
+          <text x="160" y="108" text-anchor="middle" fill="#6c63ff" font-size="13" font-weight="bold">CLOUD</text>
+          <!-- devices -->
+          <!-- phone -->
+          <rect x="42" y="190" width="36" height="56" rx="5" fill="#1a1a2e" stroke="#43e8b0" stroke-width="1.5" />
+          <rect x="46" y="195" width="28" height="42" rx="3" fill="#080820" />
+          <line x1="60" y1="195" x2="130" y2="135" stroke="#43e8b0" stroke-width="1" stroke-dasharray="3,3"
+            opacity=".6" />
+          <!-- laptop -->
+          <rect x="135" y="200" width="50" height="32" rx="4" fill="#1a1a2e" stroke="#43e8b0" stroke-width="1.5" />
+          <rect x="125" y="232" width="70" height="5" rx="2" fill="#252538" />
+          <line x1="160" y1="200" x2="160" y2="135" stroke="#43e8b0" stroke-width="1" stroke-dasharray="3,3"
+            opacity=".6" />
+          <!-- tablet -->
+          <rect x="228" y="185" width="48" height="62" rx="5" fill="#1a1a2e" stroke="#43e8b0" stroke-width="1.5" />
+          <rect x="232" y="190" width="40" height="50" rx="3" fill="#080820" />
+          <line x1="252" y1="185" x2="190" y2="135" stroke="#43e8b0" stroke-width="1" stroke-dasharray="3,3"
+            opacity=".6" />
+          <text x="60" y="258" text-anchor="middle" fill="#43e8b0" font-size="9">手機</text>
+          <text x="160" y="260" text-anchor="middle" fill="#43e8b0" font-size="9">電腦</text>
+          <text x="252" y="258" text-anchor="middle" fill="#43e8b0" font-size="9">平板</text>
+        </svg>
+      </div>
+    </div>
+
+    <!-- P5 -->
+    <div class="slide" id="s5">
+      <div class="content">
+        <div class="sh r">加密與解密的奧祕</div>
+        <div class="sb">數位資料在網路傳輸過程中，可能被中途攔截。為了<strong style="color:#fff">保護隱私</strong>，我們對資料進行數學變換——這就是<strong
+            style="color:var(--red)">加密（Encryption）</strong>。</div>
+        <div class="cmp">
+          <div class="cc" style="border-color:rgba(255,107,107,.2)">
+            <div class="cht" style="color:var(--red)">🔒 加密 Encrypt</div>
+            <div class="cbd">明文 → 演算法 → 密文<br><br>只有持有「金鑰」的接收者才能讀取原始訊息</div>
+          </div>
+          <div class="cc" style="border-color:rgba(67,232,176,.2)">
+            <div class="cht" style="color:var(--ac2)">🔓 解密 Decrypt</div>
+            <div class="cbd">密文 → 金鑰還原 → 明文<br><br>金鑰錯誤 → 無法解密，資料安全</div>
+          </div>
+        </div>
+        <div class="point-list">
+          <div class="pt">加密是「資料數位轉換」的延伸應用，概念相通</div>
+          <div class="pt">HTTPS 網站正是使用 TLS 加密保護你的資料</div>
+          <div class="pt">即使截獲密文，沒有金鑰也只能看到亂碼</div>
+        </div>
+      </div>
+      <div class="visual">
+        <svg viewBox="0 0 320 260" xmlns="http://www.w3.org/2000/svg">
+          <!-- lock body -->
+          <rect x="105" y="120" width="110" height="90" rx="14" fill="#1a1028" stroke="#ff6b6b" stroke-width="2.5" />
+          <!-- shackle -->
+          <path d="M130 120 L130 85 Q130 55 160 55 Q190 55 190 85 L190 120" fill="none" stroke="#ff6b6b"
+            stroke-width="10" stroke-linecap="round" stroke-linejoin="round" />
+          <!-- keyhole -->
+          <circle cx="160" cy="158" r="14" fill="#080818" />
+          <rect x="154" y="160" width="12" height="24" rx="3" fill="#080818" />
+          <!-- message left -->
+          <rect x="20" y="125" width="70" height="50" rx="8" fill="#1a1a2e" stroke="#43e8b0" stroke-width="1.5" />
+          <text x="55" y="148" text-anchor="middle" fill="#43e8b0" font-size="11" font-weight="bold">HELLO</text>
+          <text x="55" y="163" text-anchor="middle" fill="#43e8b0" font-size="9">明文</text>
+          <!-- arrow left-->
+          <path d="M92 150 L102 150" stroke="#ff6b6b" stroke-width="2" marker-end="url(#arr2)" />
+          <defs>
+            <marker id="arr2" markerWidth="7" markerHeight="7" refX="5" refY="2.5" orient="auto">
+              <path d="M0,0 L0,5 L7,2.5 z" fill="#ff6b6b" />
+            </marker>
+          </defs>
+          <!-- message right -->
+          <rect x="230" y="125" width="70" height="50" rx="8" fill="#1a1028" stroke="#ff6b6b" stroke-width="1.5" />
+          <text x="265" y="145" text-anchor="middle" fill="#ff6b6b" font-size="10" font-family="monospace">KHOOR</text>
+          <text x="265" y="162" text-anchor="middle" fill="#ff6b6b" font-size="9">密文</text>
+          <!-- arrow right -->
+          <path d="M218 150 L228 150" stroke="#ff6b6b" stroke-width="2" marker-end="url(#arr2)" />
+          <!-- key -->
+          <circle cx="160" cy="230" r="12" fill="none" stroke="#f7c948" stroke-width="2.5" />
+          <rect x="166" y="228" width="18" height="5" rx="2" fill="#f7c948" />
+          <rect x="176" y="228" width="4" height="8" rx="1" fill="#f7c948" />
+          <text x="160" y="253" text-anchor="middle" fill="#f7c948" font-size="10">金鑰 Key</text>
+        </svg>
+      </div>
+    </div>
+
+    <!-- P6 Activity -->
+    <div class="slide" id="s6">
+      <div class="content">
+        <div class="sh r">實作活動：凱薩密碼</div>
+        <div class="sb">凱薩密碼（Caesar Cipher）是最古老的加密法之一。方法極簡：將每個字母在字母表上<strong
+            style="color:var(--red)">向後移動固定位數</strong>（位移量）。</div>
+        <div class="sb" style="font-size:13px">例如位移 3：A→D、B→E、H→K、Z→C（超過 Z 則從 A 重新開始）</div>
+        <div class="cipher-box">
+          <div class="cr">
+            <span class="cl">輸入文字</span>
+            <input class="ci" id="pt" type="text" placeholder="輸入英文（如 HELLO）" maxlength="25">
+            <span class="cl" style="min-width:40px">位移</span>
+            <input class="cs" id="sh" type="number" value="3" min="1" max="25">
+            <button class="cb" onclick="enc()">加密 🔒</button>
+            <button class="cb b2" onclick="dec()">解密 🔓</button>
+          </div>
+          <div class="cr">
+            <span class="cl">結果</span>
+            <div class="co" id="co">—</div>
+          </div>
+        </div>
+      </div>
+      <div class="visual">
+        <svg viewBox="0 0 280 280" xmlns="http://www.w3.org/2000/svg">
+          <!-- outer ring -->
+          <circle cx="140" cy="140" r="120" fill="none" stroke="#2a2040" stroke-width="2" />
+          <circle cx="140" cy="140" r="88" fill="none" stroke="#1a1030" stroke-width="18" />
+          <circle cx="140" cy="140" r="55" fill="none" stroke="#130f28" stroke-width="18" />
+          <!-- outer alphabet -->
+          <g id="outer" fill="#6c63ff" font-size="9.5" font-weight="bold" text-anchor="middle">
+            <text transform="rotate(-90,140,140) translate(0,-118)">A</text>
+            <text transform="rotate(-76.1,140,140) translate(0,-118)">B</text>
+            <text transform="rotate(-62.3,140,140) translate(0,-118)">C</text>
+            <text transform="rotate(-48.4,140,140) translate(0,-118)">D</text>
+            <text transform="rotate(-34.6,140,140) translate(0,-118)">E</text>
+            <text transform="rotate(-20.7,140,140) translate(0,-118)">F</text>
+            <text transform="rotate(-6.9,140,140) translate(0,-118)">G</text>
+            <text transform="rotate(6.9,140,140) translate(0,-118)">H</text>
+            <text transform="rotate(20.7,140,140) translate(0,-118)">I</text>
+            <text transform="rotate(34.6,140,140) translate(0,-118)">J</text>
+            <text transform="rotate(48.4,140,140) translate(0,-118)">K</text>
+            <text transform="rotate(62.3,140,140) translate(0,-118)">L</text>
+            <text transform="rotate(76.1,140,140) translate(0,-118)">M</text>
+            <text transform="rotate(90,140,140) translate(0,-118)">N</text>
+            <text transform="rotate(103.8,140,140) translate(0,-118)">O</text>
+            <text transform="rotate(117.6,140,140) translate(0,-118)">P</text>
+            <text transform="rotate(131.5,140,140) translate(0,-118)">Q</text>
+            <text transform="rotate(145.3,140,140) translate(0,-118)">R</text>
+            <text transform="rotate(159.2,140,140) translate(0,-118)">S</text>
+            <text transform="rotate(173,140,140) translate(0,-118)">T</text>
+            <text transform="rotate(186.9,140,140) translate(0,-118)">U</text>
+            <text transform="rotate(200.7,140,140) translate(0,-118)">V</text>
+            <text transform="rotate(214.5,140,140) translate(0,-118)">W</text>
+            <text transform="rotate(228.4,140,140) translate(0,-118)">X</text>
+            <text transform="rotate(242.3,140,140) translate(0,-118)">Y</text>
+            <text transform="rotate(256.1,140,140) translate(0,-118)">Z</text>
+          </g>
+          <!-- inner ring shifted by 3 -->
+          <g id="inner" fill="#43e8b0" font-size="9.5" font-weight="bold" text-anchor="middle">
+            <text transform="rotate(-90,140,140) translate(0,-86)">D</text>
+            <text transform="rotate(-76.1,140,140) translate(0,-86)">E</text>
+            <text transform="rotate(-62.3,140,140) translate(0,-86)">F</text>
+            <text transform="rotate(-48.4,140,140) translate(0,-86)">G</text>
+            <text transform="rotate(-34.6,140,140) translate(0,-86)">H</text>
+            <text transform="rotate(-20.7,140,140) translate(0,-86)">I</text>
+            <text transform="rotate(-6.9,140,140) translate(0,-86)">J</text>
+            <text transform="rotate(6.9,140,140) translate(0,-86)">K</text>
+            <text transform="rotate(20.7,140,140) translate(0,-86)">L</text>
+            <text transform="rotate(34.6,140,140) translate(0,-86)">M</text>
+            <text transform="rotate(48.4,140,140) translate(0,-86)">N</text>
+            <text transform="rotate(62.3,140,140) translate(0,-86)">O</text>
+            <text transform="rotate(76.1,140,140) translate(0,-86)">P</text>
+            <text transform="rotate(90,140,140) translate(0,-86)">Q</text>
+            <text transform="rotate(103.8,140,140) translate(0,-86)">R</text>
+            <text transform="rotate(117.6,140,140) translate(0,-86)">S</text>
+            <text transform="rotate(131.5,140,140) translate(0,-86)">T</text>
+            <text transform="rotate(145.3,140,140) translate(0,-86)">U</text>
+            <text transform="rotate(159.2,140,140) translate(0,-86)">V</text>
+            <text transform="rotate(173,140,140) translate(0,-86)">W</text>
+            <text transform="rotate(186.9,140,140) translate(0,-86)">X</text>
+            <text transform="rotate(200.7,140,140) translate(0,-86)">Y</text>
+            <text transform="rotate(214.5,140,140) translate(0,-86)">Z</text>
+            <text transform="rotate(228.4,140,140) translate(0,-86)">A</text>
+            <text transform="rotate(242.3,140,140) translate(0,-86)">B</text>
+            <text transform="rotate(256.1,140,140) translate(0,-86)">C</text>
+          </g>
+          <!-- center label -->
+          <circle cx="140" cy="140" r="34" fill="#0d0d1a" stroke="#ff6b6b" stroke-width="1.5" />
+          <text x="140" y="136" text-anchor="middle" fill="#ff6b6b" font-size="10">位移量</text>
+          <text x="140" y="152" text-anchor="middle" fill="#ff6b6b" font-size="20" font-weight="900">+3</text>
+          <!-- pointer -->
+          <line x1="140" y1="108" x2="140" y2="28" stroke="#ff6b6b" stroke-width="2" marker-end="url(#arr2)" />
+        </svg>
+      </div>
+    </div>
+
+    <!-- P7 Challenge -->
+    <div class="slide" id="s7">
+      <div class="content">
+        <div class="sh r">挑戰：解密神秘留言</div>
+        <div class="sb">以下是一段用位移 <strong style="color:var(--red)">3</strong> 加密的密文。你能還原成原文嗎？</div>
+        <div class="challenge">KHOOR ZRUOG</div>
+        <div class="sb" style="font-size:14px;color:var(--sub)">提示：使用上一頁工具，貼上密文，位移設為 3，點「解密」。</div>
+        <div class="point-list">
+          <div class="pt">原文是一句大家非常熟悉的英文問候語</div>
+          <div class="pt"><strong style="color:#ccc">討論</strong>：將字母「位移轉換」，本質上是不是也是一種「資料的數位處理」？</div>
+          <div class="pt">電腦加密（如 AES、RSA）也是數學轉換，只是演算法更複雜、更難暴力破解</div>
+          <div class="pt">凱薩密碼有幾種可能的位移值？（提示：字母表共 26 個字母）</div>
+        </div>
+      </div>
+      <div class="visual">
+        <svg viewBox="0 0 280 260" xmlns="http://www.w3.org/2000/svg">
+          <!-- speech bubble with cipher -->
+          <rect x="30" y="30" width="220" height="70" rx="14" fill="#1a0a0a" stroke="#ff6b6b" stroke-width="2" />
+          <polygon points="100,100 80,125 130,100" fill="#1a0a0a" stroke="#ff6b6b" stroke-width="2" />
+          <text x="140" y="68" text-anchor="middle" fill="#ff6b6b" font-size="22" font-weight="900"
+            font-family="monospace">KHOOR</text>
+          <text x="140" y="90" text-anchor="middle" fill="#ff6b6b" font-size="22" font-weight="900"
+            font-family="monospace">ZRUOG</text>
+          <!-- thinking person -->
+          <circle cx="140" cy="155" r="28" fill="#1a1a2e" stroke="#6c63ff" stroke-width="2" />
+          <!-- face -->
+          <circle cx="132" cy="150" r="3" fill="#fff" />
+          <circle cx="148" cy="150" r="3" fill="#fff" />
+          <path d="M133 162 Q140 167 147 162" fill="none" stroke="#fff" stroke-width="1.5" />
+          <!-- thought dots -->
+          <circle cx="108" cy="132" r="3" fill="#6c63ff" opacity=".4" />
+          <circle cx="101" cy="124" r="4.5" fill="#6c63ff" opacity=".55" />
+          <circle cx="93" cy="113" r="6" fill="#6c63ff" opacity=".7" />
+          <!-- body -->
+          <rect x="120" y="183" width="40" height="50" rx="8" fill="#1a1a2e" stroke="#6c63ff" stroke-width="1.5" />
+          <!-- question mark -->
+          <text x="240" y="180" text-anchor="middle" fill="#f7c948" font-size="56" font-weight="900"
+            opacity=".8">?</text>
+        </svg>
+      </div>
+    </div>
+
+  </div><!-- /sw -->
+  <div class="nav">
+    <button class="nb" id="prevBtn" onclick="go(-1)" disabled>← 上一頁</button>
+    <div class="dr" id="dots"></div>
+    <button class="nb" id="nextBtn" onclick="go(1)">下一頁 →</button>
+  </div>
+  <script>
+    const total = 7; let cur = 1;
+    const dotsEl = document.getElementById('dots');
+    for (let i = 1; i <= total; i++) { const d = document.createElement('div'); d.className = 'dot' + (i === 1 ? ' on' : ''); d.onclick = () => gt(i); dotsEl.appendChild(d); }
+    function gt(n) {
+      const old = document.getElementById('s' + cur);
+      old.style.cssText = 'transition:none;opacity:0;pointer-events:none';
+      old.classList.remove('active');
+      cur = n;
+      const el = document.getElementById('s' + cur);
+      el.style.cssText = 'transform:translateX(60px);opacity:0;transition:none;z-index:1;pointer-events:none';
+      el.classList.add('active');
+      requestAnimationFrame(() => requestAnimationFrame(() => {
+        el.style.cssText = 'transition:opacity .45s,transform .45s;transform:translateX(0);opacity:1;z-index:1;pointer-events:auto';
+      }));
+      document.getElementById('cur').textContent = cur;
+      document.querySelectorAll('.dot').forEach((d, i) => d.classList.toggle('on', i === cur - 1));
+      document.getElementById('prevBtn').disabled = cur === 1;
+      document.getElementById('nextBtn').disabled = cur === total;
+    }
+    function go(d) { const n = cur + d; if (n < 1 || n > total) return; gt(n); }
+    document.addEventListener('keydown', e => { if (e.key === 'ArrowRight' || e.key === 'ArrowDown') go(1); if (e.key === 'ArrowLeft' || e.key === 'ArrowUp') go(-1); });
+    function caesar(s, shift, dec) { shift = ((shift % 26) + 26) % 26; if (dec) shift = (26 - shift) % 26; return s.toUpperCase().replace(/[A-Z]/g, c => String.fromCharCode((c.charCodeAt(0) - 65 + shift) % 26 + 65)); }
+    function enc() { const t = document.getElementById('pt').value, s = parseInt(document.getElementById('sh').value) || 3; document.getElementById('co').textContent = caesar(t, s, false) || '—'; }
+    function dec() { const t = document.getElementById('pt').value, s = parseInt(document.getElementById('sh').value) || 3; document.getElementById('co').textContent = caesar(t, s, true) || '—'; }
+  </script>
+</body>
+
+</html>
