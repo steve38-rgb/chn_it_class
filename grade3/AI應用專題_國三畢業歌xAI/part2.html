@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Part 2：音樂與風格 | 聲聲不息歌出回憶</title>
+    <link rel="stylesheet" href="style.css">
+    <style>
+        .slide-nav-fixed {
+            position: absolute;
+            bottom: 2rem;
+            left: 2rem;
+            right: 2rem;
+            display: flex;
+            justify-content: space-between;
+            pointer-events: none;
+            z-index: 100;
+        }
+
+        .slide-nav-fixed .btn-nav {
+            pointer-events: auto;
+            background: rgba(10, 20, 35, 0.9);
+            border: 1px solid #00f2ff;
+            color: #00f2ff;
+            padding: 0.6rem 1.2rem;
+            text-decoration: none;
+            font-family: 'Orbitron', sans-serif;
+            font-size: 0.8rem;
+            backdrop-filter: blur(10px);
+            transition: 0.3s;
+        }
+
+        .slide-nav-fixed .btn-nav:hover {
+            background: #00f2ff;
+            color: #0a1423;
+            box-shadow: 0 0 15px #00f2ff;
+        }
+
+        /* 快速跳轉索引樣式 */
+        .quick-nav-container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.8rem;
+            margin: 1.5rem 0;
+            justify-content: center;
+        }
+
+        .btn-jump {
+            background: rgba(0, 242, 255, 0.1);
+            border: 1px solid rgba(0, 242, 255, 0.4);
+            color: #00f2ff;
+            padding: 0.5rem 1rem;
+            border-radius: 8px;
+            text-decoration: none;
+            font-size: 0.85rem;
+            transition: 0.3s;
+            display: flex;
+            align-items: center;
+            gap: 0.4rem;
+            backdrop-filter: blur(5px);
+        }
+
+        .btn-jump:hover {
+            background: rgba(0, 242, 255, 0.3);
+            border-color: #00f2ff;
+            transform: translateY(-2px);
+        }
+    </style>
+</head>
+
+<body>
+    <header>
+        <div class="logo">
+            <div class="logo-icon"></div>
+            <span>PART 02</span>
+        </div>
+        <nav>
+            <a href="index.html">首頁</a>
+            <a href="part0.html">課程啟動</a>
+            <a href="part1.html">回憶與文本</a>
+            <a href="part2.html">音樂與風格</a>
+            <a href="part3.html">影像與剪輯</a>
+            <a href="part4.html">倫理</a>
+            <a href="part5.html">發表</a>
+        </nav>
+    </header>
+
+    <main class="container">
+        <!-- Slide 1: Introduction -->
+        <section id="slide-intro" class="slide">
+            <div class="slide-content">
+                <h2 class="subtitle">PART 2：音樂與風格 (Music & Style)</h2>
+                <h1 class="title-glitch">用 AI 譜寫旋律</h1>
+                <p>探索音樂的多樣性，為回憶找尋最契合的旋律。</p>
+
+                <div class="quick-nav-container">
+                    <a href="#suno" class="btn-jump">🎹 Suno 操作指南</a>
+                    <a href="#slide-cheat" class="btn-jump">🎧 風格參考</a>
+                    <a href="#slide-task3" class="btn-jump">🎵 定案曲目 (W3)</a>
+                </div>
+
+                <div class="nav-controls">
+                    <a href="part1.html" class="btn">上一章</a>
+                </div>
+            </div>
+            <div class="slide-nav-fixed">
+                <a href="part1.html" class="btn-nav">
+                    <<< PREV PART</a>
+                        <a href="#suno" class="btn-nav">NEXT STEP >>></a>
+            </div>
+        </section>
+
+        <!-- Slide 2: Suno Guide -->
+        <section id="suno" class="slide">
+            <div class="slide-content">
+                <h2 class="subtitle">W3 音樂 AI 操作指南與風格參考</h2>
+                <h1>操作三部曲</h1>
+                <div class="grid">
+                    <div class="card">
+                        <span class="card-number">01</span>
+                        <h3>Custom Mode</h3>
+                        <p>進入自訂模式，貼上你們修好的歌詞。</p>
+                    </div>
+                    <div class="card">
+                        <span class="card-number">02</span>
+                        <h3>Style of Music</h3>
+                        <p>輸入風格關鍵字，決定曲風靈魂。</p>
+                    </div>
+                    <div class="card">
+                        <span class="card-number">03</span>
+                        <h3>Title</h3>
+                        <p>取一個響亮的名字，賦予歌曲身分。</p>
+                    </div>
+                </div>
+            </div>
+            <div class="slide-nav-fixed">
+                <a href="#slide-intro" class="btn-nav">
+                    <<< PREV</a>
+                        <a href="#slide-cheat" class="btn-nav">NEXT STEP >>></a>
+            </div>
+        </section>
+
+        <!-- Slide 3: Cheat Sheet -->
+        <section id="slide-cheat" class="slide">
+            <div class="slide-content">
+                <h2 class="subtitle">CHEAT SHEET</h2>
+                <h1>風格參考</h1>
+                <div class="grid">
+                    <div class="card">
+                        <h3 style="color: #ff4b2b;">熱血</h3>
+                        <p>J-Pop, Rock, Upbeat, Anime intro style</p>
+                    </div>
+                    <div class="card" style="border-color: #00f2ff;">
+                        <h3 style="color: #00f2ff;">感人</h3>
+                        <p>Acoustic, Piano, Ballad, Emotional, Slow</p>
+                    </div>
+                    <div class="card" style="border-color: #72ff00;">
+                        <h3 style="color: #72ff00;">輕快</h3>
+                        <p>Lo-fi, Pop, R&B, Chill</p>
+                    </div>
+                </div>
+            </div>
+            <div class="slide-nav-fixed">
+                <a href="#suno" class="btn-nav">
+                    <<< PREV</a>
+                        <a href="#slide-task3" class="btn-nav">NEXT STEP >>></a>
+            </div>
+        </section>
+
+        <!-- Slide 4: Task 3 -->
+        <section id="slide-task3" class="slide">
+            <div class="slide-content">
+                <h2 class="subtitle">W3 作業：定案曲目</h2>
+                <h1>任務三：聽見我們的聲音</h1>
+                <p>音選師任務：</p>
+                <ul>
+                    <li>嘗試生成 3-5 個版本。</li>
+                    <li>小組投票選出最符合歌詞意境的版本。</li>
+                    <li>下載 MP3 並上傳雲端。</li>
+                </ul>
+
+                <div class="nav-controls">
+                    <a href="part1.html" class="btn">上一章</a>
+                </div>
+            </div>
+            <div class="slide-nav-fixed">
+                <a href="#slide-cheat" class="btn-nav">
+                    <<< PREV</a>
+                        <a href="part3.html" class="btn-nav">GO TO PART 3 >>></a>
+            </div>
+        </section>
+    </main>
+
+    <footer style="text-align: center; padding: 2rem; color: var(--text-dim);">
+        <p>© 2026 Studio Shodwe. 生成式 AI × 畢業歌 MV 創作實務</p>
+    </footer>
+    <script src="script.js"></script>
+</body>
+
+</html>

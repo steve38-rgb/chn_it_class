@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Part 3：影像與剪輯 | 聲聲不息歌出回憶</title>
+    <link rel="stylesheet" href="style.css">
+    <style>
+        .slide-nav-fixed {
+            position: absolute;
+            bottom: 2rem;
+            left: 2rem;
+            right: 2rem;
+            display: flex;
+            justify-content: space-between;
+            pointer-events: none;
+            z-index: 100;
+        }
+
+        .slide-nav-fixed .btn-nav {
+            pointer-events: auto;
+            background: rgba(10, 20, 35, 0.9);
+            border: 1px solid #00f2ff;
+            color: #00f2ff;
+            padding: 0.6rem 1.2rem;
+            text-decoration: none;
+            font-family: 'Orbitron', sans-serif;
+            font-size: 0.8rem;
+            backdrop-filter: blur(10px);
+            transition: 0.3s;
+        }
+
+        .slide-nav-fixed .btn-nav:hover {
+            background: #00f2ff;
+            color: #0a1423;
+            box-shadow: 0 0 15px #00f2ff;
+        }
+
+        /* 快速跳轉索引樣式 */
+        .quick-nav-container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.8rem;
+            margin: 1.5rem 0;
+            justify-content: center;
+        }
+
+        .btn-jump {
+            background: rgba(0, 242, 255, 0.1);
+            border: 1px solid rgba(0, 242, 255, 0.4);
+            color: #00f2ff;
+            padding: 0.5rem 1rem;
+            border-radius: 8px;
+            text-decoration: none;
+            font-size: 0.85rem;
+            transition: 0.3s;
+            display: flex;
+            align-items: center;
+            gap: 0.4rem;
+            backdrop-filter: blur(5px);
+        }
+
+        .btn-jump:hover {
+            background: rgba(0, 242, 255, 0.3);
+            border-color: #00f2ff;
+            transform: translateY(-2px);
+        }
+    </style>
+</head>
+
+<body>
+    <header>
+        <div class="logo">
+            <div class="logo-icon"></div>
+            <span>PART 03</span>
+        </div>
+        <nav>
+            <a href="index.html">首頁</a>
+            <a href="part0.html">課程啟動</a>
+            <a href="part1.html">回憶與文本</a>
+            <a href="part2.html">音樂與風格</a>
+            <a href="part3.html">影像與剪輯</a>
+            <a href="part4.html">倫理</a>
+            <a href="part5.html">發表</a>
+        </nav>
+    </header>
+
+    <main class="container">
+        <!-- Slide 1: Introduction -->
+        <section id="slide-intro" class="slide">
+            <div class="slide-content">
+                <h2 class="subtitle">PART 3：影像與美學 (Visuals & Editing)</h2>
+                <h1 class="title-glitch">把文字變畫面</h1>
+                <p>運用 AI 影像生成技術，為音樂譜出動人的視覺故事。</p>
+
+                <div class="quick-nav-container">
+                    <a href="#visual" class="btn-jump">🎨 影像生成 (W4)</a>
+                    <a href="#slide-mv" class="btn-jump">🎬 MV 剪輯實戰 (W5)</a>
+                </div>
+
+                <div class="nav-controls">
+                    <a href="part2.html" class="btn">上一章</a>
+                </div>
+            </div>
+            <div class="slide-nav-fixed">
+                <a href="part2.html" class="btn-nav">
+                    <<< PREV PART</a>
+                        <a href="#visual" class="btn-nav">NEXT STEP >>></a>
+            </div>
+        </section>
+
+        <!-- Slide 2: Visual Generation -->
+        <section id="visual" class="slide">
+            <div class="slide-content">
+                <h2 class="subtitle">W4 影像生成</h2>
+                <h1>歌詞具象化</h1>
+                <p>工具：Canva 魔法媒體工具 / DreamAI</p>
+                <div class="card" style="margin: 2rem 0; border-left: 4px solid var(--accent-cyan);">
+                    <h3>思考點：從意境到提示詞</h3>
+                    <p>歌詞：「操場上的汗水」</p>
+                    <p style="color: var(--accent-cyan); font-family: 'Orbitron';">→ 畫面提示詞：Sunny day, running track,
+                        school uniform, anime style, close up shots of sweat, emotional lighting</p>
+                </div>
+                <p><strong>畫詞師任務：</strong> 每一句歌詞，都需要一張對應的意境圖。</p>
+            </div>
+            <div class="slide-nav-fixed">
+                <a href="#slide-intro" class="btn-nav">
+                    <<< PREV</a>
+                        <a href="#slide-mv" class="btn-nav">NEXT STEP >>></a>
+            </div>
+        </section>
+
+        <!-- Slide 3: MV Editing -->
+        <section id="slide-mv" class="slide">
+            <div class="slide-content">
+                <h2 class="subtitle">W5 MV 剪輯實戰</h2>
+                <h1>導演，開麥拉！</h1>
+                <div class="grid">
+                    <div class="card">
+                        <span class="card-number">01</span>
+                        <h3>匯入</h3>
+                        <p>將 MP3 和生成的圖片匯入 Canva 專案。</p>
+                    </div>
+                    <div class="card">
+                        <span class="card-number">02</span>
+                        <h3>對拍</h3>
+                        <p>圖片切換的時間點要對上音樂節奏。</p>
+                    </div>
+                    <div class="card">
+                        <span class="card-number">03</span>
+                        <h3>字幕</h3>
+                        <p>加上歌詞字幕 (注意字體可讀性)。</p>
+                    </div>
+                    <div class="card">
+                        <span class="card-number">04</span>
+                        <h3>片尾</h3>
+                        <p>別忘了加上組員名單與致謝。</p>
+                    </div>
+                </div>
+
+                <div class="nav-controls">
+                    <a href="part2.html" class="btn">上一章</a>
+                </div>
+            </div>
+            <div class="slide-nav-fixed">
+                <a href="#visual" class="btn-nav">
+                    <<< PREV</a>
+                        <a href="part4.html" class="btn-nav">GO TO PART 4 >>></a>
+            </div>
+        </section>
+    </main>
+
+    <footer style="text-align: center; padding: 2rem; color: var(--text-dim);">
+        <p>© 2026 Studio Shodwe. 生成式 AI × 畢業歌 MV 創作實務</p>
+    </footer>
+    <script src="script.js"></script>
+</body>
+
+</html>

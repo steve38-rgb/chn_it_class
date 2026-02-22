@@ -1,0 +1,275 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Part 5：成果發表 | 聲聲不息歌出回憶</title>
+    <link rel="stylesheet" href="style.css">
+    <style>
+        .slide-nav-fixed {
+            position: absolute;
+            bottom: 2rem;
+            left: 2rem;
+            right: 2rem;
+            display: flex;
+            justify-content: space-between;
+            pointer-events: none;
+            z-index: 100;
+        }
+
+        .slide-nav-fixed .btn-nav {
+            pointer-events: auto;
+            background: rgba(10, 20, 35, 0.9);
+            border: 1px solid #00f2ff;
+            color: #00f2ff;
+            padding: 0.6rem 1.2rem;
+            text-decoration: none;
+            font-family: 'Orbitron', sans-serif;
+            font-size: 0.8rem;
+            backdrop-filter: blur(10px);
+            transition: 0.3s;
+        }
+
+        .slide-nav-fixed .btn-nav:hover {
+            background: #00f2ff;
+            color: #0a1423;
+            box-shadow: 0 0 15px #00f2ff;
+        }
+
+        /* 快速跳轉索引樣式 */
+        .quick-nav-container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.8rem;
+            margin: 1.5rem 0;
+            justify-content: center;
+        }
+
+        .btn-jump {
+            background: rgba(0, 242, 255, 0.1);
+            border: 1px solid rgba(0, 242, 255, 0.4);
+            color: #00f2ff;
+            padding: 0.5rem 1rem;
+            border-radius: 8px;
+            text-decoration: none;
+            font-size: 0.85rem;
+            transition: 0.3s;
+            display: flex;
+            align-items: center;
+            gap: 0.4rem;
+            backdrop-filter: blur(5px);
+        }
+
+        .btn-jump:hover {
+            background: rgba(0, 242, 255, 0.3);
+            border-color: #00f2ff;
+            transform: translateY(-2px);
+        }
+    </style>
+</head>
+
+<body>
+    <header>
+        <div class="logo">
+            <div class="logo-icon"></div>
+            <span>PART 05</span>
+        </div>
+        <nav>
+            <a href="index.html">首頁</a>
+            <a href="part0.html">課程啟動</a>
+            <a href="part1.html">回憶與文本</a>
+            <a href="part2.html">音樂與風格</a>
+            <a href="part3.html">影像與剪輯</a>
+            <a href="part4.html">倫理</a>
+            <a href="part5.html">發表</a>
+        </nav>
+    </header>
+
+    <main class="container">
+        <!-- Slide 1: Introduction -->
+        <section id="slide-intro" class="slide">
+            <div class="slide-content">
+                <h2 class="subtitle">PART 5：成果發表 (Final Presentation)</h2>
+                <h1 class="title-glitch">首映時刻</h1>
+                <p>這是展現你們創意結晶的時刻，讓我們一起分享這段旅程的感動。</p>
+
+                <div class="quick-nav-container">
+                    <a href="#rubrics" class="btn-jump">⚖️ 評量標準</a>
+                    <a href="#slide-flow" class="btn-jump">🎭 發表會流程 (W7)</a>
+                    <a href="#playlist" class="btn-jump">🎬 欣賞作品</a>
+                    <a href="#slide-credits" class="btn-jump">📝 版權頁</a>
+                </div>
+
+                <div class="nav-controls">
+                    <a href="part4.html" class="btn">上一章</a>
+                </div>
+            </div>
+            <div class="slide-nav-fixed">
+                <a href="part4.html" class="btn-nav">
+                    <<< PREV PART</a>
+                        <a href="#rubrics" class="btn-nav">NEXT STEP >>></a>
+            </div>
+        </section>
+
+        <!-- Slide 2: Rubrics -->
+        <section id="rubrics" class="slide">
+            <div class="slide-content">
+                <h2 class="subtitle">評量標準 (Rubrics)</h2>
+                <h1>怎樣才算好作品？</h1>
+                <table class="grade-table">
+                    <tr>
+                        <td class="grade-percent">40%</td>
+                        <td><strong>分組作品</strong>：歌詞創意、音樂搭配、畫面美感。</td>
+                    </tr>
+                    <tr>
+                        <td class="grade-percent">20%</td>
+                        <td><strong>AI 應用</strong>：指令下得好不好？修正能力強不強？</td>
+                    </tr>
+                    <tr>
+                        <td class="grade-percent">10%</td>
+                        <td><strong>法律與素養</strong>：著作權觀念正確。</td>
+                    </tr>
+                    <tr>
+                        <td class="grade-percent">10%</td>
+                        <td><strong>合作態度</strong>：不當雷隊友。</td>
+                    </tr>
+                    <tr>
+                        <td class="grade-percent">20%</td>
+                        <td><strong>學習歷程</strong>：Padlet 反思與互評。</td>
+                    </tr>
+                </table>
+            </div>
+            <div class="slide-nav-fixed">
+                <a href="#slide-intro" class="btn-nav">
+                    <<< PREV</a>
+                        <a href="#slide-flow" class="btn-nav">NEXT STEP >>></a>
+            </div>
+        </section>
+
+        <!-- Slide 3: Final Flow -->
+        <section id="slide-flow" class="slide">
+            <div class="slide-content">
+                <h2 class="subtitle">W7 成果發表會流程</h2>
+                <h1>舞台就緒</h1>
+                <div class="grid">
+                    <div class="card">
+                        <span class="card-number">01</span>
+                        <h3>作品播放</h3>
+                        <p>全班集中欣賞各組的 MV 成果。</p>
+                    </div>
+                    <div class="card">
+                        <span class="card-number">02</span>
+                        <h3>小組分享</h3>
+                        <p>分享創作中最困難與最自豪的地方。</p>
+                    </div>
+                    <div class="card">
+                        <span class="card-number">03</span>
+                        <h3>同學互評</h3>
+                        <p>在 Padlet 留下你的欣賞與建議。</p>
+                    </div>
+                </div>
+                <div style="text-align: center; margin-top: 4rem;">
+                    <h1 class="title-glitch" style="font-size: 3rem;">畢業快樂</h1>
+                    <p>這是你們永恆的回憶。</p>
+                </div>
+            </div>
+            <div class="slide-nav-fixed">
+                <a href="#rubrics" class="btn-nav">
+                    <<< PREV</a>
+                        <a href="#playlist" class="btn-nav">GO TO PLAYLIST >>></a>
+            </div>
+        </section>
+
+        <!-- Slide 4: Playlist Viewer -->
+        <section id="playlist" class="slide">
+            <div class="slide-content">
+                <h2 class="subtitle">作品播放清單 (Playlist)</h2>
+                <h1>欣賞同學作品</h1>
+
+                <div class="grid" style="grid-template-columns: 1fr 1fr; gap: 1rem; margin: 2rem 0;">
+                    <div>
+                        <label for="classSelect"
+                            style="display: block; margin-bottom: 0.5rem; color: var(--accent-cyan); font-family: 'Orbitron';">選擇班級</label>
+                        <select id="classSelect" class="selector">
+                            <option value="">-- 請選擇班級 --</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label for="groupSelect"
+                            style="display: block; margin-bottom: 0.5rem; color: var(--accent-cyan); font-family: 'Orbitron';">選擇組別</label>
+                        <select id="groupSelect" class="selector" disabled>
+                            <option value="">-- 請先選擇班級 --</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div id="videoContainer" style="display: none; margin-top: 2rem;">
+                    <div
+                        style="background: rgba(0, 242, 255, 0.1); padding: 2rem; border-left: 4px solid var(--accent-cyan); text-align: center;">
+                        <h3 id="videoTitle"
+                            style="color: var(--accent-cyan); font-family: 'Orbitron'; margin-bottom: 1rem; font-size: 2rem;">
+                        </h3>
+                        <p id="videoInfo" style="color: var(--text-dim); margin-bottom: 2rem; font-size: 1.1rem;"></p>
+
+                        <div style="display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap;">
+                            <a id="openVideoBtn" href="#" target="_blank" class="btn"
+                                style="font-size: 1.1rem; padding: 1.2rem 2.5rem;">
+                                🎬 在新視窗播放作品
+                            </a>
+                            <button id="copyLinkBtn" class="btn"
+                                style="font-size: 1.1rem; padding: 1.2rem 2.5rem; background: transparent; border: 1px solid var(--accent-cyan); color: var(--accent-cyan); cursor: pointer;">
+                                📋 複製連結
+                            </button>
+                        </div>
+
+                        <div id="copySuccess"
+                            style="display: none; margin-top: 1rem; color: #72ff00; font-family: 'Orbitron';">
+                            ✓ 連結已複製到剪貼簿
+                        </div>
+
+                        <p style="margin-top: 2rem; color: var(--text-dim); font-size: 0.9rem;">
+                            💡 提示：由於 Canva 的安全限制，作品將在新視窗中開啟
+                        </p>
+                    </div>
+                </div>
+
+                <div id="noSelection" style="text-align: center; padding: 4rem 2rem; color: var(--text-dim);">
+                    <p style="font-size: 1.2rem;">👆 請選擇班級與組別來觀看作品</p>
+                </div>
+            </div>
+            <div class="slide-nav-fixed">
+                <a href="#slide-flow" class="btn-nav">
+                    <<< PREV</a>
+                        <a href="#slide-credits" class="btn-nav">NEXT STEP >>></a>
+            </div>
+        </section>
+
+        <!-- Slide 5: Credits -->
+        <section id="slide-credits" class="slide">
+            <div class="slide-content" style="text-align: center;">
+                <h2 class="subtitle">版權頁</h2>
+                <div style="color: var(--text-dim); margin: 2rem 0;">
+                    <p>教材來源：教育部分中小學數位教學指引 3.0、中小學數位素養教育資源網</p>
+                    <p>路寮國中資訊科技科教師</p>
+                </div>
+                <div class="nav-controls" style="justify-content: center;">
+                    <a href="index.html" class="btn">回到首頁</a>
+                </div>
+            </div>
+            <div class="slide-nav-fixed">
+                <a href="#playlist" class="btn-nav">
+                    <<< PREV</a>
+                        <a href="index.html#navigation" class="btn-nav">BACK TO COURSE MAP >>></a>
+            </div>
+        </section>
+    </main>
+
+    <footer style="text-align: center; padding: 2rem; color: var(--text-dim);">
+        <p>© 2026 Studio Shodwe. 生成式 AI × 畢業歌 MV 創作實務</p>
+    </footer>
+    <script src="script.js"></script>
+    <script src="playlist.js"></script>
+</body>
+
+</html>

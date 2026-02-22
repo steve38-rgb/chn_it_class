@@ -1,0 +1,389 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Part 0：課程啟動 | 聲聲不息歌出回憶</title>
+    <link rel="stylesheet" href="style.css">
+    <style>
+        /* 關鍵導覽樣式：防止外部 CSS 失效時按鈕變純文字 */
+        .slide-nav-fixed {
+            position: absolute;
+            bottom: 2rem;
+            left: 2rem;
+            right: 2rem;
+            display: flex;
+            justify-content: space-between;
+            pointer-events: none;
+            z-index: 100;
+        }
+
+        /* 快速跳轉索引樣式 */
+        .quick-nav-container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.8rem;
+            margin-top: 1.5rem;
+            justify-content: center;
+        }
+
+        .btn-jump {
+            background: rgba(0, 242, 255, 0.1);
+            border: 1px solid rgba(0, 242, 255, 0.4);
+            color: #00f2ff;
+            padding: 0.5rem 1rem;
+            border-radius: 8px;
+            text-decoration: none;
+            font-size: 0.85rem;
+            transition: 0.3s;
+            display: flex;
+            align-items: center;
+            gap: 0.4rem;
+            backdrop-filter: blur(5px);
+        }
+
+        .btn-jump:hover {
+            background: rgba(0, 242, 255, 0.3);
+            border-color: #00f2ff;
+            box-shadow: 0 0 10px rgba(0, 242, 255, 0.2);
+            transform: translateY(-2px);
+        }
+
+        .slide-nav-fixed .btn-nav {
+            pointer-events: auto;
+            background: rgba(10, 20, 35, 0.9);
+            border: 1px solid #00f2ff;
+            color: #00f2ff;
+            padding: 0.6rem 1.2rem;
+            text-decoration: none;
+            font-family: 'Orbitron', sans-serif;
+            font-size: 0.8rem;
+            backdrop-filter: blur(10px);
+            transition: 0.3s;
+        }
+
+        .slide-nav-fixed .btn-nav:hover {
+            background: #00f2ff;
+            color: #0a1423;
+            box-shadow: 0 0 15px #00f2ff;
+        }
+
+        .btn-pdf {
+            background: transparent;
+            border: 1px solid #00f2ff;
+            color: #00f2ff;
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            cursor: pointer;
+            font-family: 'Orbitron';
+            transition: 0.3s;
+        }
+
+        .btn-pdf:hover {
+            background: #00f2ff;
+            color: #000;
+        }
+    </style>
+</head>
+
+<body>
+    <header>
+        <div class="logo">
+            <div class="logo-icon"></div>
+            <span>PART 00</span>
+        </div>
+        <nav>
+            <a href="index.html">首頁</a>
+            <a href="part0.html">課程啟動</a>
+            <a href="part1.html">回憶與文本</a>
+            <a href="part2.html">音樂與風格</a>
+            <a href="part3.html">影像與剪輯</a>
+            <a href="part4.html">倫理</a>
+            <a href="part5.html">發表</a>
+        </nav>
+    </header>
+
+    <main class="container">
+        <!-- Slide 1: Introduction -->
+        <section id="slide-intro" class="slide">
+            <div class="slide-content">
+                <h2 class="subtitle">PART 0：課程啟動 (Course Launch)</h2>
+                <h1 class="title-glitch">聲聲不息歌出回憶</h1>
+                <p>這是一場結合 AI 的創意旅程，我們將用科技紀錄青春的原聲。</p>
+
+                <!-- Quick Nav Index -->
+                <div class="quick-nav-container">
+                    <a href="#slide-map" class="btn-jump">🗺️ 課程地圖</a>
+                    <a href="#slide-mission" class="btn-jump">🚀 核心任務</a>
+                    <a href="#slide-copyright" class="btn-jump">⚖️ AI 版權</a>
+                    <a href="#slide-env" class="btn-jump">🌍 環境議題</a>
+                    <a href="#slide-team" class="btn-jump">👥 團隊分工</a>
+                </div>
+
+                <div class="nav-controls">
+                    <a href="index.html" class="btn">回到首頁</a>
+                </div>
+            </div>
+            <div class="slide-nav-fixed">
+                <a href="#" class="btn-nav hidden">PREV</a>
+                <a href="#slide-map" class="btn-nav">NEXT STEP >>></a>
+            </div>
+        </section>
+
+        <!-- Slide 2: Course Map -->
+        <section id="slide-map" class="slide">
+            <div class="slide-content">
+                <h2 class="subtitle">我們的 7 週旅程</h2>
+                <h1>課程地圖：從回憶到作品的誕生</h1>
+                <div class="grid" style="grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));">
+                    <div class="card"><strong>W1 啟動</strong><br>組隊、AI 是什麼？、挖掘回憶</div>
+                    <div class="card"><strong>W2 文本</strong><br>歌詞製作</div>
+                    <div class="card"><strong>W3 音樂</strong><br>歌曲創作</div>
+                    <div class="card"><strong>W4 影像</strong><br>MV 畫面安排</div>
+                    <div class="card"><strong>W5 整合</strong><br>MV 剪輯與後製</div>
+                    <div class="card"><strong>W6 檢核</strong><br>補上來源與 AI 合作說明</div>
+                    <div class="card"><strong>W7 發表</strong><br>成果發表</div>
+                </div>
+            </div>
+            <div class="slide-nav-fixed">
+                <a href="#slide-intro" class="btn-nav">
+                    <<< PREV</a>
+                        <a href="#slide-mission" class="btn-nav">NEXT STEP >>></a>
+            </div>
+        </section>
+
+        <!-- Slide 3: Core Mission -->
+        <section id="slide-mission" class="slide">
+            <div class="slide-content">
+                <h2 class="subtitle">這是你們的畢業禮物</h2>
+                <h1>核心任務</h1>
+                <p style="font-size: 1.2rem; margin-bottom: 2rem;">
+                    這不是一份作業，而是我們共同留下的數位足跡。<br>
+                    我們將運用 AI 工具，把三年的笑淚，變成一首專屬的歌。
+                </p>
+                <div class="grid">
+                    <div class="card">
+                        <h3>大腦 (文字生成)</h3>
+                        <p>透過與 AI 聊天整理歌詞。推薦：<br>
+                            <a href="https://gemini.google.com/" target="_blank"
+                                style="color: var(--accent-cyan);">Google Gemini</a>、
+                            <a href="https://chatgpt.com/" target="_blank"
+                                style="color: var(--accent-cyan);">ChatGPT</a>、
+                            <a href="https://claude.ai/" target="_blank"
+                                style="color: var(--accent-cyan);">Claude</a><br>
+                            (皆支援 Google 登入)
+                        </p>
+                    </div>
+                    <div class="card">
+                        <h3>樂師 (音樂生成)</h3>
+                        <p>將歌詞變為旋律。推薦：<br>
+                            <a href="https://suno.com/" target="_blank" style="color: var(--accent-cyan);">Suno</a> (支援
+                            Google 登入)
+                        </p>
+                    </div>
+                    <div class="card">
+                        <h3>導演 (影像與剪輯)</h3>
+                        <p>視覺呈現與 MV 剪輯。主要工具：<br>
+                            <a href="https://www.canva.com/" target="_blank"
+                                style="color: var(--accent-cyan);">Canva</a><br>
+                            (支援 Google 登入，包含影片剪輯與 AI 生成功能)
+                        </p>
+                    </div>
+                </div>
+            </div>
+            <div class="slide-nav-fixed">
+                <a href="#slide-map" class="btn-nav">
+                    <<< PREV</a>
+                        <a href="#slide-copyright" class="btn-nav">NEXT STEP >>></a>
+            </div>
+        </section>
+
+        <!-- Slide 4: AI Ethics & Copyright -->
+        <section id="slide-copyright" class="slide">
+            <div class="slide-content">
+                <h2 class="subtitle">創作前的必修課</h2>
+                <h1>AI 創作與著作權</h1>
+                <p style="font-size: 1.1rem; margin-bottom: 2rem;">在開始創作前，我們必須了解 AI 作品在法律上的定位：</p>
+                <div class="grid">
+                    <div class="card">
+                        <h3 style="color: var(--accent-cyan);">1. 誰擁有版權？</h3>
+                        <p>根據目前規範，單純由 AI 生成的作品<strong>不享有著作權</strong>。著作權保護的是「人類的精神創作」。</p>
+                    </div>
+                    <div class="card">
+                        <h3 style="color: var(--accent-cyan);">2. 如何取得保護？</h3>
+                        <p>作品中必須包含<strong>「人類的創作投入」</strong>（例如：修改歌詞、安排特定的分鏡、後製剪輯）。</p>
+                    </div>
+                    <div class="card">
+                        <h3 style="color: var(--accent-cyan);">3. 誠實標示</h3>
+                        <p>在作品發表時，應主動<strong>標示 AI 協作</strong>的部分，這是數位時代的基本素養。</p>
+                    </div>
+                </div>
+                <div
+                    style="margin-top: 2rem; padding: 1.5rem; background: rgba(0, 255, 255, 0.05); border-left: 4px solid var(--accent-cyan); border-radius: 8px;">
+                    <p style="margin-bottom: 0;">💡 <strong>重點思考：</strong> AI
+                        是我們的<strong>「工具」</strong>而非「槍手」。最終的作品靈魂應該來自於你的回憶與情感！</p>
+                </div>
+
+                <!-- Video Resources -->
+                <div class="grid" style="margin-top: 2rem; gap: 2rem;">
+                    <div style="aspect-ratio: 16 / 9; width: 100%;">
+                        <iframe width="100%" height="100%" src="https://www.youtube.com/embed/mlHPpKcSUKA"
+                            frameborder="0"
+                            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                            allowfullscreen style="border-radius: 8px;"></iframe>
+                        <p style="text-align: center; font-size: 0.9rem; color: var(--text-dim); margin-top: 0.5rem;">
+                            參考影片 1：AI 創作法律爭議 (1)</p>
+                    </div>
+                    <div style="aspect-ratio: 16 / 9; width: 100%;">
+                        <iframe width="100%" height="100%" src="https://www.youtube.com/embed/_h2O7OVa0pY"
+                            frameborder="0"
+                            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                            allowfullscreen style="border-radius: 8px;"></iframe>
+                        <p style="text-align: center; font-size: 0.9rem; color: var(--text-dim); margin-top: 0.5rem;">
+                            參考影片 2：AI 創作法律爭議 (2)</p>
+                    </div>
+                </div>
+            </div>
+            <div class="slide-nav-fixed">
+                <a href="#slide-mission" class="btn-nav">
+                    <<< PREV</a>
+                        <a href="#slide-env" class="btn-nav">NEXT STEP >>></a>
+            </div>
+        </section>
+
+        <!-- Slide 5: Technology & Environment -->
+        <section id="slide-env" class="slide">
+            <div class="slide-content">
+                <h2 class="subtitle">數位時代的環境責任</h2>
+                <h1>科技與環境議題</h1>
+
+                <!-- NEW: Intro/Quote Section -->
+                <div
+                    style="margin: 2rem 0; padding: 2rem; background: rgba(0, 242, 255, 0.05); border-radius: 15px; border: 1px solid rgba(0, 242, 255, 0.2); position: relative; overflow: hidden;">
+                    <div
+                        style="position: absolute; top: -10px; right: 10px; font-size: 5rem; opacity: 0.1; font-family: 'Orbitron';">
+                        "</div>
+                    <h3 style="color: var(--accent-cyan); margin-bottom: 1rem;">🤔 前導思考：對 AI 說「請、謝謝」也有代價？</h3>
+                    <p style="font-size: 1rem; line-height: 1.8; color: var(--text-main);">
+                        你有想過對 AI 保持禮貌，竟然會增加碳排放嗎？根據報導，使用者對 AI 說「請」和「謝謝」等客套話，導致 OpenAI 每年額外支出<strong>數千萬美元</strong>的運算成本。
+                    </p>
+                    <div class="grid"
+                        style="margin-top: 1.5rem; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem;">
+                        <div
+                            style="font-size: 0.9rem; color: var(--text-dim); background: rgba(255,255,255,0.03); padding: 1rem; border-radius: 8px;">
+                            <strong>💸 禮貌是有價的：</strong><br>
+                            LLM 是透過處理「詞元」(tokens) 運作，每個額外的字都需要消耗晶片運算、電力與冷卻水資源。
+                        </div>
+                        <div
+                            style="font-size: 0.9rem; color: var(--text-dim); background: rgba(255,255,255,0.03); padding: 1rem; border-radius: 8px;">
+                            <strong>🧠 習慣 vs. 效率：</strong><br>
+                            67% 的人習慣將 AI 擬人化對待；但也有一部分人是為了避免「未來 AI 統治世界」時被清算而保持禮貌。
+                        </div>
+                    </div>
+                    <p style="font-size: 0.9rem; color: var(--accent-cyan); margin-top: 1rem; font-style: italic;">
+                        👉 這反映了 AI 運作背後的「實體成本」。參考資料：<a
+                            href="https://www.inside.com.tw/article/38195-how-much-dose-manners-cost" target="_blank"
+                            style="color: var(--accent-cyan); text-decoration: underline;">對 AI 也得說「請、謝謝」？Sam
+                            Altman：沒錯，我們每年因此多花數千萬美元</a>
+                    </p>
+                </div>
+
+                <p
+                    style="font-size: 1.1rem; margin: 2rem 0 1rem 0; color: var(--accent-cyan); font-family: 'Orbitron';">
+                    📍 具體環境影響：</p>
+                <div class="grid"
+                    style="grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 1.5rem; margin-bottom: 3rem;">
+                    <div
+                        style="padding: 1.5rem; background: rgba(255, 255, 255, 0.03); border-radius: 12px; border: 1px solid rgba(0, 242, 255, 0.1);">
+                        <h3 style="color: var(--accent-cyan); font-size: 1.1rem; margin-bottom: 0.8rem;">1. 能源消耗與碳足跡
+                        </h3>
+                        <p style="font-size: 0.95rem; line-height: 1.6; color: var(--text-dim);">大型 AI
+                            模型的訓練與運算需要極大的電力，這背後涉及大量的二氧化碳排放與電力負擔。</p>
+                    </div>
+                    <div
+                        style="padding: 1.5rem; background: rgba(255, 255, 255, 0.03); border-radius: 12px; border: 1px solid rgba(0, 242, 255, 0.1);">
+                        <h3 style="color: var(--accent-cyan); font-size: 1.1rem; margin-bottom: 0.8rem;">2. 水資源冷卻</h3>
+                        <p style="font-size: 0.95rem; line-height: 1.6; color: var(--text-dim);">
+                            為了幫散發高溫的資料中心冷卻，科技大廠每年必須消耗驚人的水資源，影響地方生態。</p>
+                    </div>
+                    <div
+                        style="padding: 1.5rem; background: rgba(255, 255, 255, 0.03); border-radius: 12px; border: 1px solid rgba(0, 242, 255, 0.1);">
+                        <h3 style="color: var(--accent-cyan); font-size: 1.1rem; margin-bottom: 0.8rem;">3. 電子廢棄物</h3>
+                        <p style="font-size: 0.95rem; line-height: 1.6; color: var(--text-dim);">
+                            硬體設備的快速更迭，加上不當的廢棄物處理，會對地球環境造成長期的重金屬汙染與負荷。</p>
+                    </div>
+                </div>
+
+                <div style="margin-top: 3rem; padding-top: 2rem; border-top: 1px solid rgba(0, 242, 255, 0.1);">
+                    <h3
+                        style="margin-bottom: 1.5rem; color: var(--accent-cyan); text-align: center; font-family: 'Orbitron'; text-transform: uppercase;">
+                        📄 深入閱讀：科技與環境.pdf</h3>
+
+                    <div
+                        style="max-width: 900px; margin: 0 auto; text-align: center; padding: 2rem; background: rgba(0, 242, 255, 0.03); border-radius: 12px; border: 1px dashed rgba(0, 242, 255, 0.3);">
+                        <p style="margin-bottom: 1.5rem; color: var(--text-main);">我們將深入探討科技對環境的具體影響：</p>
+                        <a href="科技與環境.pdf" target="_blank" class="btn-pdf"
+                            style="text-decoration: none; display: inline-block; font-size: 1.1rem; padding: 1rem 2rem;">🎬
+                            開啟「科技與環境」課程簡報 (PDF)</a>
+                    </div>
+
+                    <p style="font-size: 0.9rem; color: var(--text-dim); margin-top: 1.5rem; text-align: center;">
+                        💡 提示：若上方內容無法顯示或自動下載，請點擊按鈕直接開啟檔案。
+                    </p>
+                </div>
+            </div>
+            <div class="slide-nav-fixed">
+                <a href="#slide-copyright" class="btn-nav">
+                    <<< PREV</a>
+                        <a href="#slide-team" class="btn-nav">NEXT STEP >>></a>
+            </div>
+        </section>
+
+        <!-- Slide 6: Team Work -->
+        <section id="slide-team" class="slide">
+            <div class="slide-content">
+                <h2 class="subtitle">誰是關鍵隊友？</h2>
+                <h1>團隊分工 (戰隊職位表)</h1>
+                <div class="grid">
+                    <div class="card">
+                        <h3>詞研師</h3>
+                        <p>彙整回憶、與 ChatGPT 溝通生成歌詞。</p>
+                    </div>
+                    <div class="card">
+                        <h3>畫詞師</h3>
+                        <p>設計視覺提示詞、生成背景圖。</p>
+                    </div>
+                    <div class="card">
+                        <h3>音選師</h3>
+                        <p>決定曲風、操作 Suno 生成音樂。</p>
+                    </div>
+                    <div class="card">
+                        <h3>剪構師</h3>
+                        <p>MV 分鏡規劃、剪輯影片與字幕。</p>
+                    </div>
+                    <div class="card">
+                        <h3>機動師</h3>
+                        <p>支援缺席隊友、確保作業準時上傳。</p>
+                    </div>
+                </div>
+
+                <div class="nav-controls">
+                    <a href="index.html" class="btn">回到首頁</a>
+                </div>
+            </div>
+            <div class="slide-nav-fixed">
+                <a href="#slide-env" class="btn-nav">
+                    <<< PREV</a>
+                        <a href="part1.html" class="btn-nav">GO TO PART 1 >>></a>
+            </div>
+        </section>
+    </main>
+
+    <footer style="text-align: center; padding: 2rem; color: var(--text-dim);">
+        <p>© 2026 Studio Shodwe. 生成式 AI × 畢業歌 MV 創作實務</p>
+    </footer>
+    <script src="script.js"></script>
+</body>
+
+</html>
