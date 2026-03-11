@@ -700,8 +700,8 @@
     <!-- 關鍵字搜尋 -->
     <div style="margin-top: 12px;">
       <div class="filter-group">
-        <label>關鍵字搜尋</label>
-        <input type="text" id="filterKeyword" placeholder="輸入學校、科目或檔案名稱…" oninput="applyFilter()">
+        <label>關鍵字搜尋 <span style="font-weight:400;color:var(--ink-light);font-size:10px;letter-spacing:0">（空格或逗號分隔＝OR）</span></label>
+        <input type="text" id="filterKeyword" placeholder="例：國文 數學　或　北一女,建中" oninput="applyFilter()">
       </div>
     </div>
   </div>
@@ -743,7 +743,7 @@
       ③ 從試算表網址複製 ID（<code>/d/</code> 和 <code>/edit</code> 之間的部分）<br>
       ④ 貼入下方欄位並儲存
     </p>
-    <input type="text" id="inputSheetId" placeholder="試算表 ID，例如：1BxiMVs0XRA5nFMdKvBdBZjgmUUqptlbs74OgVE2upms">
+    <input type="text" id="inputSheetId" placeholder="試算表 ID，例如：1BxiMVs0XRA5nFMdKvBdBZjgmUUqptlbs74OgVE2upms">12-lF_mJRnCLcKKsr8SOzLk56ImFsHI28Ws3tOtitQ0Q
     <div class="config-actions">
       <button class="btn-secondary" onclick="closeConfig()">取消</button>
       <button class="btn-primary" onclick="saveConfig()">儲存並載入</button>
@@ -883,22 +883,33 @@ function applyFilter() {
   const school   = document.getElementById('filterSchool').value;
   const subject  = document.getElementById('filterSubject').value;
   const category = document.getElementById('filterCategory').value;
-  const kw       = document.getElementById('filterKeyword').value.trim().toLowerCase();
+  const rawKw    = document.getElementById('filterKeyword').value.trim().toLowerCase();
+
+  // 關鍵字以空格或逗號分隔，過濾空字串，OR 邏輯
+  const keywords = rawKw
+    ? rawKw.split(/[\s,，]+/).map(k => k.trim()).filter(k => k.length > 0)
+    : [];
 
   filteredData = allData.filter(d => {
     if (year     && d.year     !== year)     return false;
     if (school   && d.school   !== school)   return false;
     if (subject  && d.subject  !== subject)  return false;
     if (category && d.category !== category) return false;
-    if (kw) {
-      const haystack = `${d.school} ${d.subject} ${d.category} ${d.fileName} ${d.folderName}`.toLowerCase();
-      if (!haystack.includes(kw)) return false;
+    if (keywords.length > 0) {
+      const haystack = `${d.school} ${d.subject} ${d.category} ${d.subCategory} ${d.fileName} ${d.folderName}`.toLowerCase();
+      // OR：只要其中一個關鍵字符合即通過
+      const matched = keywords.some(kw => haystack.includes(kw));
+      if (!matched) return false;
     }
     return true;
   });
 
   currentPage = 1;
   document.getElementById('filteredCount').textContent = filteredData.length.toLocaleString();
+
+  // 顯示目前作用中的關鍵字 tag
+  renderKeywordTags(keywords);
+
   renderPage();
 }
 
@@ -908,7 +919,29 @@ function resetFilter() {
   document.getElementById('filterSubject').value = '';
   document.getElementById('filterCategory').value = '';
   document.getElementById('filterKeyword').value = '';
+  renderKeywordTags([]);
   applyFilter();
+}
+
+// 關鍵字 tag 顯示（輸入框下方）
+function renderKeywordTags(keywords) {
+  let el = document.getElementById('keywordTags');
+  if (!el) {
+    el = document.createElement('div');
+    el.id = 'keywordTags';
+    el.style.cssText = 'display:flex;flex-wrap:wrap;gap:6px;margin-top:8px;min-height:0;';
+    document.getElementById('filterKeyword').parentNode.appendChild(el);
+  }
+  if (keywords.length <= 1) { el.innerHTML = ''; return; }
+  el.innerHTML = keywords.map(kw =>
+    `<span style="
+      display:inline-flex;align-items:center;gap:4px;
+      padding:2px 10px;border-radius:20px;
+      background:rgba(192,57,43,0.1);
+      border:1px solid rgba(192,57,43,0.25);
+      color:#922b21;font-size:12px;font-weight:500;
+    ">OR&thinsp;<strong>${esc(kw)}</strong></span>`
+  ).join('');
 }
 
 // ================================================
