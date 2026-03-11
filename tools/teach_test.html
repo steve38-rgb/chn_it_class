@@ -667,41 +667,14 @@
 <div class="container">
   <!-- 篩選面板 -->
   <div class="filter-panel">
-    <div class="filter-title">篩選條件</div>
-    <div class="filter-grid">
-      <div class="filter-group">
-        <label>年份</label>
-        <select id="filterYear" onchange="applyFilter()">
-          <option value="">全部年份</option>
-        </select>
-      </div>
-      <div class="filter-group">
-        <label>學校名稱</label>
-        <select id="filterSchool" onchange="applyFilter()">
-          <option value="">全部學校</option>
-        </select>
-      </div>
-      <div class="filter-group">
-        <label>科目</label>
-        <select id="filterSubject" onchange="applyFilter()">
-          <option value="">全部科目</option>
-        </select>
-      </div>
-      <div class="filter-group">
-        <label>試題類別</label>
-        <select id="filterCategory" onchange="applyFilter()">
-          <option value="">全部類別</option>
-        </select>
+    <div class="filter-title">搜尋</div>
+    <div style="display:flex;gap:12px;align-items:flex-end;">
+      <div class="filter-group" style="flex:1;">
+        <label>關鍵字搜尋 <span style="font-weight:400;color:var(--ink-light);font-size:10px;letter-spacing:0">（空格或逗號分隔＝OR）</span></label>
+        <input type="text" id="filterKeyword" placeholder="例：國文 數學　或　北一女,建中" oninput="applyFilter()">
       </div>
       <div class="filter-group">
         <button class="btn-reset" onclick="resetFilter()">重置</button>
-      </div>
-    </div>
-    <!-- 關鍵字搜尋 -->
-    <div style="margin-top: 12px;">
-      <div class="filter-group">
-        <label>關鍵字搜尋 <span style="font-weight:400;color:var(--ink-light);font-size:10px;letter-spacing:0">（空格或逗號分隔＝OR）</span></label>
-        <input type="text" id="filterKeyword" placeholder="例：國文 數學　或　北一女,建中" oninput="applyFilter()">
       </div>
     </div>
   </div>
@@ -879,11 +852,7 @@ function fillSelect(id, options, placeholder) {
 // 套用篩選
 // ================================================
 function applyFilter() {
-  const year     = document.getElementById('filterYear').value;
-  const school   = document.getElementById('filterSchool').value;
-  const subject  = document.getElementById('filterSubject').value;
-  const category = document.getElementById('filterCategory').value;
-  const rawKw    = document.getElementById('filterKeyword').value.trim().toLowerCase();
+  const rawKw = document.getElementById('filterKeyword').value.trim().toLowerCase();
 
   // 關鍵字以空格或逗號分隔，過濾空字串，OR 邏輯
   const keywords = rawKw
@@ -891,33 +860,20 @@ function applyFilter() {
     : [];
 
   filteredData = allData.filter(d => {
-    if (year     && d.year     !== year)     return false;
-    if (school   && d.school   !== school)   return false;
-    if (subject  && d.subject  !== subject)  return false;
-    if (category && d.category !== category) return false;
     if (keywords.length > 0) {
       const haystack = `${d.school} ${d.subject} ${d.category} ${d.subCategory} ${d.fileName} ${d.folderName}`.toLowerCase();
-      // OR：只要其中一個關鍵字符合即通過
-      const matched = keywords.some(kw => haystack.includes(kw));
-      if (!matched) return false;
+      if (!keywords.some(kw => haystack.includes(kw))) return false;
     }
     return true;
   });
 
   currentPage = 1;
   document.getElementById('filteredCount').textContent = filteredData.length.toLocaleString();
-
-  // 顯示目前作用中的關鍵字 tag
   renderKeywordTags(keywords);
-
   renderPage();
 }
 
 function resetFilter() {
-  document.getElementById('filterYear').value = '';
-  document.getElementById('filterSchool').value = '';
-  document.getElementById('filterSubject').value = '';
-  document.getElementById('filterCategory').value = '';
   document.getElementById('filterKeyword').value = '';
   renderKeywordTags([]);
   applyFilter();
