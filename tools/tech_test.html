@@ -1,0 +1,1061 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>試題資料庫</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+TC:wght@400;600;700&family=Noto+Sans+TC:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --ink: #1a1410;
+    --ink-light: #4a3f35;
+    --paper: #f5f0e8;
+    --paper-dark: #ede5d4;
+    --red: #c0392b;
+    --red-dark: #922b21;
+    --gold: #b7860b;
+    --border: #c8b89a;
+    --shadow: rgba(26,20,16,0.12);
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    background: var(--paper);
+    color: var(--ink);
+    font-family: 'Noto Sans TC', sans-serif;
+    min-height: 100vh;
+  }
+
+  /* ── 背景紋理 ── */
+  body::before {
+    content: '';
+    position: fixed; inset: 0;
+    background-image:
+      repeating-linear-gradient(0deg, transparent, transparent 28px, rgba(200,184,154,0.18) 28px, rgba(200,184,154,0.18) 29px),
+      repeating-linear-gradient(90deg, transparent, transparent 28px, rgba(200,184,154,0.10) 28px, rgba(200,184,154,0.10) 29px);
+    pointer-events: none; z-index: 0;
+  }
+
+  /* ── Header ── */
+  header {
+    position: relative; z-index: 10;
+    background: var(--ink);
+    padding: 0;
+    border-bottom: 4px solid var(--red);
+  }
+
+  .header-inner {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 28px 32px 24px;
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+    gap: 20px;
+  }
+
+  .logo-block { display: flex; align-items: center; gap: 18px; }
+
+  .logo-seal {
+    width: 56px; height: 56px;
+    background: var(--red);
+    border-radius: 6px;
+    display: flex; align-items: center; justify-content: center;
+    flex-shrink: 0;
+    box-shadow: inset 0 0 0 2px rgba(255,255,255,0.15);
+  }
+
+  .logo-seal span {
+    font-family: 'Noto Serif TC', serif;
+    font-weight: 700;
+    font-size: 22px;
+    color: #fff;
+    letter-spacing: -1px;
+  }
+
+  .logo-text h1 {
+    font-family: 'Noto Serif TC', serif;
+    font-size: 26px;
+    font-weight: 700;
+    color: #fff;
+    letter-spacing: 3px;
+  }
+
+  .logo-text p {
+    font-size: 12px;
+    color: rgba(255,255,255,0.5);
+    letter-spacing: 1px;
+    margin-top: 3px;
+  }
+
+  .header-stats {
+    display: flex; gap: 32px;
+  }
+
+  .stat-item {
+    text-align: right;
+  }
+
+  .stat-num {
+    font-family: 'Noto Serif TC', serif;
+    font-size: 28px;
+    font-weight: 700;
+    color: var(--red);
+    line-height: 1;
+  }
+
+  .stat-label {
+    font-size: 11px;
+    color: rgba(255,255,255,0.45);
+    letter-spacing: 1px;
+    margin-top: 4px;
+  }
+
+  /* ── 設定區塊 Banner ── */
+  .config-banner {
+    background: #fff9ee;
+    border-bottom: 1px solid var(--border);
+    padding: 10px 32px;
+    font-size: 13px;
+    color: var(--gold);
+    text-align: center;
+    display: none;
+    position: relative; z-index: 10;
+  }
+
+  .config-banner a { color: var(--red); font-weight: 500; text-decoration: none; }
+  .config-banner a:hover { text-decoration: underline; }
+
+  /* ── 主體容器 ── */
+  .container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 28px 32px 60px;
+    position: relative; z-index: 1;
+  }
+
+  /* ── 篩選區 ── */
+  .filter-panel {
+    background: #fff;
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    padding: 20px 24px;
+    margin-bottom: 20px;
+    box-shadow: 0 2px 12px var(--shadow);
+  }
+
+  .filter-title {
+    font-family: 'Noto Serif TC', serif;
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--ink-light);
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    margin-bottom: 14px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .filter-title::before {
+    content: '';
+    display: block;
+    width: 3px;
+    height: 14px;
+    background: var(--red);
+    border-radius: 2px;
+  }
+
+  .filter-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr 1fr auto;
+    gap: 12px;
+    align-items: end;
+  }
+
+  .filter-group label {
+    display: block;
+    font-size: 11px;
+    font-weight: 500;
+    color: var(--ink-light);
+    letter-spacing: 1px;
+    margin-bottom: 6px;
+  }
+
+  .filter-group select,
+  .filter-group input {
+    width: 100%;
+    padding: 8px 12px;
+    border: 1px solid var(--border);
+    border-radius: 3px;
+    background: var(--paper);
+    color: var(--ink);
+    font-family: 'Noto Sans TC', sans-serif;
+    font-size: 13px;
+    appearance: none;
+    -webkit-appearance: none;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6'%3E%3Cpath d='M0 0l5 6 5-6z' fill='%234a3f35'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 10px center;
+    cursor: pointer;
+    transition: border-color .2s, box-shadow .2s;
+  }
+
+  .filter-group input {
+    background-image: none;
+  }
+
+  .filter-group select:focus,
+  .filter-group input:focus {
+    outline: none;
+    border-color: var(--red);
+    box-shadow: 0 0 0 2px rgba(192,57,43,0.12);
+  }
+
+  .btn-reset {
+    padding: 8px 20px;
+    background: transparent;
+    border: 1px solid var(--border);
+    border-radius: 3px;
+    font-family: 'Noto Sans TC', sans-serif;
+    font-size: 13px;
+    color: var(--ink-light);
+    cursor: pointer;
+    transition: all .2s;
+    white-space: nowrap;
+  }
+
+  .btn-reset:hover {
+    border-color: var(--red);
+    color: var(--red);
+    background: rgba(192,57,43,0.04);
+  }
+
+  /* ── 結果資訊列 ── */
+  .results-bar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 12px;
+    padding: 0 2px;
+  }
+
+  .results-count {
+    font-size: 13px;
+    color: var(--ink-light);
+  }
+
+  .results-count strong {
+    color: var(--red);
+    font-weight: 600;
+  }
+
+  .view-toggle {
+    display: flex;
+    gap: 6px;
+  }
+
+  .view-btn {
+    width: 32px; height: 32px;
+    border: 1px solid var(--border);
+    border-radius: 3px;
+    background: transparent;
+    color: var(--ink-light);
+    cursor: pointer;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 15px;
+    transition: all .2s;
+  }
+
+  .view-btn.active {
+    background: var(--ink);
+    color: #fff;
+    border-color: var(--ink);
+  }
+
+  /* ── 載入中 ── */
+  .loading-state {
+    text-align: center;
+    padding: 80px 20px;
+    color: var(--ink-light);
+  }
+
+  .loading-spinner {
+    width: 36px; height: 36px;
+    border: 3px solid var(--border);
+    border-top-color: var(--red);
+    border-radius: 50%;
+    margin: 0 auto 16px;
+    animation: spin 0.8s linear infinite;
+  }
+
+  @keyframes spin { to { transform: rotate(360deg); } }
+
+  .loading-state p { font-size: 13px; letter-spacing: 1px; }
+
+  /* ── 錯誤 / 空狀態 ── */
+  .empty-state {
+    text-align: center;
+    padding: 60px 20px;
+    color: var(--ink-light);
+  }
+
+  .empty-state .icon { font-size: 40px; margin-bottom: 12px; }
+  .empty-state p { font-size: 14px; }
+
+  /* ── 表格 ── */
+  .table-wrap {
+    background: #fff;
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    overflow: hidden;
+    box-shadow: 0 2px 12px var(--shadow);
+  }
+
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 13px;
+  }
+
+  thead tr {
+    background: var(--ink);
+    color: #fff;
+  }
+
+  thead th {
+    padding: 12px 16px;
+    text-align: left;
+    font-family: 'Noto Serif TC', serif;
+    font-weight: 600;
+    font-size: 12px;
+    letter-spacing: 1.5px;
+    white-space: nowrap;
+  }
+
+  thead th:first-child { padding-left: 20px; }
+
+  tbody tr {
+    border-bottom: 1px solid rgba(200,184,154,0.4);
+    transition: background .15s;
+  }
+
+  tbody tr:last-child { border-bottom: none; }
+  tbody tr:hover { background: #fdf8f0; }
+
+  tbody td {
+    padding: 11px 16px;
+    color: var(--ink);
+    vertical-align: middle;
+  }
+
+  tbody td:first-child { padding-left: 20px; }
+
+  /* 標籤樣式 */
+  .tag {
+    display: inline-block;
+    padding: 2px 8px;
+    border-radius: 2px;
+    font-size: 11px;
+    font-weight: 500;
+    letter-spacing: 0.5px;
+  }
+
+  .tag-year {
+    background: rgba(192,57,43,0.1);
+    color: var(--red-dark);
+    border: 1px solid rgba(192,57,43,0.2);
+  }
+
+  .tag-subject {
+    background: rgba(183,134,11,0.1);
+    color: #7d5a08;
+    border: 1px solid rgba(183,134,11,0.2);
+  }
+
+  .tag-category {
+    background: rgba(26,20,16,0.06);
+    color: var(--ink-light);
+    border: 1px solid rgba(26,20,16,0.12);
+  }
+
+  .tag-type {
+    padding: 2px 6px;
+    border-radius: 2px;
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 0.5px;
+  }
+
+  .tag-PDF { background: #fee2e2; color: #991b1b; }
+  .tag-DOC, .tag-DOCX { background: #dbeafe; color: #1e40af; }
+  .tag-XLS, .tag-XLSX { background: #dcfce7; color: #166534; }
+  .tag-PPT, .tag-PPTX { background: #ffedd5; color: #9a3412; }
+  .tag-other { background: #f3f4f6; color: #374151; }
+
+  /* 連結按鈕 */
+  .btn-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    padding: 5px 12px;
+    background: var(--red);
+    color: #fff;
+    text-decoration: none;
+    border-radius: 3px;
+    font-size: 12px;
+    font-weight: 500;
+    letter-spacing: 0.5px;
+    transition: background .2s, transform .1s;
+    white-space: nowrap;
+  }
+
+  .btn-link:hover {
+    background: var(--red-dark);
+    transform: translateY(-1px);
+  }
+
+  /* ── 卡片模式 ── */
+  .card-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 14px;
+  }
+
+  .card {
+    background: #fff;
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    padding: 16px 18px;
+    box-shadow: 0 2px 8px var(--shadow);
+    transition: box-shadow .2s, transform .2s;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .card:hover {
+    box-shadow: 0 6px 20px var(--shadow);
+    transform: translateY(-2px);
+  }
+
+  .card-header {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 10px;
+  }
+
+  .card-school {
+    font-family: 'Noto Serif TC', serif;
+    font-weight: 600;
+    font-size: 15px;
+    color: var(--ink);
+    line-height: 1.3;
+  }
+
+  .card-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 5px;
+  }
+
+  .card-footer {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-top: 2px;
+  }
+
+  .card-meta {
+    font-size: 11px;
+    color: var(--ink-light);
+    opacity: 0.7;
+  }
+
+  /* ── 分頁 ── */
+  .pagination {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 6px;
+    margin-top: 24px;
+  }
+
+  .page-btn {
+    min-width: 34px; height: 34px;
+    border: 1px solid var(--border);
+    border-radius: 3px;
+    background: #fff;
+    color: var(--ink);
+    font-family: 'Noto Sans TC', sans-serif;
+    font-size: 13px;
+    cursor: pointer;
+    display: flex; align-items: center; justify-content: center;
+    transition: all .15s;
+    padding: 0 10px;
+  }
+
+  .page-btn:hover:not(:disabled) {
+    border-color: var(--red);
+    color: var(--red);
+  }
+
+  .page-btn.active {
+    background: var(--red);
+    border-color: var(--red);
+    color: #fff;
+  }
+
+  .page-btn:disabled {
+    opacity: 0.35;
+    cursor: not-allowed;
+  }
+
+  /* ── 配置說明浮窗 ── */
+  .config-modal {
+    display: none;
+    position: fixed; inset: 0;
+    background: rgba(26,20,16,0.7);
+    z-index: 100;
+    align-items: center; justify-content: center;
+  }
+
+  .config-modal.open { display: flex; }
+
+  .config-box {
+    background: #fff;
+    border-radius: 6px;
+    padding: 32px 36px;
+    max-width: 520px;
+    width: 90%;
+    box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+  }
+
+  .config-box h2 {
+    font-family: 'Noto Serif TC', serif;
+    font-size: 18px;
+    font-weight: 700;
+    margin-bottom: 16px;
+    color: var(--ink);
+  }
+
+  .config-box p { font-size: 13px; line-height: 1.8; color: var(--ink-light); margin-bottom: 12px; }
+
+  .config-box input[type="text"] {
+    width: 100%;
+    padding: 10px 14px;
+    border: 1px solid var(--border);
+    border-radius: 3px;
+    font-size: 13px;
+    font-family: monospace;
+    margin-bottom: 16px;
+    color: var(--ink);
+  }
+
+  .config-box input:focus { outline: none; border-color: var(--red); }
+
+  .config-actions { display: flex; gap: 10px; justify-content: flex-end; }
+
+  .btn-primary {
+    padding: 9px 22px;
+    background: var(--red);
+    color: #fff;
+    border: none;
+    border-radius: 3px;
+    font-size: 13px;
+    cursor: pointer;
+    font-family: 'Noto Sans TC', sans-serif;
+    transition: background .2s;
+  }
+
+  .btn-primary:hover { background: var(--red-dark); }
+
+  .btn-secondary {
+    padding: 9px 22px;
+    background: transparent;
+    color: var(--ink-light);
+    border: 1px solid var(--border);
+    border-radius: 3px;
+    font-size: 13px;
+    cursor: pointer;
+    font-family: 'Noto Sans TC', sans-serif;
+    transition: all .2s;
+  }
+
+  .btn-secondary:hover { border-color: var(--ink-light); }
+
+  /* ── 設定按鈕（右上角）── */
+  .settings-btn {
+    position: fixed;
+    bottom: 28px; right: 28px;
+    width: 46px; height: 46px;
+    background: var(--ink);
+    border-radius: 50%;
+    border: none;
+    color: #fff;
+    font-size: 18px;
+    cursor: pointer;
+    box-shadow: 0 4px 14px var(--shadow);
+    display: flex; align-items: center; justify-content: center;
+    transition: background .2s, transform .2s;
+    z-index: 50;
+  }
+
+  .settings-btn:hover { background: var(--red); transform: scale(1.08); }
+
+  /* ── RWD ── */
+  @media (max-width: 768px) {
+    .header-inner { flex-direction: column; align-items: flex-start; gap: 14px; }
+    .header-stats { gap: 20px; }
+    .container { padding: 20px 16px 60px; }
+    .filter-grid { grid-template-columns: 1fr 1fr; }
+    .filter-grid > :last-child { grid-column: 1 / -1; }
+    .table-wrap { overflow-x: auto; }
+    table { min-width: 700px; }
+    .card-grid { grid-template-columns: 1fr; }
+  }
+
+  @media (max-width: 480px) {
+    .filter-grid { grid-template-columns: 1fr; }
+  }
+</style>
+</head>
+<body>
+
+<!-- ★ 設定 Sheet URL（部署後請填入） -->
+<script>
+  // ★★★ 請將 Google Sheet 設為「任何人可以檢視」後，填入試算表 ID ★★★
+  // 試算表網址格式：https://docs.google.com/spreadsheets/d/【這裡是ID】/edit
+  const SHEET_ID = localStorage.getItem('sheetId') || '';
+  const SHEET_TAB = '試題資料庫'; // 與 Apps Script 中的 SHEET_NAME 一致
+</script>
+
+<header>
+  <div class="header-inner">
+    <div class="logo-block">
+      <div class="logo-seal"><span>試題</span></div>
+      <div class="logo-text">
+        <h1>試題資料庫</h1>
+        <p>113–114 學年度歷屆試題索引</p>
+      </div>
+    </div>
+    <div class="header-stats">
+      <div class="stat-item">
+        <div class="stat-num" id="totalCount">—</div>
+        <div class="stat-label">總筆數</div>
+      </div>
+      <div class="stat-item">
+        <div class="stat-num" id="schoolCount">—</div>
+        <div class="stat-label">學校數</div>
+      </div>
+      <div class="stat-item">
+        <div class="stat-num" id="subjectCount">—</div>
+        <div class="stat-label">科目數</div>
+      </div>
+    </div>
+  </div>
+</header>
+
+<div class="config-banner" id="configBanner">
+  ⚠ 尚未設定 Google Sheet 資料來源。請點選右下角 ⚙ 按鈕進行設定，或
+  <a href="#" onclick="openConfig()">點此設定</a>。
+</div>
+
+<div class="container">
+  <!-- 篩選面板 -->
+  <div class="filter-panel">
+    <div class="filter-title">篩選條件</div>
+    <div class="filter-grid">
+      <div class="filter-group">
+        <label>年份</label>
+        <select id="filterYear" onchange="applyFilter()">
+          <option value="">全部年份</option>
+        </select>
+      </div>
+      <div class="filter-group">
+        <label>學校名稱</label>
+        <select id="filterSchool" onchange="applyFilter()">
+          <option value="">全部學校</option>
+        </select>
+      </div>
+      <div class="filter-group">
+        <label>科目</label>
+        <select id="filterSubject" onchange="applyFilter()">
+          <option value="">全部科目</option>
+        </select>
+      </div>
+      <div class="filter-group">
+        <label>試題類別</label>
+        <select id="filterCategory" onchange="applyFilter()">
+          <option value="">全部類別</option>
+        </select>
+      </div>
+      <div class="filter-group">
+        <button class="btn-reset" onclick="resetFilter()">重置</button>
+      </div>
+    </div>
+    <!-- 關鍵字搜尋 -->
+    <div style="margin-top: 12px;">
+      <div class="filter-group">
+        <label>關鍵字搜尋</label>
+        <input type="text" id="filterKeyword" placeholder="輸入學校、科目或檔案名稱…" oninput="applyFilter()">
+      </div>
+    </div>
+  </div>
+
+  <!-- 結果資訊列 -->
+  <div class="results-bar">
+    <div class="results-count">
+      顯示 <strong id="filteredCount">0</strong> 筆結果
+    </div>
+    <div class="view-toggle">
+      <button class="view-btn active" id="btnTable" title="表格模式" onclick="setView('table')">☰</button>
+      <button class="view-btn" id="btnCard" title="卡片模式" onclick="setView('card')">▦</button>
+    </div>
+  </div>
+
+  <!-- 資料展示區 -->
+  <div id="dataArea">
+    <div class="loading-state" id="loadingState">
+      <div class="loading-spinner"></div>
+      <p>載入資料中…</p>
+    </div>
+  </div>
+
+  <!-- 分頁 -->
+  <div class="pagination" id="paginationArea"></div>
+</div>
+
+<!-- 設定按鈕 -->
+<button class="settings-btn" title="設定 Sheet 來源" onclick="openConfig()">⚙</button>
+
+<!-- 設定浮窗 -->
+<div class="config-modal" id="configModal">
+  <div class="config-box">
+    <h2>⚙ 設定 Google Sheet 資料來源</h2>
+    <p>請先完成以下步驟：</p>
+    <p>
+      ① 在 Google Sheet 執行 Apps Script（<code>runAll</code>）產生資料<br>
+      ② 將試算表共用設定改為「知道連結的人可以檢視」<br>
+      ③ 從試算表網址複製 ID（<code>/d/</code> 和 <code>/edit</code> 之間的部分）<br>
+      ④ 貼入下方欄位並儲存
+    </p>
+    <input type="text" id="inputSheetId" placeholder="試算表 ID，例如：1BxiMVs0XRA5nFMdKvBdBZjgmUUqptlbs74OgVE2upms">
+    <div class="config-actions">
+      <button class="btn-secondary" onclick="closeConfig()">取消</button>
+      <button class="btn-primary" onclick="saveConfig()">儲存並載入</button>
+    </div>
+  </div>
+</div>
+
+<script>
+// ================================================
+// 資料狀態
+// ================================================
+let allData = [];
+let filteredData = [];
+let currentPage = 1;
+const PAGE_SIZE = 50;
+let viewMode = 'table';
+
+// ================================================
+// 初始化
+// ================================================
+window.addEventListener('DOMContentLoaded', () => {
+  const id = localStorage.getItem('sheetId');
+  if (!id) {
+    document.getElementById('configBanner').style.display = 'block';
+    document.getElementById('loadingState').innerHTML = `
+      <div class="icon">📂</div>
+      <p>請點選右下角 ⚙ 按鈕設定 Google Sheet 資料來源</p>`;
+  } else {
+    loadData(id);
+  }
+});
+
+// ================================================
+// 載入 Google Sheet 資料（CSV 方式）
+// ================================================
+async function loadData(sheetId) {
+  const tabEncoded = encodeURIComponent(SHEET_TAB);
+  const url = `https://docs.google.com/spreadsheets/d/${sheetId}/gviz/tq?tqx=out:csv&sheet=${tabEncoded}`;
+
+  try {
+    const resp = await fetch(url);
+    if (!resp.ok) throw new Error('無法存取試算表');
+    const text = await resp.text();
+    allData = parseCSV(text);
+    updateStats();
+    buildFilters();
+    applyFilter();
+    document.getElementById('configBanner').style.display = 'none';
+  } catch (e) {
+    document.getElementById('loadingState').innerHTML = `
+      <div class="icon">❌</div>
+      <p>載入失敗：${e.message}<br>請確認試算表已設為「公開檢視」</p>`;
+  }
+}
+
+// ================================================
+// 解析 CSV
+// ================================================
+function parseCSV(text) {
+  const lines = text.trim().split('\n');
+  if (lines.length < 2) return [];
+  // 跳過標題列（第一行）
+  const rows = [];
+  for (let i = 1; i < lines.length; i++) {
+    const cols = splitCSVLine(lines[i]);
+    if (cols.length < 10) continue;
+    rows.push({
+      year:        clean(cols[0]),
+      school:      clean(cols[1]),
+      subject:     clean(cols[2]),
+      category:    clean(cols[3]),
+      subCategory: clean(cols[4]),
+      date:        clean(cols[5]),
+      folderName:  clean(cols[6]),
+      fileName:    clean(cols[7]),
+      fileType:    clean(cols[8]),
+      url:         clean(cols[9])
+    });
+  }
+  return rows;
+}
+
+function splitCSVLine(line) {
+  const result = [];
+  let cur = '', inQ = false;
+  for (let i = 0; i < line.length; i++) {
+    const c = line[i];
+    if (c === '"') { inQ = !inQ; continue; }
+    if (c === ',' && !inQ) { result.push(cur); cur = ''; continue; }
+    cur += c;
+  }
+  result.push(cur);
+  return result;
+}
+
+function clean(s) { return (s || '').trim().replace(/^"|"$/g, ''); }
+
+// ================================================
+// 統計數字
+// ================================================
+function updateStats() {
+  document.getElementById('totalCount').textContent = allData.length.toLocaleString();
+  document.getElementById('schoolCount').textContent = new Set(allData.map(d => d.school).filter(Boolean)).size;
+  document.getElementById('subjectCount').textContent = new Set(allData.map(d => d.subject).filter(Boolean)).size;
+}
+
+// ================================================
+// 建立篩選器選項
+// ================================================
+function buildFilters() {
+  const years    = [...new Set(allData.map(d => d.year).filter(Boolean))].sort();
+  const schools  = [...new Set(allData.map(d => d.school).filter(Boolean))].sort();
+  const subjects = [...new Set(allData.map(d => d.subject).filter(Boolean))].sort();
+  const cats     = [...new Set(allData.map(d => d.category).filter(Boolean))].sort();
+
+  fillSelect('filterYear',     years,    '全部年份');
+  fillSelect('filterSchool',   schools,  '全部學校');
+  fillSelect('filterSubject',  subjects, '全部科目');
+  fillSelect('filterCategory', cats,     '全部類別');
+}
+
+function fillSelect(id, options, placeholder) {
+  const sel = document.getElementById(id);
+  sel.innerHTML = `<option value="">${placeholder}</option>`;
+  options.forEach(v => {
+    const opt = document.createElement('option');
+    opt.value = v; opt.textContent = v;
+    sel.appendChild(opt);
+  });
+}
+
+// ================================================
+// 套用篩選
+// ================================================
+function applyFilter() {
+  const year     = document.getElementById('filterYear').value;
+  const school   = document.getElementById('filterSchool').value;
+  const subject  = document.getElementById('filterSubject').value;
+  const category = document.getElementById('filterCategory').value;
+  const kw       = document.getElementById('filterKeyword').value.trim().toLowerCase();
+
+  filteredData = allData.filter(d => {
+    if (year     && d.year     !== year)     return false;
+    if (school   && d.school   !== school)   return false;
+    if (subject  && d.subject  !== subject)  return false;
+    if (category && d.category !== category) return false;
+    if (kw) {
+      const haystack = `${d.school} ${d.subject} ${d.category} ${d.fileName} ${d.folderName}`.toLowerCase();
+      if (!haystack.includes(kw)) return false;
+    }
+    return true;
+  });
+
+  currentPage = 1;
+  document.getElementById('filteredCount').textContent = filteredData.length.toLocaleString();
+  renderPage();
+}
+
+function resetFilter() {
+  document.getElementById('filterYear').value = '';
+  document.getElementById('filterSchool').value = '';
+  document.getElementById('filterSubject').value = '';
+  document.getElementById('filterCategory').value = '';
+  document.getElementById('filterKeyword').value = '';
+  applyFilter();
+}
+
+// ================================================
+// 渲染
+// ================================================
+function renderPage() {
+  const start = (currentPage - 1) * PAGE_SIZE;
+  const pageData = filteredData.slice(start, start + PAGE_SIZE);
+  const area = document.getElementById('dataArea');
+
+  if (filteredData.length === 0) {
+    area.innerHTML = `<div class="empty-state"><div class="icon">🔍</div><p>找不到符合條件的資料</p></div>`;
+    document.getElementById('paginationArea').innerHTML = '';
+    return;
+  }
+
+  if (viewMode === 'table') {
+    area.innerHTML = renderTable(pageData);
+  } else {
+    area.innerHTML = renderCards(pageData);
+  }
+
+  renderPagination();
+}
+
+// ── 表格 ──
+function renderTable(data) {
+  const rows = data.map(d => `
+    <tr>
+      <td><span class="tag tag-year">${esc(d.year) || '—'}</span></td>
+      <td><strong>${esc(d.school) || '—'}</strong></td>
+      <td><span class="tag tag-subject">${esc(d.subject) || '—'}</span></td>
+      <td>
+        <span class="tag tag-category">${esc(d.category) || '—'}</span>
+        ${d.subCategory ? `<span class="tag tag-category" style="margin-left:4px">${esc(d.subCategory)}</span>` : ''}
+      </td>
+      <td><span class="tag-type tag-${getTypeClass(d.fileType)}">${esc(d.fileType) || '—'}</span></td>
+      <td>
+        ${d.url ? `<a href="${esc(d.url)}" target="_blank" class="btn-link">↗ 開啟</a>` : '—'}
+      </td>
+    </tr>`).join('');
+
+  return `
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th>年份</th>
+            <th>學校名稱</th>
+            <th>科目</th>
+            <th>試題類別</th>
+            <th>類型</th>
+            <th>連結</th>
+          </tr>
+        </thead>
+        <tbody>${rows}</tbody>
+      </table>
+    </div>`;
+}
+
+// ── 卡片 ──
+function renderCards(data) {
+  const cards = data.map(d => `
+    <div class="card">
+      <div class="card-header">
+        <div class="card-school">${esc(d.school) || '未知學校'}</div>
+        <span class="tag tag-year">${esc(d.year) || '—'}</span>
+      </div>
+      <div class="card-tags">
+        ${d.subject  ? `<span class="tag tag-subject">${esc(d.subject)}</span>` : ''}
+        ${d.category ? `<span class="tag tag-category">${esc(d.category)}</span>` : ''}
+        ${d.subCategory ? `<span class="tag tag-category">${esc(d.subCategory)}</span>` : ''}
+        <span class="tag-type tag-${getTypeClass(d.fileType)}">${esc(d.fileType) || '—'}</span>
+      </div>
+      <div class="card-footer">
+        <span class="card-meta">${esc(d.date) || ''}</span>
+        ${d.url ? `<a href="${esc(d.url)}" target="_blank" class="btn-link">↗ 開啟</a>` : ''}
+      </div>
+    </div>`).join('');
+
+  return `<div class="card-grid">${cards}</div>`;
+}
+
+function getTypeClass(t) {
+  const map = { 'PDF':'PDF','DOC':'DOC','DOCX':'DOCX','XLS':'XLS','XLSX':'XLSX','PPTX':'PPTX','PPT':'PPT' };
+  return map[t] || 'other';
+}
+
+function esc(s) {
+  return String(s || '').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+
+// ── 分頁 ──
+function renderPagination() {
+  const total = Math.ceil(filteredData.length / PAGE_SIZE);
+  if (total <= 1) { document.getElementById('paginationArea').innerHTML = ''; return; }
+
+  let html = `<button class="page-btn" onclick="goPage(${currentPage-1})" ${currentPage===1?'disabled':''}>‹</button>`;
+
+  for (let i = 1; i <= total; i++) {
+    if (total > 7 && Math.abs(i - currentPage) > 2 && i !== 1 && i !== total) {
+      if (i === currentPage - 3 || i === currentPage + 3) html += `<button class="page-btn" disabled>…</button>`;
+      continue;
+    }
+    html += `<button class="page-btn ${i===currentPage?'active':''}" onclick="goPage(${i})">${i}</button>`;
+  }
+
+  html += `<button class="page-btn" onclick="goPage(${currentPage+1})" ${currentPage===total?'disabled':''}>›</button>`;
+  document.getElementById('paginationArea').innerHTML = html;
+}
+
+function goPage(n) {
+  const total = Math.ceil(filteredData.length / PAGE_SIZE);
+  currentPage = Math.max(1, Math.min(n, total));
+  renderPage();
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+// ── 視圖切換 ──
+function setView(mode) {
+  viewMode = mode;
+  document.getElementById('btnTable').classList.toggle('active', mode === 'table');
+  document.getElementById('btnCard').classList.toggle('active', mode === 'card');
+  renderPage();
+}
+
+// ================================================
+// 設定浮窗
+// ================================================
+function openConfig() {
+  document.getElementById('inputSheetId').value = localStorage.getItem('sheetId') || '';
+  document.getElementById('configModal').classList.add('open');
+}
+
+function closeConfig() {
+  document.getElementById('configModal').classList.remove('open');
+}
+
+function saveConfig() {
+  const id = document.getElementById('inputSheetId').value.trim();
+  if (!id) { alert('請輸入試算表 ID'); return; }
+  localStorage.setItem('sheetId', id);
+  closeConfig();
+  document.getElementById('loadingState').style.display = 'block';
+  document.getElementById('dataArea').innerHTML = `<div class="loading-state" id="loadingState"><div class="loading-spinner"></div><p>載入資料中…</p></div>`;
+  loadData(id);
+}
+</script>
+</body>
+</html>
