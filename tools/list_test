@@ -1,0 +1,758 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>各大學教育學程招生甄選歷屆考題彙整</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+TC:wght@400;600;700&family=Noto+Sans+TC:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --ink: #1a1a2e;
+    --ink-light: #3a3a5c;
+    --paper: #faf8f3;
+    --cream: #f2ede3;
+    --seal: #c0392b;
+    --seal-light: #e74c3c;
+    --gold: #b8860b;
+    --gold-light: #f0d080;
+    --border: #d4c9b0;
+    --shadow: rgba(26,26,46,0.12);
+    --tag-national: #1a3a5c;
+    --tag-private: #5c3a1a;
+    --tag-art: #3a1a5c;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    font-family: 'Noto Sans TC', sans-serif;
+    background: var(--paper);
+    color: var(--ink);
+    min-height: 100vh;
+  }
+
+  /* ── Hero ── */
+  .hero {
+    background: var(--ink);
+    color: var(--paper);
+    padding: 56px 24px 44px;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+  }
+  .hero::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: repeating-linear-gradient(
+      -45deg,
+      transparent,
+      transparent 40px,
+      rgba(255,255,255,0.02) 40px,
+      rgba(255,255,255,0.02) 80px
+    );
+  }
+  .hero-badge {
+    display: inline-block;
+    border: 1.5px solid var(--gold-light);
+    color: var(--gold-light);
+    font-size: 11px;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    padding: 4px 14px;
+    margin-bottom: 18px;
+    position: relative;
+  }
+  .hero h1 {
+    font-family: 'Noto Serif TC', serif;
+    font-size: clamp(22px, 4vw, 36px);
+    font-weight: 700;
+    letter-spacing: 2px;
+    line-height: 1.4;
+    position: relative;
+    margin-bottom: 12px;
+  }
+  .hero p {
+    font-size: 14px;
+    color: rgba(250,248,243,0.65);
+    letter-spacing: 1px;
+    position: relative;
+  }
+  .seal-line {
+    width: 60px;
+    height: 3px;
+    background: var(--seal);
+    margin: 18px auto 0;
+    position: relative;
+  }
+
+  /* ── Controls ── */
+  .controls {
+    background: var(--cream);
+    border-bottom: 1px solid var(--border);
+    padding: 14px 24px;
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: center;
+  }
+  .filter-btn {
+    padding: 6px 18px;
+    border: 1.5px solid var(--border);
+    background: transparent;
+    border-radius: 2px;
+    font-family: 'Noto Sans TC', sans-serif;
+    font-size: 13px;
+    color: var(--ink-light);
+    cursor: pointer;
+    transition: all .2s;
+    letter-spacing: 0.5px;
+  }
+  .filter-btn:hover, .filter-btn.active {
+    background: var(--ink);
+    color: var(--paper);
+    border-color: var(--ink);
+  }
+  .search-wrap {
+    position: relative;
+    flex: 1;
+    max-width: 260px;
+    min-width: 160px;
+  }
+  .search-wrap input {
+    width: 100%;
+    padding: 7px 14px 7px 34px;
+    border: 1.5px solid var(--border);
+    background: var(--paper);
+    font-family: 'Noto Sans TC', sans-serif;
+    font-size: 13px;
+    color: var(--ink);
+    outline: none;
+    transition: border-color .2s;
+    border-radius: 2px;
+  }
+  .search-wrap input:focus { border-color: var(--ink); }
+  .search-wrap::before {
+    content: '🔍';
+    position: absolute;
+    left: 10px;
+    top: 50%;
+    transform: translateY(-50%);
+    font-size: 12px;
+    pointer-events: none;
+  }
+
+  /* ── Stats bar ── */
+  .stats-bar {
+    text-align: center;
+    padding: 10px;
+    font-size: 12px;
+    color: var(--ink-light);
+    border-bottom: 1px solid var(--border);
+    background: var(--cream);
+    letter-spacing: 0.5px;
+  }
+  #count-display { font-weight: 600; color: var(--seal); }
+
+  /* ── Grid ── */
+  .grid {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 32px 20px 60px;
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+    gap: 22px;
+  }
+
+  /* ── Card ── */
+  .card {
+    background: #fff;
+    border: 1px solid var(--border);
+    box-shadow: 0 2px 8px var(--shadow);
+    display: flex;
+    flex-direction: column;
+    transition: box-shadow .2s, transform .2s;
+    position: relative;
+  }
+  .card:hover {
+    box-shadow: 0 6px 20px var(--shadow);
+    transform: translateY(-2px);
+  }
+  .card-accent {
+    height: 4px;
+    background: var(--ink);
+  }
+  .card.national .card-accent { background: var(--tag-national); }
+  .card.private .card-accent { background: var(--tag-private); }
+  .card.art .card-accent { background: var(--tag-art); }
+
+  .card-body { padding: 20px 20px 14px; flex: 1; }
+
+  .card-header {
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    margin-bottom: 12px;
+  }
+  .school-icon {
+    width: 38px;
+    height: 38px;
+    border-radius: 2px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 16px;
+    flex-shrink: 0;
+    background: var(--cream);
+    border: 1px solid var(--border);
+  }
+  .school-info h3 {
+    font-family: 'Noto Serif TC', serif;
+    font-size: 15.5px;
+    font-weight: 700;
+    color: var(--ink);
+    line-height: 1.3;
+    margin-bottom: 3px;
+  }
+  .tag-row { display: flex; gap: 5px; flex-wrap: wrap; }
+  .tag {
+    font-size: 10px;
+    letter-spacing: 0.5px;
+    padding: 2px 7px;
+    border-radius: 1px;
+    font-weight: 500;
+  }
+  .tag-national { background: #dde8f5; color: var(--tag-national); }
+  .tag-private { background: #f5e8dd; color: var(--tag-private); }
+  .tag-art { background: #e8ddf5; color: var(--tag-art); }
+  .tag-region { background: var(--cream); color: var(--ink-light); border: 1px solid var(--border); }
+
+  .source-url {
+    font-size: 11px;
+    color: var(--gold);
+    word-break: break-all;
+    margin-bottom: 12px;
+    padding: 7px 10px;
+    background: #fffbf0;
+    border-left: 3px solid var(--gold);
+    line-height: 1.5;
+    font-family: monospace;
+  }
+
+  .years-list { display: flex; flex-wrap: wrap; gap: 5px; margin-bottom: 4px; }
+  .year-chip {
+    font-size: 11px;
+    padding: 3px 8px;
+    background: var(--cream);
+    border: 1px solid var(--border);
+    color: var(--ink-light);
+    border-radius: 1px;
+  }
+
+  .card-footer {
+    padding: 12px 20px 16px;
+    border-top: 1px solid var(--border);
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+  }
+  .btn-primary {
+    flex: 1;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    padding: 9px 14px;
+    background: var(--ink);
+    color: var(--paper);
+    text-decoration: none;
+    font-size: 12.5px;
+    font-weight: 500;
+    letter-spacing: 0.5px;
+    transition: background .2s;
+    border-radius: 1px;
+    font-family: 'Noto Sans TC', sans-serif;
+  }
+  .btn-primary:hover { background: var(--seal); }
+
+  /* ── Note card ── */
+  .note-card {
+    max-width: 1200px;
+    margin: 0 auto 0;
+    padding: 0 20px;
+  }
+  .note-inner {
+    background: #fffbf0;
+    border: 1px solid var(--gold-light);
+    padding: 14px 20px;
+    font-size: 12.5px;
+    color: var(--ink-light);
+    line-height: 1.7;
+    border-left: 4px solid var(--gold);
+  }
+
+  /* ── Footer ── */
+  footer {
+    text-align: center;
+    padding: 24px;
+    font-size: 11px;
+    color: #999;
+    border-top: 1px solid var(--border);
+    letter-spacing: 0.5px;
+  }
+
+  /* Hidden */
+  .card.hidden { display: none; }
+
+  @media(max-width: 600px) {
+    .grid { grid-template-columns: 1fr; padding: 16px 12px 40px; }
+    .hero { padding: 36px 16px 30px; }
+  }
+</style>
+</head>
+<body>
+
+<!-- HERO -->
+<header class="hero">
+  <div class="hero-badge">TAIWAN · TEACHER EDUCATION PROGRAM</div>
+  <h1>各大學教育學程<br>招生甄選歷屆考題彙整</h1>
+  <p>Teacher Education Program Admission Exam Archive</p>
+  <div class="seal-line"></div>
+</header>
+
+<!-- CONTROLS -->
+<div class="controls">
+  <div class="search-wrap">
+    <input type="text" id="searchInput" placeholder="搜尋學校名稱…" oninput="filterCards()">
+  </div>
+  <button class="filter-btn active" onclick="filterType('all', this)">全部</button>
+  <button class="filter-btn" onclick="filterType('national', this)">國立大學</button>
+  <button class="filter-btn" onclick="filterType('private', this)">私立大學</button>
+  <button class="filter-btn" onclick="filterType('north', this)">北部</button>
+  <button class="filter-btn" onclick="filterType('central', this)">中部</button>
+  <button class="filter-btn" onclick="filterType('south', this)">南部</button>
+  <button class="filter-btn" onclick="filterType('east', this)">東部</button>
+</div>
+<div class="stats-bar">共找到 <span id="count-display">14</span> 所大學已公開教育學程甄選歷屆考題資源</div>
+
+<!-- NOTE -->
+<div class="note-card">
+  <div class="note-inner">
+    ⚠️ 本頁連結均指向各校師資培育中心官方網頁，實際試題檔案以各校公告為準。部分學校需登入校內系統或另行申請方可下載。資料更新日期：2026年3月。
+  </div>
+</div>
+
+<!-- GRID -->
+<main class="grid" id="cardGrid">
+
+  <!-- 1. 國立嘉義大學 -->
+  <div class="card national" data-name="國立嘉義大學" data-type="national" data-region="south">
+    <div class="card-accent"></div>
+    <div class="card-body">
+      <div class="card-header">
+        <div class="school-icon">📚</div>
+        <div class="school-info">
+          <h3>國立嘉義大學</h3>
+          <div class="tag-row">
+            <span class="tag tag-national">國立</span>
+            <span class="tag tag-region">南部・嘉義</span>
+          </div>
+        </div>
+      </div>
+      <div class="source-url">資料來源：https://website.ncyu.edu.tw/ctedu/Contents?nodeId=37631</div>
+      <p style="font-size:12.5px;color:var(--ink-light);margin-bottom:8px;">師資培育中心提供完整歷屆招生甄選試題，含試題與答案。</p>
+      <div class="years-list">
+        <span class="year-chip">107學年</span><span class="year-chip">108學年</span>
+        <span class="year-chip">109學年</span><span class="year-chip">111學年</span>
+        <span class="year-chip">112學年（含答案）</span>
+      </div>
+    </div>
+    <div class="card-footer">
+      <a class="btn-primary" href="https://website.ncyu.edu.tw/ctedu/Contents?nodeId=37631" target="_blank">▶ 前往考題頁面</a>
+    </div>
+  </div>
+
+  <!-- 2. 國立中山大學 -->
+  <div class="card national" data-name="國立中山大學" data-type="national" data-region="south">
+    <div class="card-accent"></div>
+    <div class="card-body">
+      <div class="card-header">
+        <div class="school-icon">🏛️</div>
+        <div class="school-info">
+          <h3>國立中山大學</h3>
+          <div class="tag-row">
+            <span class="tag tag-national">國立</span>
+            <span class="tag tag-region">南部・高雄</span>
+          </div>
+        </div>
+      </div>
+      <div class="source-url">資料來源：https://ctep.nsysu.edu.tw/p/412-1136-16335.php?Lang=zh-tw</div>
+      <p style="font-size:12.5px;color:var(--ink-light);margin-bottom:8px;">師資培育中心教育學程甄選歷屆考題下載專區。</p>
+      <div class="years-list">
+        <span class="year-chip">歷屆試題</span>
+      </div>
+    </div>
+    <div class="card-footer">
+      <a class="btn-primary" href="https://ctep.nsysu.edu.tw/p/412-1136-16335.php?Lang=zh-tw" target="_blank">▶ 前往考題頁面</a>
+    </div>
+  </div>
+
+  <!-- 3. 國立臺灣藝術大學 -->
+  <div class="card art" data-name="國立臺灣藝術大學" data-type="national" data-region="north">
+    <div class="card-accent"></div>
+    <div class="card-body">
+      <div class="card-header">
+        <div class="school-icon">🎨</div>
+        <div class="school-info">
+          <h3>國立臺灣藝術大學</h3>
+          <div class="tag-row">
+            <span class="tag tag-national">國立</span>
+            <span class="tag tag-region">北部・新北</span>
+          </div>
+        </div>
+      </div>
+      <div class="source-url">資料來源：https://tec.ntua.edu.tw/web/admission/admission.jsp?lang=tw&amp;dm_id=DM1732675157018</div>
+      <p style="font-size:12.5px;color:var(--ink-light);margin-bottom:8px;">師資培育中心提供歷屆招生考題及答案下載。</p>
+      <div class="years-list">
+        <span class="year-chip">107學年</span><span class="year-chip">108學年</span>
+        <span class="year-chip">109學年</span><span class="year-chip">110學年</span>
+        <span class="year-chip">112學年</span><span class="year-chip">113學年</span>
+        <span class="year-chip">114學年</span>
+      </div>
+    </div>
+    <div class="card-footer">
+      <a class="btn-primary" href="https://tec.ntua.edu.tw/web/admission/admission.jsp?lang=tw&dm_id=DM1732675157018" target="_blank">▶ 前往考題頁面</a>
+    </div>
+  </div>
+
+  <!-- 4. 國立彰化師範大學 -->
+  <div class="card national" data-name="國立彰化師範大學" data-type="national" data-region="central">
+    <div class="card-accent"></div>
+    <div class="card-body">
+      <div class="card-header">
+        <div class="school-icon">🎓</div>
+        <div class="school-info">
+          <h3>國立彰化師範大學</h3>
+          <div class="tag-row">
+            <span class="tag tag-national">國立</span>
+            <span class="tag tag-region">中部・彰化</span>
+          </div>
+        </div>
+      </div>
+      <div class="source-url">資料來源：https://practiceweb.ncue.edu.tw/p/412-1007-668.php?Lang=zh-tw</div>
+      <p style="font-size:12.5px;color:var(--ink-light);margin-bottom:8px;">師資培育中心教育學程甄選「歷屆考題」專區，亦可參閱 p/412-1007-714.php。</p>
+      <div class="years-list">
+        <span class="year-chip">歷屆試題</span>
+      </div>
+    </div>
+    <div class="card-footer">
+      <a class="btn-primary" href="https://practiceweb.ncue.edu.tw/p/412-1007-668.php?Lang=zh-tw" target="_blank">▶ 前往考題頁面</a>
+    </div>
+  </div>
+
+  <!-- 5. 國立屏東大學 -->
+  <div class="card national" data-name="國立屏東大學" data-type="national" data-region="south">
+    <div class="card-accent"></div>
+    <div class="card-body">
+      <div class="card-header">
+        <div class="school-icon">📖</div>
+        <div class="school-info">
+          <h3>國立屏東大學</h3>
+          <div class="tag-row">
+            <span class="tag tag-national">國立</span>
+            <span class="tag tag-region">南部・屏東</span>
+          </div>
+        </div>
+      </div>
+      <div class="source-url">資料來源：https://cte.nptu.edu.tw/p/412-1023-41.php?Lang=zh-tw</div>
+      <p style="font-size:12.5px;color:var(--ink-light);margin-bottom:8px;">師資培育中心提供各師資類科教育學程甄選試題，每學年均有更新。</p>
+      <div class="years-list">
+        <span class="year-chip">111學年</span><span class="year-chip">112學年</span>
+        <span class="year-chip">113學年（含第二次）</span><span class="year-chip">114學年</span>
+      </div>
+    </div>
+    <div class="card-footer">
+      <a class="btn-primary" href="https://cte.nptu.edu.tw/p/412-1023-41.php?Lang=zh-tw" target="_blank">▶ 前往考題頁面</a>
+    </div>
+  </div>
+
+  <!-- 6. 國立屏東科技大學 -->
+  <div class="card national" data-name="國立屏東科技大學" data-type="national" data-region="south">
+    <div class="card-accent"></div>
+    <div class="card-body">
+      <div class="card-header">
+        <div class="school-icon">⚙️</div>
+        <div class="school-info">
+          <h3>國立屏東科技大學</h3>
+          <div class="tag-row">
+            <span class="tag tag-national">國立</span>
+            <span class="tag tag-region">南部・屏東</span>
+          </div>
+        </div>
+      </div>
+      <div class="source-url">資料來源：https://cte.npust.edu.tw/examination/</div>
+      <p style="font-size:12.5px;color:var(--ink-light);margin-bottom:8px;">師資培育中心「歷屆試題」專區，提供教育基本常識試題及解答。</p>
+      <div class="years-list">
+        <span class="year-chip">102學年</span><span class="year-chip">103學年</span>
+        <span class="year-chip">104學年</span><span class="year-chip">105學年</span>
+        <span class="year-chip">106學年</span><span class="year-chip">107學年</span>
+        <span class="year-chip">108學年</span><span class="year-chip">109學年</span>
+        <span class="year-chip">110學年</span><span class="year-chip">111學年</span>
+        <span class="year-chip">112學年</span><span class="year-chip">113學年</span>
+        <span class="year-chip">114學年</span>
+      </div>
+    </div>
+    <div class="card-footer">
+      <a class="btn-primary" href="https://cte.npust.edu.tw/examination/" target="_blank">▶ 前往考題頁面</a>
+    </div>
+  </div>
+
+  <!-- 7. 臺北市立大學 -->
+  <div class="card national" data-name="臺北市立大學" data-type="national" data-region="north">
+    <div class="card-accent"></div>
+    <div class="card-body">
+      <div class="card-header">
+        <div class="school-icon">🏙️</div>
+        <div class="school-info">
+          <h3>臺北市立大學</h3>
+          <div class="tag-row">
+            <span class="tag tag-national">市立</span>
+            <span class="tag tag-region">北部・台北</span>
+          </div>
+        </div>
+      </div>
+      <div class="source-url">資料來源：https://cte.utaipei.edu.tw/p/412-1013-165.php?Lang=zh-tw</div>
+      <p style="font-size:12.5px;color:var(--ink-light);margin-bottom:8px;">師資培育及職涯發展中心「歷年考題」專區，已更新至114學年度。</p>
+      <div class="years-list">
+        <span class="year-chip">歷屆至114學年度</span>
+      </div>
+    </div>
+    <div class="card-footer">
+      <a class="btn-primary" href="https://cte.utaipei.edu.tw/p/412-1013-165.php?Lang=zh-tw" target="_blank">▶ 前往考題頁面</a>
+    </div>
+  </div>
+
+  <!-- 8. 國立臺東大學 -->
+  <div class="card national" data-name="國立臺東大學" data-type="national" data-region="east">
+    <div class="card-accent"></div>
+    <div class="card-body">
+      <div class="card-header">
+        <div class="school-icon">🌿</div>
+        <div class="school-info">
+          <h3>國立臺東大學</h3>
+          <div class="tag-row">
+            <span class="tag tag-national">國立</span>
+            <span class="tag tag-region">東部・台東</span>
+          </div>
+        </div>
+      </div>
+      <div class="source-url">資料來源：https://dpa.nttu.edu.tw/p/412-1018-8532.php?Lang=zh-tw</div>
+      <p style="font-size:12.5px;color:var(--ink-light);margin-bottom:8px;">師資培育中心「歷屆試題」專區，依委員會決議提供前一年試題供參考。</p>
+      <div class="years-list">
+        <span class="year-chip">歷屆試題</span>
+      </div>
+    </div>
+    <div class="card-footer">
+      <a class="btn-primary" href="https://dpa.nttu.edu.tw/p/412-1018-8532.php?Lang=zh-tw" target="_blank">▶ 前往考題頁面</a>
+    </div>
+  </div>
+
+  <!-- 9. 中原大學 -->
+  <div class="card private" data-name="中原大學" data-type="private" data-region="north">
+    <div class="card-accent"></div>
+    <div class="card-body">
+      <div class="card-header">
+        <div class="school-icon">✝️</div>
+        <div class="school-info">
+          <h3>中原大學</h3>
+          <div class="tag-row">
+            <span class="tag tag-private">私立</span>
+            <span class="tag tag-region">北部・桃園</span>
+          </div>
+        </div>
+      </div>
+      <div class="source-url">資料來源：https://cfte.cycu.edu.tw/歷年甄選試題/</div>
+      <p style="font-size:12.5px;color:var(--ink-light);margin-bottom:8px;">師資培育中心「歷年甄選試題」專區，提供中等教育學程考題。</p>
+      <div class="years-list">
+        <span class="year-chip">歷屆試題</span>
+      </div>
+    </div>
+    <div class="card-footer">
+      <a class="btn-primary" href="https://cfte.cycu.edu.tw/%E6%AD%B7%E5%B9%B4%E7%94%84%E9%81%B8%E8%A9%A6%E9%A1%8C/" target="_blank">▶ 前往考題頁面</a>
+    </div>
+  </div>
+
+  <!-- 10. 國立臺灣師範大學 -->
+  <div class="card national" data-name="國立臺灣師範大學" data-type="national" data-region="north">
+    <div class="card-accent"></div>
+    <div class="card-body">
+      <div class="card-header">
+        <div class="school-icon">🏫</div>
+        <div class="school-info">
+          <h3>國立臺灣師範大學</h3>
+          <div class="tag-row">
+            <span class="tag tag-national">國立</span>
+            <span class="tag tag-region">北部・台北</span>
+          </div>
+        </div>
+      </div>
+      <div class="source-url">資料來源：https://tecs.otecs.ntnu.edu.tw/page.aspx?t=news&id=480</div>
+      <p style="font-size:12.5px;color:var(--ink-light);margin-bottom:8px;">師資培育學院教育學程甄選資訊，可洽電話 02-7749-1231 或查詢師培學院網頁。</p>
+      <div class="years-list">
+        <span class="year-chip">甄選資訊頁面</span>
+      </div>
+    </div>
+    <div class="card-footer">
+      <a class="btn-primary" href="https://tecs.otecs.ntnu.edu.tw/page.aspx?t=news&id=480" target="_blank">▶ 前往甄選資訊</a>
+    </div>
+  </div>
+
+  <!-- 11. 國立臺北教育大學 -->
+  <div class="card national" data-name="國立臺北教育大學" data-type="national" data-region="north">
+    <div class="card-accent"></div>
+    <div class="card-body">
+      <div class="card-header">
+        <div class="school-icon">📐</div>
+        <div class="school-info">
+          <h3>國立臺北教育大學</h3>
+          <div class="tag-row">
+            <span class="tag tag-national">國立</span>
+            <span class="tag tag-region">北部・台北</span>
+          </div>
+        </div>
+      </div>
+      <div class="source-url">資料來源：https://ote.ntue.edu.tw/</div>
+      <p style="font-size:12.5px;color:var(--ink-light);margin-bottom:8px;">師資培育處官方網站，可從最新公告及師資培育相關頁面查詢歷屆甄選試題資訊。</p>
+      <div class="years-list">
+        <span class="year-chip">請至官網查詢</span>
+      </div>
+    </div>
+    <div class="card-footer">
+      <a class="btn-primary" href="https://ote.ntue.edu.tw/" target="_blank">▶ 前往師培處官網</a>
+    </div>
+  </div>
+
+  <!-- 12. 輔仁大學 -->
+  <div class="card private" data-name="輔仁大學" data-type="private" data-region="north">
+    <div class="card-accent"></div>
+    <div class="card-body">
+      <div class="card-header">
+        <div class="school-icon">⛪</div>
+        <div class="school-info">
+          <h3>輔仁大學</h3>
+          <div class="tag-row">
+            <span class="tag tag-private">私立</span>
+            <span class="tag tag-region">北部・新北</span>
+          </div>
+        </div>
+      </div>
+      <div class="source-url">資料來源：http://www.cte.fju.edu.tw/</div>
+      <p style="font-size:12.5px;color:var(--ink-light);margin-bottom:8px;">師資培育中心官網，提供中等學校師資培育相關甄選資訊，可查詢歷屆考題。</p>
+      <div class="years-list">
+        <span class="year-chip">請至官網查詢</span>
+      </div>
+    </div>
+    <div class="card-footer">
+      <a class="btn-primary" href="http://www.cte.fju.edu.tw/" target="_blank">▶ 前往師培中心官網</a>
+    </div>
+  </div>
+
+  <!-- 13. 東海大學 -->
+  <div class="card private" data-name="東海大學" data-type="private" data-region="central">
+    <div class="card-accent"></div>
+    <div class="card-body">
+      <div class="card-header">
+        <div class="school-icon">🌊</div>
+        <div class="school-info">
+          <h3>東海大學</h3>
+          <div class="tag-row">
+            <span class="tag tag-private">私立</span>
+            <span class="tag tag-region">中部・台中</span>
+          </div>
+        </div>
+      </div>
+      <div class="source-url">資料來源：https://edupage.thu.edu.tw/</div>
+      <p style="font-size:12.5px;color:var(--ink-light);margin-bottom:8px;">師資培育中心官網，提供中等教育學程甄選相關資訊，請洽詢官網最新公告。</p>
+      <div class="years-list">
+        <span class="year-chip">請至官網查詢</span>
+      </div>
+    </div>
+    <div class="card-footer">
+      <a class="btn-primary" href="https://edupage.thu.edu.tw/" target="_blank">▶ 前往師培中心官網</a>
+    </div>
+  </div>
+
+  <!-- 14. 國立東華大學 -->
+  <div class="card national" data-name="國立東華大學" data-type="national" data-region="east">
+    <div class="card-accent"></div>
+    <div class="card-body">
+      <div class="card-header">
+        <div class="school-icon">🌸</div>
+        <div class="school-info">
+          <h3>國立東華大學</h3>
+          <div class="tag-row">
+            <span class="tag tag-national">國立</span>
+            <span class="tag tag-region">東部・花蓮</span>
+          </div>
+        </div>
+      </div>
+      <div class="source-url">資料來源：https://littletree.ndhu.edu.tw/p/412-1023-1304.php?Lang=zh-tw</div>
+      <p style="font-size:12.5px;color:var(--ink-light);margin-bottom:8px;">師資培育中心中等學程組，提供中等教育學程甄選招生資訊與考題。</p>
+      <div class="years-list">
+        <span class="year-chip">甄選招生頁面</span>
+      </div>
+    </div>
+    <div class="card-footer">
+      <a class="btn-primary" href="https://littletree.ndhu.edu.tw/p/412-1023-1304.php?Lang=zh-tw" target="_blank">▶ 前往考題頁面</a>
+    </div>
+  </div>
+
+</main>
+
+<!-- FOOTER -->
+<footer>
+  資料整理日期：2026年3月 ｜ 資料來源：各校師資培育中心官方網站 ｜ 如有錯誤請以各校官網公告為準
+</footer>
+
+<script>
+  let currentType = 'all';
+
+  function filterCards() {
+    const query = document.getElementById('searchInput').value.toLowerCase();
+    applyFilters(query, currentType);
+  }
+
+  function filterType(type, btn) {
+    currentType = type;
+    document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    const query = document.getElementById('searchInput').value.toLowerCase();
+    applyFilters(query, type);
+  }
+
+  function applyFilters(query, type) {
+    const cards = document.querySelectorAll('.card');
+    let count = 0;
+    cards.forEach(card => {
+      const name = card.dataset.name.toLowerCase();
+      const ctype = card.dataset.type;
+      const region = card.dataset.region;
+      const matchName = name.includes(query);
+      const matchType = type === 'all' || ctype === type ||
+        (type === 'north' && region === 'north') ||
+        (type === 'central' && region === 'central') ||
+        (type === 'south' && region === 'south') ||
+        (type === 'east' && region === 'east');
+      if (matchName && matchType) {
+        card.classList.remove('hidden');
+        count++;
+      } else {
+        card.classList.add('hidden');
+      }
+    });
+    document.getElementById('count-display').textContent = count;
+  }
+</script>
+</body>
+</html>
