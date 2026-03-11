@@ -743,7 +743,7 @@
       ③ 從試算表網址複製 ID（<code>/d/</code> 和 <code>/edit</code> 之間的部分）<br>
       ④ 貼入下方欄位並儲存
     </p>
-    <input type="text" id="inputSheetId" value="12-lF_mJRnCLcKKsr8SOzLk56ImFsHI28Ws3tOtitQ0Q">
+    <input type="text" id="inputSheetId" placeholder="試算表 ID，例如：1BxiMVs0XRA5nFMdKvBdBZjgmUUqptlbs74OgVE2upms">
     <div class="config-actions">
       <button class="btn-secondary" onclick="closeConfig()">取消</button>
       <button class="btn-primary" onclick="saveConfig()">儲存並載入</button>
@@ -973,11 +973,7 @@ function renderTable(data) {
     <tr>
       <td><span class="tag tag-year">${esc(d.year) || '—'}</span></td>
       <td><strong>${esc(d.school) || '—'}</strong></td>
-      <td><span class="tag tag-subject">${esc(d.subject) || '—'}</span></td>
-      <td>
-        <span class="tag tag-category">${esc(d.category) || '—'}</span>
-        ${d.subCategory ? `<span class="tag tag-category" style="margin-left:4px">${esc(d.subCategory)}</span>` : ''}
-      </td>
+      <td style="max-width:360px;word-break:break-all;">${esc(d.fileName) || '—'}</td>
       <td><span class="tag-type tag-${getTypeClass(d.fileType)}">${esc(d.fileType) || '—'}</span></td>
       <td>
         ${d.url ? `<a href="${esc(d.url)}" target="_blank" class="btn-link">↗ 開啟</a>` : '—'}
@@ -991,8 +987,7 @@ function renderTable(data) {
           <tr>
             <th>年份</th>
             <th>學校名稱</th>
-            <th>科目</th>
-            <th>試題類別</th>
+            <th>檔案名稱</th>
             <th>類型</th>
             <th>連結</th>
           </tr>
