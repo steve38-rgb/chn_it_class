@@ -1,0 +1,418 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>名單訊息產生器</title>
+<style>
+  :root{
+    --ink:#1c2b3a;
+    --navy:#1f3350;
+    --paper:#f6f5f1;
+    --paper-2:#ffffff;
+    --line:#d8d3c4;
+    --emerald:#2f7a63;
+    --emerald-d:#245e4c;
+    --amber:#c8862b;
+    --coral:#bd5b45;
+    --muted:#7a7568;
+    font-size:16px;
+  }
+  *{box-sizing:border-box;}
+  body{
+    margin:0;
+    min-height:100vh;
+    background:var(--paper);
+    color:var(--ink);
+    font-family:'PingFang TC','Microsoft JhengHei','Noto Sans TC',-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;
+  }
+
+  /* ---------- App shell ---------- */
+  #app{
+    max-width:1360px;margin:0 auto;padding:22px 24px 60px;
+    opacity:0;transform:translateY(6px);
+    transition:opacity .35s ease, transform .35s ease;
+  }
+  #app.visible{opacity:1;transform:none;}
+
+  .top-bar{
+    display:flex;align-items:baseline;justify-content:space-between;
+    margin-bottom:20px;padding-bottom:14px;
+    border-bottom:2px solid var(--navy);
+  }
+  .top-bar h1{
+    font-size:1.3rem;margin:0;letter-spacing:.02em;color:var(--navy);
+  }
+  .top-bar .sub{font-size:.78rem;color:var(--muted);}
+
+  .layout{
+    display:grid;
+    grid-template-columns:280px 1fr 340px;
+    gap:20px;
+    align-items:start;
+  }
+  @media (max-width:1000px){
+    .layout{grid-template-columns:1fr;}
+  }
+
+  .panel{
+    background:var(--paper-2);
+    border:1px solid var(--line);
+    border-radius:6px;
+    padding:18px;
+  }
+  .panel h2{
+    font-size:.92rem;margin:0 0 12px;
+    color:var(--navy);letter-spacing:.03em;
+    display:flex;align-items:center;gap:8px;
+  }
+  .panel h2::before{
+    content:"";width:4px;height:14px;background:var(--emerald);border-radius:2px;
+  }
+
+  /* ---------- Roster panel ---------- */
+  .batch-controls{
+    display:flex;flex-wrap:wrap;gap:6px;margin-bottom:12px;
+  }
+  .batch-controls button{
+    flex:1 1 auto;
+    padding:6px 8px;font-size:.78rem;
+    border:1px solid var(--line);border-radius:4px;
+    background:var(--paper);color:var(--ink);cursor:pointer;
+    transition:.15s;
+  }
+  .batch-controls button:hover{background:#eceae2;}
+  .batch-controls button.active-hint{border-color:var(--emerald);}
+
+  #roster-paste{
+    width:100%;min-height:120px;resize:vertical;
+    padding:10px;border:1px solid var(--line);border-radius:4px;
+    font-size:.82rem;line-height:1.6;
+    font-family:inherit;color:var(--ink);margin-bottom:8px;
+  }
+  #roster-paste:focus{outline:2px solid var(--emerald);outline-offset:1px;}
+
+  #roster-submit-btn{
+    width:100%;padding:8px;border:none;border-radius:4px;
+    background:var(--navy);color:#fff;font-size:.82rem;font-weight:600;
+    cursor:pointer;transition:background .15s;margin-bottom:8px;
+  }
+  #roster-submit-btn:hover{background:#16263f;}
+
+  #roster-status{
+    font-size:.76rem;color:var(--muted);
+    margin-bottom:12px;line-height:1.5;
+  }
+  #roster-status.error{color:var(--coral);}
+  #roster-status.ok{color:var(--emerald-d);}
+
+  #roster-list{
+    list-style:none;margin:0;padding:0;
+    max-height:520px;overflow-y:auto;
+    border-top:1px solid var(--line);
+  }
+  #roster-list li{
+    border-bottom:1px solid #ece9df;
+  }
+  #roster-list label{
+    display:flex;align-items:center;gap:8px;
+    padding:7px 4px;font-size:.85rem;cursor:pointer;
+  }
+  #roster-list label:hover{background:#f9f8f4;}
+  #roster-list input[type=checkbox]{
+    width:15px;height:15px;accent-color:var(--emerald);flex-shrink:0;
+  }
+  .seat-no{color:var(--muted);font-size:.75rem;width:28px;flex-shrink:0;}
+  .gender-tag{
+    margin-left:auto;font-size:.68rem;
+    padding:1px 6px;border-radius:10px;
+    color:var(--muted);border:1px solid var(--line);
+  }
+
+  /* ---------- Template panel ---------- */
+  .hint{font-size:.8rem;color:var(--muted);margin:0 0 10px;line-height:1.6;}
+  .hint code{background:#eceae2;padding:1px 5px;border-radius:3px;}
+  #template-text{
+    width:100%;min-height:280px;resize:vertical;
+    padding:12px;border:1px solid var(--line);border-radius:4px;
+    font-size:.92rem;line-height:1.7;
+    font-family:inherit;color:var(--ink);
+  }
+  #template-text:focus{outline:2px solid var(--emerald);outline-offset:1px;}
+
+  .gen-row{
+    display:flex;align-items:center;gap:12px;margin-top:14px;
+  }
+  #generate-btn{
+    padding:10px 22px;border:none;border-radius:4px;
+    background:var(--emerald);color:#fff;font-size:.9rem;font-weight:600;
+    cursor:pointer;transition:background .15s;
+  }
+  #generate-btn:hover{background:var(--emerald-d);}
+  #selected-count{font-size:.8rem;color:var(--muted);}
+
+  /* ---------- Output panel ---------- */
+  .output-header{
+    display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;
+  }
+  .output-header h2{margin:0;}
+  #copy-all-btn{
+    font-size:.74rem;padding:5px 10px;border:1px solid var(--line);
+    border-radius:4px;background:var(--paper);cursor:pointer;color:var(--ink);
+  }
+  #copy-all-btn:hover{border-color:var(--emerald);color:var(--emerald-d);}
+
+  #output-list{
+    display:flex;flex-direction:column;gap:10px;
+    max-height:640px;overflow-y:auto;padding-right:2px;
+  }
+  .name-card{
+    position:relative;
+    background:var(--paper);
+    border:1px solid var(--line);
+    border-left:3px solid var(--emerald);
+    border-radius:4px;
+    padding:10px 12px 10px 14px;
+  }
+  .name-card::before,.name-card::after{
+    content:"";position:absolute;left:-4px;width:7px;height:7px;
+    border-radius:50%;background:var(--paper-2);border:1px solid var(--line);
+  }
+  .name-card::before{top:-4px;}
+  .name-card::after{bottom:-4px;}
+  .name-card .name-label{
+    font-size:.72rem;color:var(--emerald-d);font-weight:600;margin-bottom:5px;
+    letter-spacing:.04em;
+  }
+  .name-card textarea{
+    width:100%;border:none;background:transparent;resize:vertical;
+    font-family:inherit;font-size:.85rem;line-height:1.6;color:var(--ink);
+    padding:0;min-height:52px;
+  }
+  .name-card textarea:focus{outline:none;}
+  .name-card .card-actions{
+    position:absolute;top:8px;right:8px;
+    display:flex;gap:6px;
+  }
+  .name-card .card-copy,
+  .name-card .card-remove{
+    font-size:.68rem;padding:3px 7px;border:1px solid var(--line);
+    border-radius:3px;background:var(--paper-2);color:var(--muted);cursor:pointer;
+    line-height:1.3;
+  }
+  .name-card .card-copy:hover{color:var(--emerald-d);border-color:var(--emerald);}
+  .name-card .card-remove{padding:3px 8px;}
+  .name-card .card-remove:hover{color:#fff;background:var(--coral);border-color:var(--coral);}
+
+  .empty-note{
+    font-size:.8rem;color:var(--muted);text-align:center;padding:30px 10px;
+  }
+</style>
+</head>
+<body>
+
+<!-- ============ App ============ -->
+<div id="app">
+  <div class="top-bar">
+    <h1>名單訊息產生器</h1>
+    <span class="sub">貼上名單（座號／姓名／性別），批次產生替換訊息</span>
+  </div>
+
+  <div class="layout">
+
+    <!-- Left: roster -->
+    <aside class="panel">
+      <h2>名單</h2>
+      <p class="hint">直接從 Excel 選取「座號、姓名、性別」三欄複製，貼到下方即可（欄位以 Tab 分隔，一列一位）。</p>
+      <textarea id="roster-paste" rows="6" placeholder="從 Excel 複製三欄後貼在這裡，例如：&#10;1    王小明    男&#10;2    林小華    女&#10;3    陳小美    女"></textarea>
+      <button id="roster-submit-btn">設定名單</button>
+      <div id="roster-status"></div>
+      <div class="batch-controls">
+        <button id="select-all-btn">全選</button>
+        <button id="select-none-btn">全不選</button>
+        <button id="select-male-btn">男生</button>
+        <button id="select-female-btn">女生</button>
+      </div>
+      <ul id="roster-list"></ul>
+    </aside>
+
+    <!-- Middle: template -->
+    <main class="panel">
+      <h2>訊息範本</h2>
+      <p class="hint">在文字中用 <code>OO</code> 或 <code>OOO</code>（也支援 <code>○○</code> / <code>○○○</code>）代表姓名的位置，送出後會依勾選名單分別替換成每個人的姓名。</p>
+      <textarea id="template-text" placeholder="例如：&#10;OO 同學，恭喜你完成本學期的學習任務！&#10;老師相信 OOO 未來會表現得更好。"></textarea>
+      <div class="gen-row">
+        <button id="generate-btn">產生名條</button>
+        <span id="selected-count">尚未勾選任何人</span>
+      </div>
+    </main>
+
+    <!-- Right: output -->
+    <section class="panel">
+      <div class="output-header">
+        <h2>產生結果</h2>
+        <button id="copy-all-btn">複製全部</button>
+      </div>
+      <div id="output-list">
+        <div class="empty-note">勾選左側名單並輸入範本文字後，按「產生名條」查看結果</div>
+      </div>
+    </section>
+
+  </div>
+</div>
+
+<script>
+/* ====== 名單資料 ====== */
+let roster = []; // [{seat, name, gender}]
+
+const app = document.getElementById('app');
+window.addEventListener('DOMContentLoaded', () => app.classList.add('visible'));
+
+/* ---------------- 貼上名單解析（Excel 複製三欄，以 Tab 分隔） ---------------- */
+function parsePastedRoster(text) {
+  const lines = text.split(/\r\n|\n|\r/).filter(l => l.trim() !== '');
+  const rows = [];
+  for (const line of lines) {
+    // Excel 複製多欄時預設以 Tab 分隔；若 Tab 遺失，改用任意空白切欄（座號/姓名/性別本身不含空白）
+    let cols = line.split('\t').map(c => c.trim());
+    if (cols.length < 2) {
+      cols = line.trim().split(/\s+/);
+    }
+    const [seat, name, gender] = cols;
+    if (!name) continue;
+    // 略過標題列（例如「座號 姓名 性別」）
+    if (seat === '座號' || name === '姓名' || gender === '性別') continue;
+    rows.push({ seat: seat || '', name: name, gender: gender || '' });
+  }
+  return rows;
+}
+
+document.getElementById('roster-submit-btn').addEventListener('click', () => {
+  const text = document.getElementById('roster-paste').value;
+  const status = document.getElementById('roster-status');
+  const parsed = parsePastedRoster(text);
+
+  if (parsed.length === 0) {
+    status.textContent = '沒有偵測到有效名單，請確認已從 Excel 選取「座號、姓名、性別」三欄整列複製後貼上。';
+    status.className = 'error';
+    return;
+  }
+
+  roster = parsed;
+  status.textContent = `已設定名單，共 ${roster.length} 筆資料`;
+  status.className = 'ok';
+  renderRoster();
+});
+
+/* ---------------- 名單渲染 ---------------- */
+function renderRoster() {
+  const list = document.getElementById('roster-list');
+  list.innerHTML = '';
+  roster.forEach((person, i) => {
+    const li = document.createElement('li');
+    const label = document.createElement('label');
+    label.innerHTML = `
+      <input type="checkbox" data-index="${i}" data-gender="${person.gender}" checked>
+      <span class="seat-no">${person.seat}</span>
+      <span class="name-text">${person.name}</span>
+      <span class="gender-tag">${person.gender || '—'}</span>
+    `;
+    li.appendChild(label);
+    list.appendChild(li);
+  });
+  updateSelectedCount();
+  list.addEventListener('change', updateSelectedCount);
+}
+
+function updateSelectedCount() {
+  const n = document.querySelectorAll('#roster-list input[type=checkbox]:checked').length;
+  const el = document.getElementById('selected-count');
+  el.textContent = n === 0 ? '尚未勾選任何人' : `已勾選 ${n} 人`;
+}
+
+/* ---------------- 批次選取 ---------------- */
+document.getElementById('select-all-btn').addEventListener('click', () => {
+  document.querySelectorAll('#roster-list input[type=checkbox]').forEach(cb => cb.checked = true);
+  updateSelectedCount();
+});
+document.getElementById('select-none-btn').addEventListener('click', () => {
+  document.querySelectorAll('#roster-list input[type=checkbox]').forEach(cb => cb.checked = false);
+  updateSelectedCount();
+});
+document.getElementById('select-male-btn').addEventListener('click', () => {
+  document.querySelectorAll('#roster-list input[type=checkbox]').forEach(cb => {
+    cb.checked = /^男/.test(cb.dataset.gender);
+  });
+  updateSelectedCount();
+});
+document.getElementById('select-female-btn').addEventListener('click', () => {
+  document.querySelectorAll('#roster-list input[type=checkbox]').forEach(cb => {
+    cb.checked = /^女/.test(cb.dataset.gender);
+  });
+  updateSelectedCount();
+});
+
+/* ---------------- 產生名條 ---------------- */
+document.getElementById('generate-btn').addEventListener('click', () => {
+  const template = document.getElementById('template-text').value;
+  const outputList = document.getElementById('output-list');
+  outputList.innerHTML = '';
+
+  if (!template.trim()) {
+    outputList.innerHTML = '<div class="empty-note">請先輸入訊息範本</div>';
+    return;
+  }
+
+  const checked = Array.from(document.querySelectorAll('#roster-list input[type=checkbox]:checked'))
+    .map(cb => roster[Number(cb.dataset.index)]);
+
+  if (checked.length === 0) {
+    outputList.innerHTML = '<div class="empty-note">請先在左側勾選至少一位名單成員</div>';
+    return;
+  }
+
+  const placeholderPattern = /OOO|OO|○○○|○○/g;
+
+  checked.forEach(person => {
+    const text = template.replace(placeholderPattern, person.name);
+    const card = document.createElement('div');
+    card.className = 'name-card';
+    card.innerHTML = `
+      <div class="name-label">${person.seat ? person.seat + ' ・ ' : ''}${person.name}</div>
+      <div class="card-actions">
+        <button class="card-copy" type="button">複製</button>
+        <button class="card-remove" type="button" title="移除">✕</button>
+      </div>
+      <textarea rows="4"></textarea>
+    `;
+    card.querySelector('textarea').value = text;
+    card.querySelector('.card-copy').addEventListener('click', (e) => {
+      const ta = card.querySelector('textarea');
+      ta.select();
+      navigator.clipboard.writeText(ta.value).then(() => {
+        e.target.textContent = '已複製';
+        setTimeout(() => e.target.textContent = '複製', 1200);
+      });
+    });
+    card.querySelector('.card-remove').addEventListener('click', () => {
+      card.remove();
+      if (outputList.querySelectorAll('.name-card').length === 0) {
+        outputList.innerHTML = '<div class="empty-note">勾選左側名單並輸入範本文字後，按「產生名條」查看結果</div>';
+      }
+    });
+    outputList.appendChild(card);
+  });
+});
+
+/* ---------------- 複製全部 ---------------- */
+document.getElementById('copy-all-btn').addEventListener('click', (e) => {
+  const texts = Array.from(document.querySelectorAll('#output-list textarea')).map(t => t.value);
+  if (texts.length === 0) return;
+  navigator.clipboard.writeText(texts.join('\n\n')).then(() => {
+    e.target.textContent = '已複製全部';
+    setTimeout(() => e.target.textContent = '複製全部', 1200);
+  });
+});
+</script>
+</body>
+</html>
