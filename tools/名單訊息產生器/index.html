@@ -239,7 +239,7 @@
     <!-- Middle: template -->
     <main class="panel">
       <h2>訊息範本</h2>
-      <p class="hint">在文字中用 <code>OO</code> 或 <code>OOO</code>（也支援 <code>○○</code> / <code>○○○</code>）代表姓名的位置，送出後會依勾選名單分別替換成每個人的姓名。</p>
+      <p class="hint">在文字中用 <code>OOO</code>（或 <code>○○○</code>）代表完整姓名；用 <code>OO</code>（或 <code>○○</code>）代表去掉姓氏的名字（名字為 2 字以下時則維持完整姓名）。送出後會依勾選名單分別替換成每個人的資料。</p>
       <textarea id="template-text" placeholder="例如：&#10;OO 同學，恭喜你完成本學期的學習任務！&#10;老師相信 OOO 未來會表現得更好。"></textarea>
       <div class="gen-row">
         <button id="generate-btn">產生名條</button>
@@ -371,10 +371,12 @@ document.getElementById('generate-btn').addEventListener('click', () => {
     return;
   }
 
-  const placeholderPattern = /OOO|OO|○○○|○○/g;
-
   checked.forEach(person => {
-    const text = template.replace(placeholderPattern, person.name);
+    // OOO／○○○ → 完整姓名；OO／○○ → 去掉姓氏的名字（名字大於2字才去除，避免只剩單一或空字）
+    const givenName = person.name.length > 2 ? person.name.slice(1) : person.name;
+    let text = template.replace(/OOO|○○○/g, person.name);
+    text = text.replace(/OO|○○/g, givenName);
+
     const card = document.createElement('div');
     card.className = 'name-card';
     card.innerHTML = `
