@@ -234,12 +234,13 @@
         <button id="select-female-btn">女生</button>
       </div>
       <ul id="roster-list"></ul>
+      <button id="clear-saved-btn" style="width:100%;margin-top:10px;padding:6px 8px;font-size:.76rem;border:1px solid var(--line);border-radius:4px;background:var(--paper);color:var(--muted);cursor:pointer;">清除已儲存的名單與範本</button>
     </aside>
 
     <!-- Middle: template -->
     <main class="panel">
       <h2>訊息範本</h2>
-      <p class="hint">在文字中用 <code>OOO</code>（或 <code>○○○</code>）代表完整姓名；用 <code>OO</code>（或 <code>○○</code>）代表去掉姓氏的名字（名字為 2 字以下時則維持完整姓名）。送出後會依勾選名單分別替換成每個人的資料。</p>
+      <p class="hint">在文字中用 <code>OO</code> 或 <code>OOO</code>（也支援 <code>○○</code> / <code>○○○</code>）代表姓名的位置，送出後會依勾選名單分別替換成每個人的姓名。</p>
       <textarea id="template-text" placeholder="例如：&#10;OO 同學，恭喜你完成本學期的學習任務！&#10;老師相信 OOO 未來會表現得更好。"></textarea>
       <div class="gen-row">
         <button id="generate-btn">產生名條</button>
@@ -266,7 +267,87 @@
 let roster = []; // [{seat, name, gender}]
 
 const app = document.getElementById('app');
-window.addEventListener('DOMContentLoaded', () => app.classList.add('visible'));
+
+/* ---------------- 本機儲存（localStorage） ---------------- */
+const STORAGE_KEY_ROSTER = 'nameGen_roster_v1';
+const STORAGE_KEY_TEMPLATE = 'nameGen_template_v1';
+const STORAGE_KEY_CHECKED = 'nameGen_checked_v1';
+
+function saveRosterToStorage() {
+  try {
+    localStorage.setItem(STORAGE_KEY_ROSTER, JSON.stringify(roster));
+  } catch (e) { /* 儲存空間不足或被封鎖時忽略 */ }
+}
+
+function saveCheckedToStorage() {
+  try {
+    const checkedIndexes = Array.from(document.querySelectorAll('#roster-list input[type=checkbox]:checked'))
+      .map(cb => Number(cb.dataset.index));
+    localStorage.setItem(STORAGE_KEY_CHECKED, JSON.stringify(checkedIndexes));
+  } catch (e) { /* ignore */ }
+}
+
+function saveTemplateToStorage() {
+  try {
+    localStorage.setItem(STORAGE_KEY_TEMPLATE, document.getElementById('template-text').value);
+  } catch (e) { /* ignore */ }
+}
+
+function loadFromStorage() {
+  try {
+    const savedRoster = localStorage.getItem(STORAGE_KEY_ROSTER);
+    if (savedRoster) {
+      const parsed = JSON.parse(savedRoster);
+      if (Array.isArray(parsed) && parsed.length > 0) {
+        roster = parsed;
+        renderRoster();
+
+        // 還原先前的勾選狀態（若有記錄），否則預設全部勾選
+        const savedChecked = localStorage.getItem(STORAGE_KEY_CHECKED);
+        if (savedChecked) {
+          const checkedSet = new Set(JSON.parse(savedChecked));
+          document.querySelectorAll('#roster-list input[type=checkbox]').forEach(cb => {
+            cb.checked = checkedSet.has(Number(cb.dataset.index));
+          });
+          updateSelectedCount();
+        }
+
+        const status = document.getElementById('roster-status');
+        status.textContent = `已自動載入先前儲存的名單，共 ${roster.length} 筆資料`;
+        status.className = 'ok';
+      }
+    }
+
+    const savedTemplate = localStorage.getItem(STORAGE_KEY_TEMPLATE);
+    if (savedTemplate) {
+      document.getElementById('template-text').value = savedTemplate;
+    }
+  } catch (e) { /* ignore corrupted data */ }
+}
+
+window.addEventListener('DOMContentLoaded', () => {
+  loadFromStorage();
+  app.classList.add('visible');
+});
+
+document.getElementById('clear-saved-btn').addEventListener('click', () => {
+  try {
+    localStorage.removeItem(STORAGE_KEY_ROSTER);
+    localStorage.removeItem(STORAGE_KEY_TEMPLATE);
+    localStorage.removeItem(STORAGE_KEY_CHECKED);
+  } catch (e) { /* ignore */ }
+  roster = [];
+  document.getElementById('roster-list').innerHTML = '';
+  document.getElementById('roster-paste').value = '';
+  document.getElementById('template-text').value = '';
+  document.getElementById('output-list').innerHTML = '<div class="empty-note">勾選左側名單並輸入範本文字後，按「產生名條」查看結果</div>';
+  updateSelectedCount();
+  const status = document.getElementById('roster-status');
+  status.textContent = '已清除本機儲存的名單與範本';
+  status.className = 'ok';
+});
+
+document.getElementById('template-text').addEventListener('input', saveTemplateToStorage);
 
 /* ---------------- 貼上名單解析（Excel 複製三欄，以 Tab 分隔） ---------------- */
 function parsePastedRoster(text) {
@@ -302,6 +383,8 @@ document.getElementById('roster-submit-btn').addEventListener('click', () => {
   status.textContent = `已設定名單，共 ${roster.length} 筆資料`;
   status.className = 'ok';
   renderRoster();
+  saveRosterToStorage();
+  saveCheckedToStorage();
 });
 
 /* ---------------- 名單渲染 ---------------- */
@@ -321,7 +404,10 @@ function renderRoster() {
     list.appendChild(li);
   });
   updateSelectedCount();
-  list.addEventListener('change', updateSelectedCount);
+  list.addEventListener('change', () => {
+    updateSelectedCount();
+    saveCheckedToStorage();
+  });
 }
 
 function updateSelectedCount() {
@@ -334,22 +420,26 @@ function updateSelectedCount() {
 document.getElementById('select-all-btn').addEventListener('click', () => {
   document.querySelectorAll('#roster-list input[type=checkbox]').forEach(cb => cb.checked = true);
   updateSelectedCount();
+  saveCheckedToStorage();
 });
 document.getElementById('select-none-btn').addEventListener('click', () => {
   document.querySelectorAll('#roster-list input[type=checkbox]').forEach(cb => cb.checked = false);
   updateSelectedCount();
+  saveCheckedToStorage();
 });
 document.getElementById('select-male-btn').addEventListener('click', () => {
   document.querySelectorAll('#roster-list input[type=checkbox]').forEach(cb => {
     cb.checked = /^男/.test(cb.dataset.gender);
   });
   updateSelectedCount();
+  saveCheckedToStorage();
 });
 document.getElementById('select-female-btn').addEventListener('click', () => {
   document.querySelectorAll('#roster-list input[type=checkbox]').forEach(cb => {
     cb.checked = /^女/.test(cb.dataset.gender);
   });
   updateSelectedCount();
+  saveCheckedToStorage();
 });
 
 /* ---------------- 產生名條 ---------------- */
@@ -371,12 +461,10 @@ document.getElementById('generate-btn').addEventListener('click', () => {
     return;
   }
 
-  checked.forEach(person => {
-    // OOO／○○○ → 完整姓名；OO／○○ → 去掉姓氏的名字（名字大於2字才去除，避免只剩單一或空字）
-    const givenName = person.name.length > 2 ? person.name.slice(1) : person.name;
-    let text = template.replace(/OOO|○○○/g, person.name);
-    text = text.replace(/OO|○○/g, givenName);
+  const placeholderPattern = /OOO|OO|○○○|○○/g;
 
+  checked.forEach(person => {
+    const text = template.replace(placeholderPattern, person.name);
     const card = document.createElement('div');
     card.className = 'name-card';
     card.innerHTML = `
