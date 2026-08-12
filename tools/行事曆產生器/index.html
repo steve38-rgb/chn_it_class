@@ -1,0 +1,550 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>行事曆產生器</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/exceljs/4.4.0/exceljs.min.js"></script>
+<style>
+  :root{
+    --paper:#f2f1ec;
+    --surface:#ffffff;
+    --ink:#23262b;
+    --ink-soft:#5c6169;
+    --grid:#c9cdd3;
+    --navy:#26364f;
+    --navy-deep:#1a2740;
+    --chop:#a33636;
+    --chop-soft:#f4e3e1;
+    --ok:#3c6e52;
+  }
+  *{box-sizing:border-box;}
+  body{
+    margin:0;
+    font-family:"Noto Sans TC","PingFang TC","Microsoft JhengHei",system-ui,sans-serif;
+    color:var(--ink);
+    background:
+      linear-gradient(var(--grid) 1px, transparent 1px) 0 0/100% 28px,
+      linear-gradient(90deg, var(--grid) 1px, transparent 1px) 0 0/28px 100%,
+      var(--paper);
+    background-attachment:fixed;
+    min-height:100vh;
+    padding:32px 20px 80px;
+  }
+  .wrap{max-width:960px;margin:0 auto;}
+  header{margin-bottom:28px;display:flex;align-items:flex-start;justify-content:space-between;gap:16px;flex-wrap:wrap;}
+  header h1{
+    font-family:"Noto Serif TC",Georgia,serif;
+    font-size:26px;
+    letter-spacing:.04em;
+    margin:0 0 6px;
+    color:var(--navy-deep);
+  }
+  header p{margin:0;color:var(--ink-soft);font-size:13.5px;line-height:1.6;max-width:56ch;}
+  .stamp{
+    flex-shrink:0;
+    width:64px;height:64px;border-radius:50%;
+    border:2.5px solid var(--chop);
+    color:var(--chop);
+    display:flex;align-items:center;justify-content:center;
+    font-size:11px;font-weight:700;letter-spacing:.15em;text-align:center;
+    transform:rotate(-8deg);
+    opacity:.85;
+    writing-mode:vertical-rl;
+    padding:4px;
+  }
+  .card{
+    background:var(--surface);
+    border:1px solid var(--grid);
+    border-radius:3px;
+    padding:22px 24px;
+    margin-bottom:18px;
+    box-shadow:0 1px 0 rgba(0,0,0,.02);
+  }
+  .card h2{
+    font-size:13px;
+    text-transform:uppercase;
+    letter-spacing:.12em;
+    color:var(--navy);
+    margin:0 0 16px;
+    padding-bottom:8px;
+    border-bottom:1px solid var(--grid);
+    display:flex;align-items:center;gap:8px;
+  }
+  .card h2 .n{
+    display:inline-flex;align-items:center;justify-content:center;
+    width:18px;height:18px;border-radius:50%;
+    background:var(--navy);color:#fff;font-size:10px;letter-spacing:0;
+  }
+  .grid2{display:grid;grid-template-columns:1fr 1fr;gap:14px 18px;}
+  .grid3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:14px 18px;}
+  @media(max-width:640px){.grid2,.grid3{grid-template-columns:1fr;}}
+  label{display:block;font-size:12.5px;color:var(--ink-soft);margin-bottom:5px;}
+  input[type=text],input[type=date],textarea,select{
+    width:100%;
+    padding:8px 10px;
+    border:1px solid var(--grid);
+    border-radius:2px;
+    background:#fdfdfb;
+    color:var(--ink);
+    font-size:13.5px;
+    font-family:inherit;
+  }
+  textarea{font-family:"SFMono-Regular",Consolas,"Courier New",monospace;font-size:12.5px;resize:vertical;}
+  input:focus,textarea:focus,select:focus{outline:2px solid var(--navy);outline-offset:1px;}
+  .field{margin-bottom:2px;}
+  .hint{font-size:11.5px;color:var(--ink-soft);margin-top:4px;}
+  .tabs{display:flex;gap:2px;margin-bottom:12px;}
+  .tab-btn{
+    padding:7px 16px;border:1px solid var(--grid);background:#eceae3;
+    color:var(--ink-soft);font-size:12.5px;cursor:pointer;border-radius:2px 2px 0 0;
+  }
+  .tab-btn.active{background:var(--surface);color:var(--navy);font-weight:700;border-bottom-color:var(--surface);}
+  .tab-panel{display:none;}
+  .tab-panel.active{display:block;}
+  .sample-btn{
+    background:none;border:none;color:var(--navy);font-size:12px;text-decoration:underline;
+    cursor:pointer;padding:0;margin-top:6px;
+  }
+  .dropzone{
+    border:1.5px dashed var(--grid);border-radius:3px;padding:22px;text-align:center;
+    color:var(--ink-soft);font-size:13px;cursor:pointer;background:#fbfbf8;
+  }
+  .dropzone.drag{border-color:var(--navy);background:#eef1f5;color:var(--navy);}
+  .dropzone input{display:none;}
+  .filename{font-size:12.5px;color:var(--navy);margin-top:8px;}
+  .actions{display:flex;align-items:center;gap:14px;flex-wrap:wrap;}
+  button.primary{
+    background:var(--navy);color:#fff;border:none;
+    padding:12px 26px;font-size:14px;font-weight:700;letter-spacing:.03em;
+    border-radius:2px;cursor:pointer;
+  }
+  button.primary:hover{background:var(--navy-deep);}
+  button.primary:disabled{background:#9aa2ad;cursor:not-allowed;}
+  #status{font-size:13px;line-height:1.7;}
+  #status .ok{color:var(--ok);font-weight:700;}
+  #status .err{color:var(--chop);font-weight:700;}
+  #log{margin-top:10px;font-size:12px;color:var(--ink-soft);white-space:pre-wrap;font-family:Consolas,monospace;max-height:140px;overflow:auto;background:#faf9f6;border:1px solid var(--grid);padding:8px 10px;border-radius:2px;display:none;}
+  .row-checks{display:flex;gap:22px;flex-wrap:wrap;margin-top:4px;}
+  .row-checks label{display:flex;align-items:center;gap:6px;font-size:12.5px;color:var(--ink);}
+  .row-checks input{width:auto;}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <div>
+      <h1>行事曆產生器</h1>
+      <p>貼上或上傳你的事件資料表（開始日／標題／結束日／備註(節次)／是否選用），設定學期參數後，直接下載成含兩種週曆版面的 Excel 檔。</p>
+    </div>
+    <div class="stamp" id="stamp">尚未產生</div>
+  </header>
+
+  <div class="card">
+    <h2><span class="n">1</span>學期參數</h2>
+    <div class="grid3">
+      <div class="field">
+        <label for="title">行事曆標題</label>
+        <input type="text" id="title" placeholder="例：○○縣○○國小114學年度第1學期學生行事簡曆">
+      </div>
+      <div class="field">
+        <label for="semStart">開學日（第1週起點）</label>
+        <input type="date" id="semStart">
+      </div>
+      <div class="field">
+        <label for="semEnd">學期結束日</label>
+        <input type="date" id="semEnd">
+      </div>
+    </div>
+    <div class="grid3" style="margin-top:14px;">
+      <div class="field">
+        <label for="week1start">格式一・週的起始日</label>
+        <select id="week1start"><option value="sun">星期日</option><option value="mon">星期一</option></select>
+      </div>
+      <div class="field">
+        <label for="week2start">格式二・週的起始日</label>
+        <select id="week2start"><option value="mon" selected>星期一</option><option value="sun">星期日</option></select>
+      </div>
+      <div class="field">
+        <label for="week2sun">格式二・是否含週日欄</label>
+        <select id="week2sun"><option value="no">不含（一~六，共6欄）</option><option value="yes">包含（共7欄）</option></select>
+      </div>
+    </div>
+    <div class="field" style="margin-top:14px;">
+      <label for="holidays">特別標色日期（假日／補假等，一行一個，格式 YYYY-MM-DD）</label>
+      <textarea id="holidays" rows="2" placeholder="2026-09-17&#10;2026-10-09&#10;2027-01-01"></textarea>
+    </div>
+  </div>
+
+  <div class="card">
+    <h2><span class="n">2</span>事件資料</h2>
+    <div class="tabs">
+      <button class="tab-btn active" data-tab="paste" type="button">貼上文字</button>
+      <button class="tab-btn" data-tab="upload" type="button">上傳檔案</button>
+    </div>
+    <div class="tab-panel active" id="panel-paste">
+      <textarea id="pasteArea" rows="8" placeholder="開始日	標題	結束日	備註(節次)	是否選用
+2026-08-31	開學‧正式上課			是
+2026-09-17	中秋節		放假	是"></textarea>
+      <div class="hint">第一列須為表頭：開始日／標題／結束日／備註(節次)／是否選用（欄位以 Tab 分隔——直接從 Excel 或 Google 試算表複製整個範圍貼上即可）。</div>
+      <button class="sample-btn" id="loadSample" type="button">載入範例資料試試看</button>
+    </div>
+    <div class="tab-panel" id="panel-upload">
+      <div class="dropzone" id="dropzone">
+        將 .xlsx 或 .csv 檔拖曳到這裡，或點擊選擇檔案
+        <input type="file" id="fileInput" accept=".xlsx,.csv,.txt">
+      </div>
+      <div class="filename" id="filename"></div>
+      <div class="hint">檔案第一列須為表頭，欄位同上。.xlsx 只讀取第一個工作表。</div>
+    </div>
+  </div>
+
+  <div class="card">
+    <h2><span class="n">3</span>產生檔案</h2>
+    <div class="actions">
+      <button class="primary" id="generateBtn" type="button">產生 Excel（含兩種格式）</button>
+    </div>
+    <div id="status" style="margin-top:14px;"></div>
+    <div id="log"></div>
+  </div>
+</div>
+
+<script>
+(function(){
+  const $ = id => document.getElementById(id);
+
+  // ---------- tabs ----------
+  document.querySelectorAll('.tab-btn').forEach(btn=>{
+    btn.addEventListener('click', ()=>{
+      document.querySelectorAll('.tab-btn').forEach(b=>b.classList.remove('active'));
+      document.querySelectorAll('.tab-panel').forEach(p=>p.classList.remove('active'));
+      btn.classList.add('active');
+      $('panel-'+btn.dataset.tab).classList.add('active');
+    });
+  });
+
+  const SAMPLE = `開始日\t標題\t結束日\t備註(節次)\t是否選用
+2026-08-31\t開學‧正式上課\t\t\t是
+2026-09-04\t課照、社團開課開始\t\t\t是
+2026-09-17\t中秋節\t\t放假\t是
+2026-09-20\t親師座談會、家長委員會\t\t\t是
+2026-10-09\t國慶日補假\t\t放假\t是
+2026-10-31\t期中考\t2026-11-01\t第1-4節\t是
+2026-11-05\t山野教育(暫定)\t\t\t否`;
+  $('loadSample').addEventListener('click', ()=>{
+    $('pasteArea').value = SAMPLE;
+    $('semStart').value = '2026-08-31';
+    $('semEnd').value = '2027-01-22';
+    $('title').value = '○○縣○○國小114學年度第1學期學生行事簡曆';
+    $('holidays').value = '2026-09-17\n2026-10-09\n2027-01-01';
+  });
+
+  // ---------- file upload ----------
+  let uploadedRows = null; // array of arrays incl header
+  const dropzone = $('dropzone'), fileInput = $('fileInput');
+  dropzone.addEventListener('click', ()=>fileInput.click());
+  ['dragover','dragenter'].forEach(ev=>dropzone.addEventListener(ev, e=>{e.preventDefault();dropzone.classList.add('drag');}));
+  ['dragleave','drop'].forEach(ev=>dropzone.addEventListener(ev, e=>{e.preventDefault();dropzone.classList.remove('drag');}));
+  dropzone.addEventListener('drop', e=>{
+    if(e.dataTransfer.files.length) handleFile(e.dataTransfer.files[0]);
+  });
+  fileInput.addEventListener('change', e=>{
+    if(e.target.files.length) handleFile(e.target.files[0]);
+  });
+
+  async function handleFile(file){
+    $('filename').textContent = '已選擇：' + file.name;
+    if(/\.xlsx$/i.test(file.name)){
+      const buf = await file.arrayBuffer();
+      const wb = new ExcelJS.Workbook();
+      await wb.xlsx.load(buf);
+      const ws = wb.worksheets[0];
+      const rows = [];
+      ws.eachRow({includeEmpty:false}, row=>{
+        const vals = row.values.slice(1).map(v=> v==null?'': (v.text!==undefined? v.text : v));
+        rows.push(vals);
+      });
+      uploadedRows = rows;
+    } else {
+      const text = await file.text();
+      uploadedRows = parseDelimited(text);
+    }
+  }
+
+  function parseDelimited(text){
+    const lines = text.replace(/\r/g,'').split('\n').filter(l=>l.length);
+    const delim = lines[0].includes('\t') ? '\t' : ',';
+    return lines.map(l=>l.split(delim));
+  }
+
+  // ---------- date parsing ----------
+  function parseDate(raw, semStart, semEnd){
+    if(raw===null || raw===undefined) return null;
+    if(raw instanceof Date) return new Date(raw.getFullYear(), raw.getMonth(), raw.getDate());
+    let s = String(raw).trim();
+    if(!s) return null;
+    s = s.replace(/\//g,'-');
+    const parts = s.split('-').filter(p=>p!=='');
+    if(parts.length===3){
+      let [y,m,d] = parts.map(Number);
+      if(y<100) y += 2000;
+      return new Date(y, m-1, d);
+    }
+    if(parts.length===2 && semStart){
+      let [m,d] = parts.map(Number);
+      let y = semStart.getFullYear();
+      let dt = new Date(y, m-1, d);
+      if(dt < new Date(semStart.getFullYear(), semStart.getMonth(), semStart.getDate()-60)) dt = new Date(y+1, m-1, d);
+      return dt;
+    }
+    throw new Error('無法解析日期：'+raw);
+  }
+
+  const EXCLUDE = new Set(['否','n','no','false','0','x','✗','']);
+  function isExcluded(v){
+    if(v===null||v===undefined) return false;
+    return EXCLUDE.has(String(v).trim().toLowerCase()) && String(v).trim()!=='';
+  }
+
+  function fmtDate(d){ return (d.getMonth()+1)+'/'+d.getDate(); }
+  function isoDate(d){ return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0'); }
+  function pyWeekday(d){ return (d.getDay()+6)%7; } // Mon=0 ... Sun=6
+  function addDays(d,n){ const r=new Date(d); r.setDate(r.getDate()+n); return r; }
+  function startOfWeek(d, weekStartDow){
+    const diff = (pyWeekday(d) - weekStartDow + 7) % 7;
+    return addDays(d, -diff);
+  }
+  const ZH_DIGIT = ['〇','一','二','三','四','五','六','七','八','九'];
+  function zhWeekNum(n){
+    if(n<10) return ZH_DIGIT[n];
+    if(n<20) return '十'+(n===10?'':ZH_DIGIT[n-10]);
+    const tens=Math.floor(n/10), ones=n%10;
+    return ZH_DIGIT[tens]+'十'+(ones?ZH_DIGIT[ones]:'');
+  }
+
+  // ---------- core: build events from rows ----------
+  function buildEvents(rows, semStart, semEnd, log){
+    if(!rows || rows.length<2) throw new Error('資料列數不足（需要表頭+至少1筆資料）');
+    const header = rows[0].map(h=>String(h).trim());
+    const need = ['開始日','標題','結束日','備註(節次)','是否選用'];
+    const idx = {};
+    need.forEach(n=>{ idx[n]=header.indexOf(n); });
+    if(idx['開始日']<0 || idx['標題']<0){
+      throw new Error('表頭必須包含「開始日」與「標題」欄位，目前偵測到：'+header.join('、'));
+    }
+    const events = [];
+    let skipped=0;
+    for(let i=1;i<rows.length;i++){
+      const r = rows[i];
+      if(!r || r.every(c=>String(c??'').trim()==='')) continue;
+      const rawInclude = idx['是否選用']>=0 ? r[idx['是否選用']] : '是';
+      if(isExcluded(rawInclude)){ skipped++; continue; }
+      const startRaw = r[idx['開始日']];
+      if(!startRaw || String(startRaw).trim()===''){ log.push('第'+(i+1)+'列略過：缺少開始日'); continue; }
+      let start, end;
+      try{
+        start = parseDate(startRaw, semStart, semEnd);
+        const endRaw = idx['結束日']>=0 ? r[idx['結束日']] : '';
+        end = (endRaw && String(endRaw).trim()!=='') ? parseDate(endRaw, semStart, semEnd) : start;
+      }catch(e){ log.push('第'+(i+1)+'列日期解析失敗：'+e.message); continue; }
+      events.push({
+        start, end,
+        title: String(r[idx['標題']]??'').trim(),
+        note: idx['備註(節次)']>=0 ? String(r[idx['備註(節次)']]??'').trim() : ''
+      });
+    }
+    return {events, skipped};
+  }
+
+  // ---------- xlsx building ----------
+  const THIN = {style:'thin', color:{argb:'FF000000'}};
+  const BORDER = {top:THIN,left:THIN,right:THIN,bottom:THIN};
+  const FILL_HEADER = {type:'pattern',pattern:'solid',fgColor:{argb:'FFD9D9D9'}};
+  const FILL_WEEKEND = {type:'pattern',pattern:'solid',fgColor:{argb:'FFF2F2F2'}};
+  const FILL_HOLIDAY = {type:'pattern',pattern:'solid',fgColor:{argb:'FFBFBFBF'}};
+  const CENTER = {horizontal:'center', vertical:'middle', wrapText:true};
+  const LEFTWRAP = {horizontal:'left', vertical:'top', wrapText:true};
+
+  function buildSheet1(wb, events, cfg){
+    const ws = wb.addWorksheet('格式一_週為列');
+    const weekStartDow = cfg.week1start==='sun' ? 6 : 0;
+    const daysOrder = weekStartDow===6 ? ['日','一','二','三','四','五','六'] : ['一','二','三','四','五','六','日'];
+    const nDays = 7, nCols = 1+nDays+1;
+
+    ws.mergeCells(1,1,1,nCols);
+    ws.getCell(1,1).value = cfg.title;
+    ws.getCell(1,1).font = {bold:true,size:14};
+    ws.getCell(1,1).alignment = CENTER;
+
+    ws.mergeCells(2,1,3,1); ws.getCell(2,1).value='週次';
+    ws.mergeCells(2,2,2,1+nDays); ws.getCell(2,2).value='星期/日期';
+    ws.mergeCells(2,2+nDays,3,2+nDays); ws.getCell(2,2+nDays).value='學校重要行事';
+    daysOrder.forEach((d,i)=>{ ws.getCell(3,2+i).value = d; });
+    for(let r=2;r<=3;r++) for(let c=1;c<=nCols;c++){
+      const cell = ws.getCell(r,c);
+      cell.font = {bold:true}; cell.alignment = CENTER; cell.border = BORDER;
+    }
+    ws.getCell(2,1).fill = FILL_HEADER; ws.getCell(2,2).fill = FILL_HEADER;
+    ws.getCell(2,2+nDays).fill = FILL_HEADER;
+    daysOrder.forEach((d,i)=>{ ws.getCell(3,2+i).fill = FILL_HEADER; });
+
+    const anchor = startOfWeek(cfg.semStart, weekStartDow);
+    const totalWeeks = Math.floor((cfg.semEnd - anchor)/(7*86400000)) + 1;
+    const weekEvents = Array.from({length:totalWeeks}, ()=>[]);
+    events.forEach(ev=>{
+      const w = Math.floor((ev.start - anchor)/(7*86400000));
+      if(w>=0 && w<totalWeeks){
+        let label = (ev.end.getTime()!==ev.start.getTime())
+          ? fmtDate(ev.start)+'-'+fmtDate(ev.end)+' '+ev.title
+          : fmtDate(ev.start)+' '+ev.title;
+        if(ev.note) label += '（'+ev.note+'）';
+        weekEvents[w].push(label);
+      }
+    });
+
+    let row=4;
+    for(let w=0; w<totalWeeks; w++){
+      const weekBegin = addDays(anchor, 7*w);
+      const wLabel = cfg.numeral==='zh' ? zhWeekNum(w+1) : String(w+1);
+      const c0 = ws.getCell(row,1); c0.value=wLabel; c0.alignment=CENTER; c0.border=BORDER;
+      for(let i=0;i<nDays;i++){
+        const d = addDays(weekBegin,i);
+        const cell = ws.getCell(row,2+i);
+        cell.border = BORDER; cell.alignment = CENTER;
+        if(d>=cfg.semStart && d<=cfg.semEnd){
+          cell.value = d.getDate();
+          if(cfg.holidaySet.has(isoDate(d))) cell.fill = FILL_HOLIDAY;
+          else if(daysOrder[i]==='日'||daysOrder[i]==='六') cell.fill = FILL_WEEKEND;
+        }
+      }
+      const noteCell = ws.getCell(row,2+nDays);
+      noteCell.value = weekEvents[w].map(t=>'.'+t).join('\n');
+      noteCell.alignment = LEFTWRAP; noteCell.border = BORDER;
+      row++;
+    }
+    ws.getColumn(1).width = 7;
+    for(let i=0;i<nDays;i++) ws.getColumn(2+i).width = 5.5;
+    ws.getColumn(2+nDays).width = 48;
+  }
+
+  function buildSheet2(wb, events, cfg){
+    const ws = wb.addWorksheet('格式二_日期橫排');
+    const weekStartDow = cfg.week2start==='sun' ? 6 : 0;
+    const daysOrder = cfg.week2includeSun
+      ? (weekStartDow===6 ? ['日','一','二','三','四','五','六'] : ['一','二','三','四','五','六','日'])
+      : ['一','二','三','四','五','六'];
+    const nDays = daysOrder.length, nCols = 1+nDays;
+
+    ws.mergeCells(1,1,1,nCols);
+    ws.getCell(1,1).value = cfg.title;
+    ws.getCell(1,1).font = {bold:true,size:14};
+    ws.getCell(1,1).alignment = CENTER;
+
+    ws.getCell(2,1).value='週次';
+    ws.mergeCells(2,2,2,nCols); ws.getCell(2,2).value='星期';
+    daysOrder.forEach((d,i)=>{ ws.getCell(3,2+i).value = d; });
+    for(let r=2;r<=3;r++) for(let c=1;c<=nCols;c++){
+      const cell = ws.getCell(r,c);
+      cell.font = {bold:true}; cell.alignment = CENTER; cell.border = BORDER;
+    }
+    ws.getCell(2,1).fill = FILL_HEADER; ws.getCell(2,2).fill = FILL_HEADER;
+    daysOrder.forEach((d,i)=>{ ws.getCell(3,2+i).fill = FILL_HEADER; });
+
+    const anchor = startOfWeek(cfg.semStart, weekStartDow);
+    const totalWeeks = Math.floor((cfg.semEnd - anchor)/(7*86400000)) + 1;
+
+    const dayEvents = {};
+    events.forEach(ev=>{
+      for(let d=new Date(ev.start); d<=ev.end; d=addDays(d,1)){
+        const key = isoDate(d);
+        let label = ev.title;
+        if(ev.note) label += '（'+ev.note+'）';
+        (dayEvents[key] = dayEvents[key]||[]).push(label);
+      }
+    });
+
+    let row=4;
+    for(let w=0; w<totalWeeks; w++){
+      const weekBegin = addDays(anchor, 7*w);
+      const c0 = ws.getCell(row,1); c0.value=w+1; c0.alignment=CENTER; c0.border=BORDER;
+      for(let i=0;i<nDays;i++){
+        const d = addDays(weekBegin,i);
+        const cell = ws.getCell(row,2+i);
+        cell.border = BORDER; cell.alignment = LEFTWRAP;
+        if(d>=cfg.semStart && d<=cfg.semEnd){
+          let text = fmtDate(d);
+          (dayEvents[isoDate(d)]||[]).forEach(l=> text += '\n'+l);
+          cell.value = text;
+          if(cfg.holidaySet.has(isoDate(d))) cell.fill = FILL_HOLIDAY;
+        }
+      }
+      row++;
+    }
+    ws.getColumn(1).width = 7;
+    for(let i=0;i<nDays;i++) ws.getColumn(2+i).width = 17;
+  }
+
+  // ---------- generate ----------
+  $('generateBtn').addEventListener('click', async ()=>{
+    const statusEl = $('status'), logEl = $('log'), stamp = $('stamp');
+    statusEl.innerHTML=''; logEl.style.display='none'; logEl.textContent='';
+    const log = [];
+    try{
+      const semStartVal = $('semStart').value, semEndVal = $('semEnd').value;
+      if(!semStartVal || !semEndVal) throw new Error('請先填寫「開學日」與「學期結束日」');
+      const semStart = new Date(semStartVal+'T00:00:00');
+      const semEnd = new Date(semEndVal+'T00:00:00');
+      if(semEnd < semStart) throw new Error('學期結束日不可早於開學日');
+      const title = $('title').value.trim() || '行事曆';
+
+      const activeTab = document.querySelector('.tab-btn.active').dataset.tab;
+      let rows;
+      if(activeTab==='paste'){
+        const text = $('pasteArea').value;
+        if(!text.trim()) throw new Error('請貼上資料，或切換到「上傳檔案」');
+        rows = parseDelimited(text);
+      } else {
+        if(!uploadedRows) throw new Error('請先選擇要上傳的檔案');
+        rows = uploadedRows;
+      }
+
+      const {events, skipped} = buildEvents(rows, semStart, semEnd, log);
+      if(events.length===0) throw new Error('沒有任何可用的事件資料（請確認「是否選用」與日期欄位）');
+
+      const holidaySet = new Set(
+        $('holidays').value.split('\n').map(s=>s.trim()).filter(Boolean)
+      );
+
+      const cfg = {
+        title, semStart, semEnd, holidaySet,
+        week1start: $('week1start').value,
+        week2start: $('week2start').value,
+        week2includeSun: $('week2sun').value==='yes',
+        numeral: 'arabic'
+      };
+
+      const wb = new ExcelJS.Workbook();
+      buildSheet1(wb, events, cfg);
+      buildSheet2(wb, events, cfg);
+
+      const buf = await wb.xlsx.writeBuffer();
+      const blob = new Blob([buf], {type:'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'});
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url; a.download = (title||'行事曆')+'.xlsx';
+      document.body.appendChild(a); a.click(); a.remove();
+      URL.revokeObjectURL(url);
+
+      statusEl.innerHTML = '<span class="ok">已產生並下載。</span> 共納入 '+events.length+' 筆事件'+(skipped?'，略過 '+skipped+' 筆（未選用）':'')+'。';
+      stamp.textContent = '已產生';
+      stamp.style.color = 'var(--ok)'; stamp.style.borderColor = 'var(--ok)';
+      if(log.length){ logEl.style.display='block'; logEl.textContent = log.join('\n'); }
+    }catch(e){
+      statusEl.innerHTML = '<span class="err">發生錯誤：</span>'+e.message;
+      if(log.length){ logEl.style.display='block'; logEl.textContent = log.join('\n'); }
+    }
+  });
+})();
+</script>
+</body>
+</html>
